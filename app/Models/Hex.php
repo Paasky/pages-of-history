@@ -25,7 +25,8 @@ use Illuminate\Support\Carbon;
  * @property HexFeature|null $feature
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Map|null $map
+ * @property-read Coordinate $coordinate
+ * @property-read Map $map
  * @method static HexFactory factory($count = null, $state = [])
  * @method static Builder|Hex newModelQuery()
  * @method static Builder|Hex newQuery()
@@ -39,7 +40,6 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Hex whereUpdatedAt($value)
  * @method static Builder|Hex whereX($value)
  * @method static Builder|Hex whereY($value)
- * @property-read Coordinate $coordinate
  * @mixin \Eloquent
  */
 class Hex extends Model

@@ -18,7 +18,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read Collection<int, Map> $hexes
+ * @property-read Collection<int, Hex> $hexes
  * @property-read int|null $hexes_count
  * @method static MapFactory factory($count = null, $state = [])
  * @method static Builder|Map newModelQuery()
@@ -45,7 +45,7 @@ class Map extends Model
 
     public function hexes(): HasMany
     {
-        return $this->hasMany(Map::class);
+        return $this->hasMany(Hex::class);
     }
 
     public function getSizeAttribute(): Coordinate

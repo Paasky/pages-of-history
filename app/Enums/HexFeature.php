@@ -2,17 +2,19 @@
 
 namespace App\Enums;
 
-enum HexFeature
+enum HexFeature:string
 {
-    case Shrubs;
-    case LightForest;
-    case LushForest;
-    case PineForest;
-    case Jungle;
-    case Dunes;
-    case Snowdrifts;
-    case Shoals;
-    case Reef;
+    use PohEnum;
+
+    case Shrubs = 'Shrubs';
+    case LightForest = 'LightForest';
+    case LushForest = 'LushForest';
+    case PineForest = 'PineForest';
+    case Jungle = 'Jungle';
+    case Dunes = 'Dunes';
+    case Snowdrifts = 'Snowdrifts';
+    case Shoals = 'Shoals';
+    case Reef = 'Reef';
 
     /**
      * @param HexSurface $surface
