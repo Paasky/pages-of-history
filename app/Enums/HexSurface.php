@@ -36,4 +36,12 @@ enum HexSurface:string
             default => '#999',
         };
     }
+
+    public function moveCost(): int
+    {
+        return match ($this) {
+            HexSurface::Rock, HexSurface::Snow => 2,
+            default => 1,
+        };
+    }
 }

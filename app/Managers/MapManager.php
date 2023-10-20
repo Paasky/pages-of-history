@@ -10,27 +10,24 @@ use App\Models\Map;
 
 class MapManager
 {
-    public function generate(int $height, int $width): Map
+    public function __construct(private readonly ?Map $map = null)
     {
-        $map = Map::create([
-            'height' => $height,
-            'width' => $width,
-        ]);
-
-        $this->generateHexes($map);
-
-        return $map->load('hexes');
     }
 
-    public function generateHexes(Map $map): void
+    public static function for(Map $map): static
+    {
+        return new static($map);
+    }
+
+    public function generateHexes(): void
     {
         $hexData = [];
-        for ($x = 0; $x < $map->width; $x++) {
-            for ($y = 0; $y < $map->height; $y++) {
+        for ($x = 0; $x < $this->map->width; $x++) {
+            for ($y = 0; $y < $this->map->height; $y++) {
                 /** @var HexSurface $surface */
                 $surface = \Arr::random(HexSurface::cases());
                 $hexData[] = [
-                    'map_id' => $map->id,
+                    'map_id' => $this->map->id,
                     'x' => $x,
                     'y' => $y,
                     'surface' => $surface,

@@ -22,7 +22,7 @@ class MapFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (Map $map) {
-            app(MapManager::class)->generateHexes($map);
+            MapManager::for($map)->generateHexes();
         });
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUnused */
 
 namespace App\Models;
 
@@ -8,12 +8,12 @@ use App\Enums\HexSurface;
 use App\Managers\MapManager;
 use Database\Factories\HexFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\Hex
@@ -44,6 +44,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Hex whereUpdatedAt($value)
  * @method static Builder|Hex whereX($value)
  * @method static Builder|Hex whereY($value)
+ * @property-read Collection<int, Hex> $adjacent_hexes
+ * @property-read string $name
  * @mixin \Eloquent
  */
 class Hex extends Model
@@ -89,5 +91,18 @@ class Hex extends Model
                     $q->orWhere($coord->toXYArray());
                 }
             });
+    }
+
+    /**
+     * @return Collection<int, Hex>
+     */
+    public function getAdjacentHexesAttribute(): Collection
+    {
+        return $this->adjacentHexes()->get();
+    }
+
+    public function getMoveCostAttribute(): int
+    {
+        return $this->surface->moveCost() + $this->feature?->moveCost();
     }
 }

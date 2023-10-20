@@ -34,8 +34,9 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Map whereId($value)
  * @method static Builder|Map whereUpdatedAt($value)
  * @method static Builder|Map whereWidth($value)
- * @property-read Collection<int, \App\Models\Player> $players
+ * @property-read Collection<int, Player> $players
  * @property-read int|null $players_count
+ * @property-read string $name
  * @mixin Eloquent
  */
 class Map extends Model

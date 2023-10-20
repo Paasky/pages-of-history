@@ -50,4 +50,13 @@ enum HexFeature:string
             default => '#999',
         };
     }
+
+    public function moveCost(): int
+    {
+        return match ($this) {
+            HexFeature::Dunes, HexFeature::Jungle, HexFeature::LushForest, HexFeature::PineForest,
+            HexFeature::Reef, HexFeature::Shoals, HexFeature::Snowdrifts => 1,
+            default => 0,
+        };
+    }
 }

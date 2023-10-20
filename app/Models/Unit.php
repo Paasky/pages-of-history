@@ -36,6 +36,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Unit wherePlayerId($value)
  * @method static Builder|Unit whereType($value)
  * @method static Builder|Unit whereUpdatedAt($value)
+ * @property-read string $name
  * @mixin \Eloquent
  */
 class Unit extends Model
