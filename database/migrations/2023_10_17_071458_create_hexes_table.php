@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('hexes', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Map::class);
+            $table->foreignIdFor(Map::class)->constrained();
             $table->unsignedInteger('x');
             $table->unsignedInteger('y');
             $table->string('surface');
@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('feature')->nullable();
             $table->timestamps();
             $table->index(['x', 'y']);
+
+            $table->unique(['map_id', 'x', 'y']);
         });
     }
 

@@ -1,11 +1,14 @@
-@php use App\Enums\HexSurface; @endphp
-@php use App\Enums\HexFeature; @endphp
-@php use App\Models\Hex; @endphp
+@php
+    use App\Enums\HexSurface;
+    use App\Enums\HexFeature;
+    use App\Models\Hex;
+@endphp
+
 <div id="hexmap-{{ $map->id }}" class="hexmap">
     <style>
         .hexmap {
             background: #999;
-            width: {{ $map->width * 154 }}px;
+            width: {{ $map->width * 156 }}px;
             height: {{ $map->height * 181 }}px;
             padding: 10px;
         }
@@ -16,10 +19,6 @@
         }
 
         .hex {
-            display: inline-block;
-            position: relative;
-            margin-left: -53px;
-            background-size: cover;
         }
 
         .hex:hover {
@@ -38,19 +37,30 @@
             height: 76%;
             top: 12%;
             left: 12%;
-            position: relative;
+            position: absolute;
             border-radius: 33%;
             opacity: 0.5;
             background-size: cover;
         }
 
-        @property --radius {
-            syntax: '<length>';
-            inherits: true;
-            initial-value: 0;
+        .hex-unit {
+            width: 54%;
+            height: 61%;
+            top: 12%;
+            left: 17%;
+            position: absolute;
+            border-radius: 100%;
+            border-width: 12px;
+            border-style: solid;
+            background-size: cover;
         }
 
         .hex {
+            display: inline-block;
+            position: relative;
+            margin-left: -53px;
+            background-size: cover;
+
             --radius: 0px;
             --size: 200px;
             --f: 5;
@@ -78,13 +88,12 @@
             cursor: pointer;
             transition: 0.1s linear;
         }
-    </style>
-    <style>
+
         @foreach(HexSurface::cases() as $surface)
             .dummy {
         }
 
-        .hex-surface-{{ $surface->cssClass() }}       {
+        .hex-surface-{{ $surface->cssClass() }}        {
             background-image: {!! $surface->cssBackground() !!};
         }
 
@@ -93,11 +102,12 @@
             .dummy {
         }
 
-        .hex-feature-{{ $feature->cssClass() }}       {
+        .hex-feature-{{ $feature->cssClass() }}        {
             background-image: {!! $feature->cssBackground() !!};
         }
         @endforeach
     </style>
+
     @foreach($map->hexes->sortBy(['x', 'y'])->groupBy('y') as $hexes)
         <div class="hex-row">
             @foreach($hexes as $hex)
@@ -117,6 +127,11 @@
                     @if($hex->feature)
                         <div class="hex-feature hex-feature-{{ $hex->feature?->cssClass() }}"></div>
                     @endif
+                    @foreach($hex->units as $unit)
+                        <div class="hex-unit hex-unit-{{ $unit->type->cssClass() }}"
+                             style="background-color: {{ $unit->player->color1}}; border-color: {{ $unit->player->color2 }};"
+                        ></div>
+                    @endforeach
                 </div>
             @endforeach
         </div>

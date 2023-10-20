@@ -8,9 +8,11 @@ use App\Enums\HexSurface;
 use App\Managers\MapManager;
 use Database\Factories\HexFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -27,6 +29,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read Coordinate $coordinate
  * @property-read Map $map
+ * @property-read Collection<int, Unit> $units
+ * @property-read int|null $units_count
  * @method static HexFactory factory($count = null, $state = [])
  * @method static Builder|Hex newModelQuery()
  * @method static Builder|Hex newQuery()
@@ -45,6 +49,7 @@ use Illuminate\Support\Carbon;
 class Hex extends Model
 {
     use HasFactory;
+    use PohModel;
 
     protected $casts = [
         'surface' => HexSurface::class,
@@ -63,6 +68,11 @@ class Hex extends Model
     public function map(): BelongsTo
     {
         return $this->belongsTo(Map::class);
+    }
+
+    public function units(): HasMany
+    {
+        return $this->hasMany(Unit::class);
     }
 
     public function getCoordinateAttribute(): Coordinate

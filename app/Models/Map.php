@@ -16,27 +16,32 @@ use Illuminate\Support\Carbon;
  * App\Models\Map
  *
  * @property int $id
+ * @property int $height
+ * @property int $width
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Coordinate $size
  * @property-read Collection<int, Hex> $hexes
  * @property-read int|null $hexes_count
+ * @property-read Collection<int, Unit> $units
+ * @property-read int|null $units_count
  * @method static MapFactory factory($count = null, $state = [])
  * @method static Builder|Map newModelQuery()
  * @method static Builder|Map newQuery()
  * @method static Builder|Map query()
  * @method static Builder|Map whereCreatedAt($value)
+ * @method static Builder|Map whereHeight($value)
  * @method static Builder|Map whereId($value)
  * @method static Builder|Map whereUpdatedAt($value)
- * @property int $height
- * @property int $width
- * @method static Builder|Map whereHeight($value)
  * @method static Builder|Map whereWidth($value)
- * @property-read Coordinate $size
+ * @property-read Collection<int, \App\Models\Player> $players
+ * @property-read int|null $players_count
  * @mixin Eloquent
  */
 class Map extends Model
 {
     use HasFactory;
+    use PohModel;
 
     protected $fillable = [
         'height',
@@ -46,6 +51,16 @@ class Map extends Model
     public function hexes(): HasMany
     {
         return $this->hasMany(Hex::class);
+    }
+
+    public function players(): HasMany
+    {
+        return $this->hasMany(Player::class);
+    }
+
+    public function units(): HasMany
+    {
+        return $this->hasMany(Unit::class);
     }
 
     public function getSizeAttribute(): Coordinate
