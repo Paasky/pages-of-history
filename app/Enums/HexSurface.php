@@ -21,18 +21,18 @@ enum HexSurface:string
         return in_array($this, [HexSurface::Coast, HexSurface::Sea, HexSurface::Ocean]);
     }
 
-    public function cssColor(): string
+    public function cssBackground(): string
     {
         return match ($this) {
-            HexSurface::Grass => '#0d530e',
-            HexSurface::Plains => '#767943',
-            HexSurface::Desert => '#ada570',
-            HexSurface::Tundra => '#798570',
-            HexSurface::Snow => '#9faba8',
-            HexSurface::Rock => '#3f423d',
-            HexSurface::Coast => '#629099',
-            HexSurface::Sea => '#344457',
-            HexSurface::Ocean => '#142e4d',
+            HexSurface::Grass => "url('/tiles/grass.jpg')", // '#0d530e',
+            HexSurface::Plains => "url('/tiles/plains.jpg')", // '#5f723e',
+            HexSurface::Desert => "url('/tiles/desert.jpg')", // '#ada570',
+            HexSurface::Tundra => "url('/tiles/tundra.jpg')", // '#798570',
+            HexSurface::Snow => "url('/tiles/snow.jpg')", // '#9faba8',
+            HexSurface::Rock => "url('/tiles/rock.jpg')", // '#3f423d',
+            HexSurface::Coast => "url('/tiles/coast.jpg')", // '#629099',
+            HexSurface::Sea => "url('/tiles/sea.jpg')", // '#344457',
+            HexSurface::Ocean => "url('/tiles/ocean.jpg')", // '#142e4d',
             default => '#999',
         };
     }

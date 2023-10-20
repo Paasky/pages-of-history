@@ -22,26 +22,32 @@ enum HexFeature:string
      */
     public static function casesForSurface(HexSurface $surface): array
     {
-        switch ($surface) {
-            case HexSurface::Coast:
-                return [null, HexFeature::Shoals, HexFeature::Reef];
-            case HexSurface::Sea:
-                return [null, HexFeature::Reef];
-            case HexSurface::Ocean:
-                return [null];
-            case HexSurface::Desert:
-                return [null, HexFeature::Dunes, HexFeature::Shrubs];
-            case HexSurface::Snow:
-                return [null, HexFeature::Shrubs, HexFeature::Snowdrifts];
-            case HexSurface::Rock:
-                return [null, HexFeature::Shrubs];
-            case HexSurface::Tundra:
-                return [null, HexFeature::Shrubs, HexFeature::LightForest, HexFeature::PineForest];
-            case HexSurface::Plains:
-                return [null, HexFeature::Shrubs, HexFeature::LightForest];
-            case HexSurface::Grass:
-                return [null, HexFeature::Shrubs, HexFeature::LightForest, HexFeature::LushForest, HexFeature::Jungle];
+        return match ($surface) {
+            HexSurface::Coast => [null, HexFeature::Shoals, HexFeature::Reef],
+            HexSurface::Sea => [null, HexFeature::Reef],
+            HexSurface::Ocean => [null],
+            HexSurface::Desert => [null, HexFeature::Dunes, HexFeature::Shrubs],
+            HexSurface::Snow => [null, HexFeature::Shrubs, HexFeature::Snowdrifts],
+            HexSurface::Rock => [null, HexFeature::Shrubs],
+            HexSurface::Tundra => [null, HexFeature::Shrubs, HexFeature::LightForest, HexFeature::PineForest],
+            HexSurface::Plains => [null, HexFeature::Shrubs, HexFeature::LightForest],
+            HexSurface::Grass => [null, HexFeature::Shrubs, HexFeature::LightForest, HexFeature::LushForest, HexFeature::Jungle],
+        };
+    }
 
-        }
+    public function cssBackground(): string
+    {
+        return match ($this) {
+            HexFeature::Shrubs => "url('/tiles/shrubs.png')",
+            HexFeature::LightForest => "url('/tiles/light-forest.png')",
+            HexFeature::LushForest => "url('/tiles/lush-forest.jpg')",
+            HexFeature::PineForest => "url('/tiles/pine-forest.jpg')",
+            HexFeature::Jungle => "url('/tiles/jungle.jpg')",
+            HexFeature::Dunes => "url('/tiles/dunes.jpg')",
+            HexFeature::Snowdrifts => "url('/tiles/snowdrifts.jpg')",
+            HexFeature::Shoals => "url('/tiles/shoals.png')",
+            HexFeature::Reef => "url('/tiles/reef.png')",
+            default => '#999',
+        };
     }
 }
