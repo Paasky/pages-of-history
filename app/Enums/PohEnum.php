@@ -21,4 +21,9 @@ trait PohEnum
     {
         return \Str::kebab($this->name);
     }
+
+    public function translate(): string
+    {
+        return \Str::headline($this->name);
+    }
 }

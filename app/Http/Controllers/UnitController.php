@@ -8,6 +8,13 @@ use App\Models\Unit;
 
 class UnitController extends Controller
 {
+    public function attack(Unit $unit, Hex $to)
+    {
+        $this->authorize('update', $unit);
+        UnitManager::for($unit)->move($to);
+        return response()->json($unit);
+    }
+
     public function move(Unit $unit, Hex $to)
     {
         $this->authorize('update', $unit);

@@ -3,14 +3,17 @@
 namespace App\Managers;
 
 use App\Coordinate;
-use App\Enums\HexFeature;
-use App\Enums\HexSurface;
+use App\Enums\Feature;
+use App\Enums\Surface;
+use App\Enums\Domain;
 use App\Models\Hex;
 use App\Models\Map;
 
 class MapManager
 {
-    public function __construct(private readonly ?Map $map = null)
+    public const MAX_ELEVATION = 12;
+
+    public function __construct(protected readonly Map $map)
     {
     }
 
@@ -24,17 +27,17 @@ class MapManager
         $hexData = [];
         for ($x = 0; $x < $this->map->width; $x++) {
             for ($y = 0; $y < $this->map->height; $y++) {
-                /** @var HexSurface $surface */
-                $surface = \Arr::random(HexSurface::cases());
+                /** @var Surface $surface */
+                $surface = \Arr::random(Surface::cases());
                 $hexData[] = [
                     'map_id' => $this->map->id,
                     'x' => $x,
                     'y' => $y,
                     'surface' => $surface,
-                    'elevation' => $surface->isWater()
+                    'elevation' => $surface->domain()->is(Domain::Water)
                         ? 0
-                        : random_int(1, 12),
-                    'feature' => \Arr::random(HexFeature::casesForSurface($surface)),
+                        : random_int(1, static::MAX_ELEVATION),
+                    'feature' => \Arr::random(Feature::casesForSurface($surface)),
                 ];
             }
         }

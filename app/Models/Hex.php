@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use App\Coordinate;
-use App\Enums\HexFeature;
-use App\Enums\HexSurface;
+use App\Enums\Feature;
+use App\Enums\Surface;
 use App\Managers\MapManager;
 use Database\Factories\HexFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -22,9 +22,9 @@ use Illuminate\Support\Collection;
  * @property int $map_id
  * @property int $x
  * @property int $y
- * @property HexSurface $surface
+ * @property Surface $surface
  * @property int $elevation
- * @property HexFeature|null $feature
+ * @property Feature|null $feature
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Coordinate $coordinate
@@ -46,6 +46,7 @@ use Illuminate\Support\Collection;
  * @method static Builder|Hex whereY($value)
  * @property-read Collection<int, Hex> $adjacent_hexes
  * @property-read string $name
+ * @property-read int $move_cost
  * @mixin \Eloquent
  */
 class Hex extends Model
@@ -54,8 +55,8 @@ class Hex extends Model
     use PohModel;
 
     protected $casts = [
-        'surface' => HexSurface::class,
-        'feature' => HexFeature::class,
+        'surface' => Surface::class,
+        'feature' => Feature::class,
     ];
 
     protected $fillable = [

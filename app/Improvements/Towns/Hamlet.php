@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Improvements\Towns;
+
+use App\Enums\ImprovementCategory;
+use App\Enums\YieldType;
+use App\Improvements\ImprovementType;
+use App\Technologies\Copper\Government;
+use App\Technologies\TechnologyType;
+use App\Yields\YieldModifier;
+use Illuminate\Support\Collection;
+
+class Hamlet extends ImprovementType
+{
+    public function category(): ImprovementCategory
+    {
+        return ImprovementCategory::Towns;
+    }
+
+    public function technology(): ?TechnologyType
+    {
+        return Government::get();
+    }
+
+    public function upgradesTo(): ?ImprovementType
+    {
+        return Village::get();
+    }
+
+    /**
+     * @return Collection<int, YieldModifier>
+     */
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Culture, 0.33),
+            new YieldModifier(YieldType::Gold, 0.33),
+            new YieldModifier(YieldType::Production, 0.33),
+            new YieldModifier(YieldType::Science, 0.33),
+            new YieldModifier(YieldType::Food, -0.66),
+        ]);
+    }
+}

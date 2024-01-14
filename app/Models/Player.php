@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -51,9 +52,24 @@ class Player extends Model
         'color2',
     ];
 
+    public function cities(): HasMany
+    {
+        return $this->hasMany(City::class);
+    }
+
+    public function culture(): HasOne
+    {
+        return $this->hasOne(Culture::class);
+    }
+
     public function map(): BelongsTo
     {
         return $this->belongsTo(Map::class);
+    }
+
+    public function religion(): BelongsTo
+    {
+        return $this->belongsTo(Religion::class);
     }
 
     public function units(): HasMany

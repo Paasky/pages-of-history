@@ -1,6 +1,6 @@
 @php
-    use App\Enums\HexSurface;
-    use App\Enums\HexFeature;
+    use App\Enums\Surface;
+    use App\Enums\Feature;
     use App\Models\Hex;
 @endphp
 
@@ -89,20 +89,20 @@
             transition: 0.1s linear;
         }
 
-        @foreach(HexSurface::cases() as $surface)
+        @foreach(Surface::cases() as $surface)
             .dummy {
         }
 
-        .hex-surface-{{ $surface->cssClass() }}        {
+        .hex-surface-{{ $surface->cssClass() }}           {
             background-image: {!! $surface->cssBackground() !!};
         }
 
         @endforeach
-        @foreach(HexFeature::cases() as $feature)
+        @foreach(Feature::cases() as $feature)
             .dummy {
         }
 
-        .hex-feature-{{ $feature->cssClass() }}        {
+        .hex-feature-{{ $feature->cssClass() }}           {
             background-image: {!! $feature->cssBackground() !!};
         }
         @endforeach

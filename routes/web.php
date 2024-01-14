@@ -26,3 +26,4 @@ Route::view('profile', 'profile')
 require __DIR__ . '/auth.php';
 
 Route::get('/map', \App\Livewire\MapWire::class);
+Route::get('/tech-tree', \App\Livewire\TechTreeWire::class);
