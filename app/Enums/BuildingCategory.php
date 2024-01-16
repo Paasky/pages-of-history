@@ -2,22 +2,28 @@
 
 namespace App\Enums;
 
-enum BuildingCategory: string
+use App\Buildings\BuildingType;
+use App\GameConcept;
+use Illuminate\Support\Collection;
+
+enum BuildingCategory: string implements GameConcept
 {
-    case AirTrade = 'Air Trade';
-    case AirTraining = 'Air Training';
+    use GameConceptEnum;
+
+    case AirTrade = 'AirTrade';
+    case AirTraining = 'AirTraining';
     case Culture = 'Culture';
     case Defense = 'Defense';
     case Food = 'Food';
     case Gold = 'Gold';
     case Happiness = 'Happiness';
     case Health = 'Health';
-    case LandTrade = 'Land Trade';
-    case LandTraining = 'Land Training';
+    case LandTrade = 'LandTrade';
+    case LandTraining = 'LandTraining';
     case Production = 'Production';
     case Faith = 'Religion';
-    case SeaTrade = 'Sea Trade';
-    case SeaTraining = 'Sea Training';
+    case SeaTrade = 'SeaTrade';
+    case SeaTraining = 'SeaTraining';
     case Science = 'Science';
 
     public function icon(): string
@@ -41,14 +47,14 @@ enum BuildingCategory: string
         };
     }
 
-    public function name(): string
+    /**
+     * @return Collection<int, GameConcept>
+     */
+    public function items(): Collection
     {
-        return $this->name;
-    }
-
-    public function shortName(): string
-    {
-        return $this->name;
+        return BuildingType::all()->filter(
+            fn(BuildingType $type) => $type->category() === $this
+        );
     }
 
     public function typeSlug(): string

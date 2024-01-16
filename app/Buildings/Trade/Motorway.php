@@ -4,13 +4,10 @@ namespace App\Buildings\Trade;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Enums\ImprovementCategory;
-use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\Macroeconomics;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
@@ -42,7 +39,7 @@ class Motorway extends BuildingType
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    public function yieldModifiersFors(): Collection
+    public function yieldModifiers(): Collection
     {
         return collect([
 

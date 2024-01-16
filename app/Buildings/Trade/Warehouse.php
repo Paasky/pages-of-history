@@ -32,7 +32,7 @@ class Warehouse extends BuildingType
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    public function yieldModifiersFors(): Collection
+    public function yieldModifiers(): Collection
     {
         return collect([
 

@@ -14,7 +14,7 @@ class Seafaring extends CultureTrait
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    public function yieldModifierFors(): Collection
+    public function yieldModifiersFors(): Collection
     {
         return collect([
             new YieldModifiersFor(

@@ -4,13 +4,11 @@ namespace App\Buildings\Production;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Coal;
 use App\Resources\Strategic\Iron;
 use App\Technologies\Gilded\SteelMilling;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
@@ -42,7 +40,7 @@ class SteelWorks extends BuildingType
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    public function yieldModifiersFors(): Collection
+    public function yieldModifiers(): Collection
     {
         return collect([
 

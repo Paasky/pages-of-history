@@ -4,10 +4,8 @@ namespace App\Buildings\Gold;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Enums\YieldType;
 use App\Technologies\Iron\Bureaucracy;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
@@ -31,7 +29,7 @@ class Governor extends BuildingType
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    public function yieldModifiersFors(): Collection
+    public function yieldModifiers(): Collection
     {
         return collect([
 

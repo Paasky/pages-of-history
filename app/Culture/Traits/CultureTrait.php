@@ -10,5 +10,5 @@ abstract class CultureTrait
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    abstract public function yieldModifierFors(): Collection;
+    abstract public function yieldModifiersFors(): Collection;
 }

@@ -5,6 +5,7 @@ namespace App\Resources;
 use App\AbstractType;
 use App\Enums\ImprovementCategory;
 use App\Enums\ResourceCategory;
+use App\GameConcept;
 use Illuminate\Support\Collection;
 
 abstract class ResourceType extends AbstractType
@@ -23,4 +24,10 @@ abstract class ResourceType extends AbstractType
     abstract public function category(): ResourceCategory;
 
     abstract public function improvementCategory(): ?ImprovementCategory;
+
+    /** @return Collection<int, GameConcept> */
+    public function requires(): Collection
+    {
+        return collect([$this->technology(), $this->improvementCategory()])->filter();
+    }
 }

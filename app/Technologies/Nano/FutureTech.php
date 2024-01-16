@@ -38,7 +38,7 @@ class FutureTech extends TechnologyType
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    public function yieldModifiersFors(): Collection
+    public function yieldModifiers(): Collection
     {
         return collect([
             new YieldModifiersFor(

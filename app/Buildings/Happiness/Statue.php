@@ -4,11 +4,8 @@ namespace App\Buildings\Happiness;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Enums\YieldType;
-use App\Technologies\Bronze\Artisanship;
 use App\Technologies\Bronze\BronzeWorking;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
@@ -32,7 +29,7 @@ class Statue extends BuildingType
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    public function yieldModifiersFors(): Collection
+    public function yieldModifiers(): Collection
     {
         return collect([
 

@@ -4,8 +4,6 @@ namespace App\Improvements;
 
 use App\AbstractType;
 use App\Enums\ImprovementCategory;
-use App\Technologies\TechnologyType;
-use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 abstract class ImprovementType extends AbstractType

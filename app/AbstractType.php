@@ -7,10 +7,9 @@ use App\Improvements\ImprovementType;
 use App\Resources\ResourceType;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
-abstract class AbstractType
+abstract class AbstractType implements GameConcept
 {
     /** @var Collection<int, AbstractType>[] */
     protected static array $all;
@@ -20,6 +19,53 @@ abstract class AbstractType
 
     protected function __construct()
     {
+    }
+
+    /**
+     * @return Collection<int, GameConcept>
+     */
+    public function allows(): Collection
+    {
+        $allows = collect();
+        foreach (BuildingType::all() as $gameConcept) {
+            foreach ($gameConcept->requires() as $require) {
+                if ($require === $this) {
+                    $allows->push($gameConcept);
+                }
+            }
+        }
+        foreach (ImprovementType::all() as $gameConcept) {
+            foreach ($gameConcept->requires() as $require) {
+                if ($require === $this) {
+                    $allows->push($gameConcept);
+                }
+            }
+        }
+        foreach (ResourceType::all() as $gameConcept) {
+            foreach ($gameConcept->requires() as $require) {
+                if ($require === $this) {
+                    $allows->push($gameConcept);
+                }
+            }
+        }
+        foreach (TechnologyType::all() as $gameConcept) {
+            foreach ($gameConcept->requires() as $require) {
+                if ($require === $this) {
+                    $allows->push($gameConcept);
+                }
+            }
+        }
+        return $allows;
+    }
+
+    public function dataForInit(): array
+    {
+        return ['class' => get_class($this), 'id' => null];
+    }
+
+    public function hasDetails(): bool
+    {
+        return true;
     }
 
     /**
@@ -38,6 +84,14 @@ abstract class AbstractType
         return static::$all[$path];
     }
 
+    /**
+     * @return Collection<int, GameConcept>
+     */
+    public function items(): Collection
+    {
+        return collect();
+    }
+
     public static function get(): static
     {
         if (!isset(self::$singletons[static::class])) {
@@ -45,8 +99,6 @@ abstract class AbstractType
         }
         return self::$singletons[static::class];
     }
-
-    abstract public function icon(): string;
 
     public function name(): string
     {
@@ -73,6 +125,14 @@ abstract class AbstractType
         return \Str::kebab(class_basename($this));
     }
 
+    /** @return Collection<int, GameConcept> */
+    public function requires(): Collection
+    {
+        return $this->technology()
+            ? collect([$this->technology()])
+            : collect();
+    }
+
     public function technology(): ?TechnologyType
     {
         return null;
@@ -94,12 +154,9 @@ abstract class AbstractType
         };
     }
 
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiersFors(): Collection
+    public function typeName(): string
     {
-        return collect();
+        return \Str::title($this->typeSlug());
     }
 
     /**

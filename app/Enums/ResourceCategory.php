@@ -2,8 +2,14 @@
 
 namespace App\Enums;
 
-enum ResourceCategory: string
+use App\GameConcept;
+use App\Resources\ResourceType;
+use Illuminate\Support\Collection;
+
+enum ResourceCategory: string implements GameConcept
 {
+    use GameConceptEnum;
+
     case Bonus = 'Bonus';
     case Luxury = 'Luxury';
     case Strategic = 'Strategic';
@@ -19,14 +25,14 @@ enum ResourceCategory: string
         };
     }
 
-    public function name(): string
+    /**
+     * @return Collection<int, GameConcept>
+     */
+    public function items(): Collection
     {
-        return $this->name;
-    }
-
-    public function shortName(): string
-    {
-        return $this->name;
+        return ResourceType::all()->filter(
+            fn(ResourceType $type) => $type->category() === $this
+        );
     }
 
     public function typeSlug(): string

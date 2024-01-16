@@ -2,8 +2,14 @@
 
 namespace App\Enums;
 
-enum ImprovementCategory: string
+use App\GameConcept;
+use App\Improvements\ImprovementType;
+use Illuminate\Support\Collection;
+
+enum ImprovementCategory: string implements GameConcept
 {
+    use GameConceptEnum;
+
     case Camps = 'Camps';
     case Cities = 'Cities';
     case Farms = 'Farms';
@@ -31,16 +37,15 @@ enum ImprovementCategory: string
         };
     }
 
-    public function name(): string
+    /**
+     * @return Collection<int, GameConcept>
+     */
+    public function items(): Collection
     {
-        return $this->name;
+        return ImprovementType::all()->filter(
+            fn(ImprovementType $type) => $type->category() === $this
+        );
     }
-
-    public function shortName(): string
-    {
-        return $this->name;
-    }
-
 
     public function typeSlug(): string
     {

@@ -4,12 +4,10 @@ namespace App\Buildings\Happiness;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Gas;
 use App\Technologies\Industrial\CoalGasification;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
@@ -41,7 +39,7 @@ class StreetLighting extends BuildingType
     /**
      * @return Collection<int, YieldModifiersFor>
      */
-    public function yieldModifiersFors(): Collection
+    public function yieldModifiers(): Collection
     {
         return collect([
 

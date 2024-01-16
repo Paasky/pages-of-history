@@ -4,9 +4,8 @@ namespace App\Buildings;
 
 use App\AbstractType;
 use App\Enums\BuildingCategory;
+use App\GameConcept;
 use App\Resources\ResourceType;
-use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
 abstract class BuildingType extends AbstractType
@@ -27,6 +26,15 @@ abstract class BuildingType extends AbstractType
     public function icon(): string
     {
         return $this->category()->icon();
+    }
+
+    /** @return Collection<int, GameConcept> */
+    public function requires(): Collection
+    {
+        return collect([
+            $this->technology(),
+            ... $this->resources()
+        ])->filter()->values();
     }
 
     /**

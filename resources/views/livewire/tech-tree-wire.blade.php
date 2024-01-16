@@ -1,3 +1,6 @@
+@php
+    use \App\Technologies\TechTree;
+@endphp
 <div id="tech-tree-wire">
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -19,8 +22,8 @@
             background-color: #fff2d7;
             border-radius: 10px;
             position: relative;
-            width: {{ $techTree::widthEm() }}em;
-            height: {{ $techTree::heightEm() }}em;
+            width: {{ TechTree::widthEm() }}em;
+            height: {{ TechTree::heightEm() }}em;
         }
 
         #tech-tree-arrows {
@@ -34,7 +37,7 @@
             display: inline-block;
             background: #e3dfc8;
             position: absolute;
-            top: {{ $techTree::$eraTopPadding }}em;
+            top: {{ TechTree::$eraTopPadding }}em;
             border-radius: 10px;
         }
 
@@ -48,8 +51,8 @@
             display: inline-block;
             position: absolute;
             border-radius: 5px;
-            width: {{ $techTree::$techWidth }}em;
-            height: {{ $techTree::$techHeight }}em;
+            width: {{ TechTree::$techWidth }}em;
+            height: {{ TechTree::$techHeight }}em;
             background: #fff;
             white-space: nowrap;
         }
@@ -83,28 +86,28 @@
             border-radius: 3px;
         }
 
-        .tag-building {
+        .building {
             background: rgb(233, 233, 233);
         }
 
-        .tag-era {
+        .era {
             background: #444;
             color: #fff;
         }
 
-        .tag-improvement {
+        .improvement {
             background: rgb(233 255 233);
         }
 
-        .tag-resource {
+        .resource {
             background: rgb(255, 255, 211);
         }
 
-        .tag-technology {
+        .technology {
             background: rgb(233, 233, 255);
         }
 
-        .tag-unit {
+        .unit {
             background: rgb(255, 233, 233);
         }
 
@@ -159,19 +162,19 @@
         }
     </style>
 
-    <div id="tech-tree" width="{{ $techTree::widthEm() }}em">
+    <div id="tech-tree" width="{{ TechTree::widthEm() }}em">
         <div id="tech-tree-eras">
-            @foreach($techTree::techs()->groupBy(fn (\App\Technologies\TechnologyType $tech) => $tech->era()->name) as $era => $eraTechs)
+            @foreach(TechTree::techs()->groupBy(fn (\App\Technologies\TechnologyType $tech) => $tech->era()->name) as $era => $eraTechs)
                 @php
                     $era = \App\Enums\TechnologyEra::from($era);
-                    [$eraLeft, $eraWidth] = $techTree::eraLeftAndWidthEm($eraTechs);
+                    [$eraLeft, $eraWidth] = TechTree::eraLeftAndWidthEm($eraTechs);
                 @endphp
                 <div id="era-{{ $era->slug() }}" class="tech-tree-era"
                      style="left: {{ $eraLeft }}em;
                                 width: {{ $eraWidth }}em;
-                                height: {{ $techTree::eraHeightEm() }}em;"
+                                height: {{ TechTree::eraHeightEm() }}em;"
                 >
-                    <div class="tech-tree-era-title tag-era">{{ $era->name() }}</div>
+                    <div class="tech-tree-era-title era">{{ $era->name() }}</div>
                 </div>
             @endforeach
         </div>
@@ -179,28 +182,25 @@
         <div id="tech-tree-arrows"></div>
 
         <div id="tech-tree-techs">
-            @foreach($techTree::techs() as $tech)
+            @foreach(TechTree::techs() as $tech)
                 <div id="tech-{{ $tech->slug() }}"
                      class="tech clickable"
-                     style="left: {{ $techTree::techLeftEm($tech) }}em;
-                                top: {{ $techTree::techTopEm($tech) }}em;"
+                     style="left: {{ TechTree::techLeftEm($tech) }}em;
+                                top: {{ TechTree::techTopEm($tech) }}em;"
                 >
                     <div class="title tag-technology">
                         {{ $tech->name() }} ({{ $tech->cost() }})
                     </div>
                     <div class="tech-details">
-                        @foreach($tech->buildings() as $building)
-                            <livewire:type-tag-wire :instance="$building"/>
+                        @foreach($tech->allows()->filter(fn(\App\GameConcept $allow) => !$allow instanceof \App\Technologies\TechnologyType) as $gameConcept)
+                            @include('components.game-concept-tag', ['gameConcept' => $gameConcept, 'showFullName' => false])
                         @endforeach
-                        @foreach($tech->improvements() as $improvement)
-                            <livewire:type-tag-wire :instance="$improvement"/>
-                        @endforeach
-                        @foreach($tech->resources() as $resource)
-                            <livewire:type-tag-wire :instance="$resource"/>
-                        @endforeach
-                        @foreach($tech->yieldModifiersFors() as $yieldModifierFor)
-                            <livewire:yield-modifier-for-wire :yield-modifier-for="$yieldModifierFor"
-                                                              :show-yield-name="false">
+                        @foreach($tech->yieldModifiers() as $yieldModifier)
+                            @if($yieldModifier instanceof \App\Yields\YieldModifier)
+                                @include('components.yield-modifier', ['yieldModifier' => $yieldModifier])
+                            @else
+                                @include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier])
+                            @endif
                         @endforeach
                     </div>
                 </div>
@@ -209,7 +209,7 @@
     </div>
 
     <script>
-        @foreach($techTree::techs() as $tech)
+        @foreach(TechTree::techs() as $tech)
         @foreach($tech->requires() as $requireTech)
 
         new LeaderLine(
@@ -228,6 +228,7 @@
         @endforeach
         @endforeach
 
+        // Move lines from body into the tech tree
         const containerRect = document.getElementById('tech-tree-wire').getBoundingClientRect();
         const techArrows = document.getElementById('tech-tree-arrows');
         techArrows.style.left = '-' + containerRect.left + 'px';
@@ -236,4 +237,5 @@
             techArrows.appendChild(line);
         }
     </script>
+    <livewire:game-concepts-wire/>
 </div>
