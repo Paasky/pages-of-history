@@ -21,7 +21,7 @@ class MetalAlloys extends TechnologyType
     {
         return collect([
             Electronics::get(),
-            HydraulicEngineering::get(),
+            HydroEngineering::get(),
         ]);
     }
 

@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->foreignIdFor(Map::class)->constrained();
             $table->foreignIdFor(Player::class)->constrained();
             $table->string('type')->index();
-            $table->string('weapon')->index()->nullable();
+            $table->string('equipment')->index()->nullable();
             $table->string('armor')->index()->nullable();
             $table->integer('health')->default(100);
             $table->float('moves_remaining', 3, 1)->default(0);

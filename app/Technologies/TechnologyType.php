@@ -22,9 +22,9 @@ abstract class TechnologyType extends AbstractType
         );
     }
 
-    public function category(): ?GameConcept
+    public function category(): GameConcept
     {
-        return null;
+        return $this->era();
     }
 
     public function cost(): int

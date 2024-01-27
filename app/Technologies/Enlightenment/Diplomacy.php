@@ -20,7 +20,7 @@ class Diplomacy extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            RoyalCharter::get(),
+            Corporation::get(),
         ]);
     }
 

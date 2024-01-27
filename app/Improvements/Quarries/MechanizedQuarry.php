@@ -5,7 +5,7 @@ namespace App\Improvements\Quarries;
 use App\Enums\ImprovementCategory;
 use App\Enums\YieldType;
 use App\Improvements\ImprovementType;
-use App\Technologies\Modern\HydraulicEngineering;
+use App\Technologies\Modern\HydroEngineering;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
@@ -19,7 +19,7 @@ class MechanizedQuarry extends ImprovementType
 
     public function technology(): ?TechnologyType
     {
-        return HydraulicEngineering::get();
+        return HydroEngineering::get();
     }
 
     public function upgradesTo(): ?ImprovementType

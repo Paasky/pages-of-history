@@ -21,6 +21,7 @@ class FiberOptics extends TechnologyType
     {
         return collect([
             Globalization::get(),
+            SatellitePositioning::get(),
             Stealth::get(),
         ]);
     }

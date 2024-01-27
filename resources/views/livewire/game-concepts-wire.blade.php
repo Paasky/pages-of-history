@@ -69,8 +69,11 @@
         }
 
         #game-concepts-content {
+            float: right;
+            max-height: 90%;
             max-width: 70%;
             padding-right: 5%;
+            overflow-y: scroll;
         }
 
         .close {
@@ -97,10 +100,6 @@
             float: left;
         }
 
-        #game-concepts-content {
-            float: right;
-        }
-
         #game-concepts-content h2 {
             float: left;
             width: 100%;
@@ -119,6 +118,16 @@
             <div class="clickable close" @click="show=false"><i class="fa fa-x"></i></div>
         </div>
         <div id="game-concepts-index">
+            @include('components.game-concepts-section', [
+                'gameConcepts' => \App\Enums\UnitArmorCategory::cases(),
+                 'title' => __('Armor Categories'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => \App\UnitArmor\UnitArmorType::all()->sortBy(fn (\App\GameConcept $b) => $b->name()),
+                 'title' => __('Armor'),
+            ])
+
             @include('components.game-concepts-section', [
                 'gameConcepts' => \App\Enums\BuildingCategory::cases(),
                  'title' => __('Building Categories'),
@@ -140,6 +149,16 @@
             ])
 
             @include('components.game-concepts-section', [
+                'gameConcepts' => \App\Enums\UnitPlatformCategory::cases(),
+                 'title' => __('Platform Categories'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => \App\UnitPlatforms\UnitPlatformType::all()->sortBy(fn (\App\GameConcept $b) => $b->name()),
+                 'title' => __('Platforms'),
+            ])
+
+            @include('components.game-concepts-section', [
                 'gameConcepts' => \App\Enums\ResourceCategory::cases(),
                  'title' => __('Resource Categories'),
             ])
@@ -150,8 +169,23 @@
             ])
 
             @include('components.game-concepts-section', [
+                'gameConcepts' => \App\Enums\TechnologyEra::cases(),
+                 'title' => __('Eras'),
+            ])
+
+            @include('components.game-concepts-section', [
                 'gameConcepts' => \App\Technologies\TechnologyType::all()->sortBy(fn (\App\GameConcept $b) => $b->name()),
                  'title' => __('Technologies'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => \App\Enums\UnitEquipmentCategory::cases(),
+                 'title' => __('Equipment Categories'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => \App\UnitEquipment\UnitEquipmentType::all()->sortBy(fn (\App\GameConcept $b) => $b->name()),
+                 'title' => __('Equipment'),
             ])
         </div>
         <div id="game-concepts-content">
@@ -190,11 +224,7 @@
                             @if($yieldModifier instanceof \App\Yields\YieldModifier)
                                 @include('components.yield-modifier', ['yieldModifier' => $yieldModifier])
                             @else
-                                @include('components.yield-modifier-for', [
-                                    'yieldModifiersFor' => $yieldModifier,
-                                    'showForName' => true,
-                                    'showYieldName' => true,
-                                ])
+                                    @include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier])
                             @endif
                         @endforeach
                     @endif
@@ -219,6 +249,18 @@
                             @include('components.game-concept-tag', ['gameConcept' => $item])
                         @endforeach
                     @endif
+
+                        @if($current->upgradesTo())
+                            <h3>Upgrades To</h3>
+                            @include('components.game-concept-tag', ['gameConcept' => $current->upgradesTo()])
+                        @endif
+
+                        @if($current->upgradesFrom()->isNotEmpty())
+                            <h3>Upgrades From</h3>
+                            @foreach($current->upgradesFrom() as $item)
+                                @include('components.game-concept-tag', ['gameConcept' => $item])
+                            @endforeach
+                        @endif
                 </div>
             @else
                 <h2>No Game Concept Selected</h2>

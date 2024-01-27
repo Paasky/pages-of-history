@@ -12,10 +12,9 @@ use Illuminate\Support\Collection;
  */
 trait GameConceptEnum
 {
+    use PohEnum;
 
-    /**
-     * @return Collection<int, GameConcept>
-     */
+    /** @return Collection<int, GameConcept> */
     public function allows(): Collection
     {
         return collect();
@@ -23,7 +22,7 @@ trait GameConceptEnum
 
     public function dataForInit(): array
     {
-        return ['class' => get_class($this), 'id' => $this->value];
+        return ['class' => str_replace('\\', '\\\\', get_class($this)), 'id' => $this->value];
     }
 
     public function category(): ?GameConcept
@@ -60,6 +59,17 @@ trait GameConceptEnum
     public function typeName(): string
     {
         return \Str::title(str_replace('-', ' ', $this->typeSlug()));
+    }
+
+    /** @return Collection<int, GameConcept> */
+    public function upgradesFrom(): Collection
+    {
+        return collect();
+    }
+
+    public function upgradesTo(): ?GameConcept
+    {
+        return null;
     }
 
     /** @return Collection<int, YieldModifier|YieldModifiersFor> */

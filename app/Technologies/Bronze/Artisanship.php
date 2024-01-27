@@ -21,7 +21,7 @@ class Artisanship extends TechnologyType
     {
         return collect([
             Masonry::get(),
-            Calendar::get(),
+            Writing::get(),
         ]);
     }
 

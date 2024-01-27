@@ -21,12 +21,13 @@ class Writing extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            Government::get()
+            BronzeWorking::get(),
+            Calendar::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(5, 8);
+        return new Coordinate(6, 7);
     }
 }

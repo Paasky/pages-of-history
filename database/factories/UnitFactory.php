@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Enums\ArmorType;
+use App\Enums\UnitArmorCategory;
 use App\Enums\UnitType;
-use App\Enums\WeaponType;
+use App\Enums\UnitEquipmentCategory;
 use App\Models\Map;
 use App\Models\Player;
 use App\Models\Unit;

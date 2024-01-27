@@ -21,7 +21,7 @@ class CompositeBow extends TechnologyType
     {
         return collect([
             DramaAndPoetry::get(),
-            Engineering::get(),
+            Philosophy::get(),
         ]);
     }
 

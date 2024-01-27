@@ -13,6 +13,12 @@ interface GameConcept
 
     public function category(): ?GameConcept;
 
+    /**
+     * #[ArrayShape(["class" => "string", "id" => "null", "string", "int"])
+     * @return array
+     */
+    public function dataForInit(): array;
+
     public function hasDetails(): bool;
 
     public function icon(): string;
@@ -33,11 +39,10 @@ interface GameConcept
 
     public function typeSlug(): string;
 
-    /**
-     * #[ArrayShape(["class" => "string", "id" => "null", "string", "int"])
-     * @return array
-     */
-    public function dataForInit(): array;
+    /** @return Collection<int, GameConcept> */
+    public function upgradesFrom(): Collection;
+
+    public function upgradesTo(): ?GameConcept;
 
     /** @return Collection<int, YieldModifier|YieldModifiersFor> */
     public function yieldModifiers(): Collection;

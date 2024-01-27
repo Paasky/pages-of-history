@@ -21,8 +21,8 @@ class CelestialNavigation extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            Writing::get(),
             Sailing::get(),
+            Calendar::get(),
         ]);
     }
 

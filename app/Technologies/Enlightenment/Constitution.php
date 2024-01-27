@@ -21,7 +21,7 @@ class Constitution extends TechnologyType
     {
         return collect([
             Liberalism::get(),
-            Corporation::get(),
+            RoyalCharter::get(),
         ]);
     }
 

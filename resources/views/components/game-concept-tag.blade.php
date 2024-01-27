@@ -4,10 +4,10 @@
     /** @var bool|null $showFullName */
     /** @var string|null $prepend */
     /** @var string|null $append */
+    $dataForInit = $gameConcept->dataForInit();
+    $onClick = "@click.stop=\"\$dispatch('show-game-concept', {class: '{$dataForInit['class']}', id: '{$dataForInit['id']}'})\"";
 @endphp
-<span class="tag {{ $gameConcept->typeSlug() }} clickable"
-      @click.stop="$dispatch('show-game-concept', {{ json_encode($gameConcept->dataForInit()) }})"
->
+<span class="tag {{ $gameConcept->typeSlug() }} clickable" {!! $onClick !!}>
     {{ $prepend ?? '' }}
     @if($gameConcept->icon())
         <i class="fa-solid {{ $gameConcept->icon() }}"></i>

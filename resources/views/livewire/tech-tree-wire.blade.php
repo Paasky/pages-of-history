@@ -1,5 +1,6 @@
 @php
     use \App\Technologies\TechTree;
+    use App\Enums\TechnologyEra;
 @endphp
 <div id="tech-tree-wire">
     <!-- Fonts -->
@@ -86,29 +87,37 @@
             border-radius: 3px;
         }
 
-        .building {
-            background: rgb(233, 233, 233);
+        .armor {
+            background: rgb(233 233 233);
         }
 
-        .era {
-            background: #444;
-            color: #fff;
+        .building {
+            background: rgb(233, 233, 255);
         }
 
         .improvement {
             background: rgb(233 255 233);
         }
 
+        .equipment {
+            background: rgb(255, 233, 233);
+        }
+
         .resource {
             background: rgb(255, 255, 211);
         }
 
-        .technology {
-            background: rgb(233, 233, 255);
+        .platform {
+            background: rgb(211, 255, 255);
         }
 
-        .unit {
-            background: rgb(255, 233, 233);
+        .technology {
+            background: rgb(255, 255, 255);
+        }
+
+        .era {
+            background: #444;
+            color: #fff;
         }
 
         .yield-modifier {
@@ -164,10 +173,9 @@
 
     <div id="tech-tree" width="{{ TechTree::widthEm() }}em">
         <div id="tech-tree-eras">
-            @foreach(TechTree::techs()->groupBy(fn (\App\Technologies\TechnologyType $tech) => $tech->era()->name) as $era => $eraTechs)
+            @foreach(TechnologyEra::cases() as $era)
                 @php
-                    $era = \App\Enums\TechnologyEra::from($era);
-                    [$eraLeft, $eraWidth] = TechTree::eraLeftAndWidthEm($eraTechs);
+                    [$eraLeft, $eraWidth] = TechTree::eraLeftAndWidthEm($era->technologies());
                 @endphp
                 <div id="era-{{ $era->slug() }}" class="tech-tree-era"
                      style="left: {{ $eraLeft }}em;
@@ -185,6 +193,7 @@
             @foreach(TechTree::techs() as $tech)
                 <div id="tech-{{ $tech->slug() }}"
                      class="tech clickable"
+                     @click.stop="$dispatch('show-game-concept', {{ json_encode($tech->dataForInit()) }})"
                      style="left: {{ TechTree::techLeftEm($tech) }}em;
                                 top: {{ TechTree::techTopEm($tech) }}em;"
                 >
@@ -199,7 +208,7 @@
                             @if($yieldModifier instanceof \App\Yields\YieldModifier)
                                 @include('components.yield-modifier', ['yieldModifier' => $yieldModifier])
                             @else
-                                @include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier])
+                                    @include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier, 'showYieldName' => false])
                             @endif
                         @endforeach
                     </div>

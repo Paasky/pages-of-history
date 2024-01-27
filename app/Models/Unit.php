@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\Armor;
 use App\Enums\UnitType;
 use App\Enums\Weapon;
-use App\Enums\WeaponType;
+use App\Enums\UnitEquipmentCategory;
 use App\Managers\UnitManager;
 use Database\Factories\UnitFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -171,7 +171,7 @@ class Unit extends Model
         'Bronze Sword Infantry' => 'Swordsman',
         'Iron Sword Infantry' => 'Light Legionary',
         'Steel Sword Infantry' => 'Longswordsman',
-        'Arquebus Infantry' => 'Arquebusier',
+        'Rapier Infantry' => 'Arquebusier',
         'Musket Infantry' => 'Musketeer',
         'Rifle Musket Infantry' => 'Rifleman',
         'Repeating Rifle Infantry' => 'Infantry',
@@ -196,7 +196,7 @@ class Unit extends Model
         'Steel Sword Heavy Infantry' => 'Longswordsman',
         'Chainmail Steel Sword Heavy Infantry' => 'Chainmail Foot Knight',
         'Plated Steel Sword Heavy Infantry' => 'Plated Foot Knight',
-        'Arquebus Heavy Infantry' => 'Arquebusier',
+        'Rapier Heavy Infantry' => 'Arquebusier',
         'Musket Heavy Infantry' => 'Musketeer',
         'Rifle Musket Heavy Infantry' => 'Rifleman',
         'Repeating Rifle Heavy Infantry' => 'Infantry',
@@ -225,7 +225,7 @@ class Unit extends Model
         'Mounted Steel Sword' => 'Horse Longswordsman',
         'Chainmail Mounted Steel Sword' => 'Chainmail Horse Knight',
         'Plated Mounted Steel Sword' => 'Plated Horse Knight',
-        'Mounted Arquebus' => 'Harquebusier',
+        'Mounted Rapier' => 'Harquebusier',
         'Mounted Musket' => 'Dragoon',
         'Plated Mounted Musket' => 'Cuirassier',
         'Mounted Rifle Musket' => 'Cavalry',

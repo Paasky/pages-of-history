@@ -19,11 +19,7 @@
         @if($yieldModifier instanceof \App\Yields\YieldModifier)
             @include('components.yield-modifier', ['yieldModifier' => $yieldModifier])
         @else
-            @include('components.yield-modifier-for', [
-                'yieldModifiersFor' => $yieldModifier,
-                'showForName' => true,
-                'showYieldName' => true,
-            ])
+            @include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier])
         @endif
     @endforeach
     @foreach($gameConcept->allows() as $required)
@@ -33,6 +29,9 @@
             'prepend' => __('Allows'),
         ])
     @endforeach
+    @if($gameConcept->allows()->isNotEmpty() & $gameConcept->requires()->isNotEmpty())
+        <hr/>
+    @endif
     @foreach($gameConcept->requires() as $required)
         @include('components.game-concept-tag', [
             'gameConcept' => $required,

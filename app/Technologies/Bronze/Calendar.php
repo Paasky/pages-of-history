@@ -4,6 +4,7 @@ namespace App\Technologies\Bronze;
 
 use App\Coordinate;
 use App\Enums\TechnologyEra;
+use App\Technologies\Copper\Government;
 use App\Technologies\TechnologyType;
 use Illuminate\Support\Collection;
 
@@ -20,13 +21,12 @@ class Calendar extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            BronzeWorking::get(),
-            Writing::get(),
+            Government::get()
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(6, 7);
+        return new Coordinate(5, 8);
     }
 }

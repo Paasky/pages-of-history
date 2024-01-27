@@ -12,7 +12,7 @@ class Tin extends ResourceType
 {
     public function icon(): string
     {
-        return 'fa-trash-can';
+        return 'fa-t';
     }
 
     public function category(): ResourceCategory

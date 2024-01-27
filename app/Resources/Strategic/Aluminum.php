@@ -12,7 +12,7 @@ class Aluminum extends ResourceType
 {
     public function icon(): string
     {
-        return 'fa-a';
+        return 'fa-trash-can';
     }
 
     public function category(): ResourceCategory

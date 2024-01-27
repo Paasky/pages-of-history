@@ -6,6 +6,9 @@ use App\Buildings\BuildingType;
 use App\Improvements\ImprovementType;
 use App\Resources\ResourceType;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\UnitArmorType;
+use App\UnitEquipment\UnitEquipmentType;
+use App\UnitPlatforms\UnitPlatformType;
 use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
@@ -48,6 +51,27 @@ abstract class AbstractType implements GameConcept
                 }
             }
         }
+        foreach (UnitPlatformType::all() as $gameConcept) {
+            foreach ($gameConcept->requires() as $require) {
+                if ($require === $this) {
+                    $allows->push($gameConcept);
+                }
+            }
+        }
+        foreach (UnitArmorType::all() as $gameConcept) {
+            foreach ($gameConcept->requires() as $require) {
+                if ($require === $this) {
+                    $allows->push($gameConcept);
+                }
+            }
+        }
+        foreach (UnitEquipmentType::all() as $gameConcept) {
+            foreach ($gameConcept->requires() as $require) {
+                if ($require === $this) {
+                    $allows->push($gameConcept);
+                }
+            }
+        }
         foreach (TechnologyType::all() as $gameConcept) {
             foreach ($gameConcept->requires() as $require) {
                 if ($require === $this) {
@@ -58,9 +82,11 @@ abstract class AbstractType implements GameConcept
         return $allows;
     }
 
+    abstract public function category(): GameConcept;
+
     public function dataForInit(): array
     {
-        return ['class' => get_class($this), 'id' => null];
+        return ['class' => str_replace('\\', '\\\\', get_class($this)), 'id' => null];
     }
 
     public function hasDetails(): bool
@@ -110,6 +136,9 @@ abstract class AbstractType implements GameConcept
         $words = explode('-', $this->slug());
         $words = array_map(
             function (string $word) use ($words) {
+                if (count($words) === 1 && strlen($word) > 10) {
+                    $word = substr($word, 0, 8) . '.';
+                }
                 if (count($words) > 1 && strlen($word) > 6) {
                     $word = substr($word, 0, 4) . '.';
                 }
@@ -140,23 +169,23 @@ abstract class AbstractType implements GameConcept
 
     public function typeSlug(): string
     {
-        return match (true) {
-            $this instanceof BuildingType => 'building',
-            $this instanceof ImprovementType => 'improvement',
-            $this instanceof ResourceType => 'resource',
-            $this instanceof TechnologyType => 'technology',
-            default => throw new \Exception(implode(' ', [
-                'Register',
-                get_class($this),
-                'to',
-                __CLASS__ . '->' . __FUNCTION__ . '()'
-            ])),
-        };
+        return $this->category()->typeSlug();
     }
 
     public function typeName(): string
     {
         return \Str::title($this->typeSlug());
+    }
+
+    /** @return Collection<int, GameConcept> */
+    public function upgradesFrom(): Collection
+    {
+        return collect();
+    }
+
+    public function upgradesTo(): ?GameConcept
+    {
+        return null;
     }
 
     /**

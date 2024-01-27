@@ -20,8 +20,8 @@ class ScientificTheory extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            Corporation::get(),
             RoyalCharter::get(),
+            Corporation::get(),
         ]);
     }
 

@@ -20,7 +20,7 @@ class Rocketry extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            HydraulicEngineering::get(),
+            HydroEngineering::get(),
             Militarism::get(),
         ]);
     }

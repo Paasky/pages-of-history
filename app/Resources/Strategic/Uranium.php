@@ -12,7 +12,7 @@ class Uranium extends ResourceType
 {
     public function icon(): string
     {
-        return 'fa-circle-radiation';
+        return 'fa-atom';
     }
 
     public function category(): ResourceCategory

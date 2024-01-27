@@ -21,7 +21,7 @@ class QuantumComputing extends TechnologyType
     {
         return collect([
             PrivateSpaceFlight::get(),
-            LargeLanguageModel::get(),
+            MachineLearning::get(),
         ]);
     }
 

@@ -2,8 +2,14 @@
 
 namespace App\Enums;
 
-enum TechnologyEra: string
+use App\GameConcept;
+use App\Technologies\TechnologyType;
+use Illuminate\Support\Collection;
+
+enum TechnologyEra: string implements GameConcept
 {
+    use GameConceptEnum;
+
     case Neolithic = 'Neolithic';
     case Copper = 'Copper';
     case Bronze = 'Bronze';
@@ -29,5 +35,31 @@ enum TechnologyEra: string
     public function slug(): string
     {
         return \Str::kebab($this->name);
+    }
+
+    /**
+     * @return Collection<int, TechnologyType>
+     */
+    public function technologies(): Collection
+    {
+        return TechnologyType::all()->filter(fn(TechnologyType $type) => $type->era() === $this);
+    }
+
+    public function icon(): string
+    {
+        return YieldType::Science->icon();
+    }
+
+    /** @return Collection<int, GameConcept> */
+    public function items(): Collection
+    {
+        return TechnologyType::all()->filter(
+            fn(TechnologyType $type) => $type->era() === $this
+        );
+    }
+
+    public function typeSlug(): string
+    {
+        return 'technology';
     }
 }

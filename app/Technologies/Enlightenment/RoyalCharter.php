@@ -20,13 +20,13 @@ class RoyalCharter extends TechnologyType
     public function requires(): Collection
     {
         return collect([
+            Navigation::get(),
             Metallurgy::get(),
-            Economics::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(29, 6);
+        return new Coordinate(29, 4);
     }
 }

@@ -20,8 +20,8 @@ class ArchBuilding extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            Engineering::get(),
             Philosophy::get(),
+            Engineering::get(),
         ]);
     }
 

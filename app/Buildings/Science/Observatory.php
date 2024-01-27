@@ -6,6 +6,7 @@ use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Enums\ImprovementCategory;
 use App\Enums\YieldType;
+use App\Technologies\Renaissance\Astronomy;
 use App\Technologies\Renaissance\Perspective;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
@@ -21,7 +22,7 @@ class Observatory extends BuildingType
 
     public function technology(): ?TechnologyType
     {
-        return Perspective::get();
+        return Astronomy::get();
     }
 
     public function upgradesTo(): ?BuildingType
