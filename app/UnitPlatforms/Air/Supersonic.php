@@ -2,15 +2,15 @@
 
 namespace App\UnitPlatforms\Air;
 
-use App\UnitArmor\Air\ChaffFlare;
-use App\UnitArmor\Air\SealingTanks;
-use App\UnitArmor\UnitArmorType;
 use App\Enums\UnitPlatformCategory;
-use App\UnitPlatforms\UnitPlatformType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\OrbitalBallistics;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\Air\ChaffFlare;
+use App\UnitArmor\Air\SealingTanks;
+use App\UnitArmor\NoArmor;
+use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\AirGun\AirGuidedMissile;
 use App\UnitEquipment\AirGun\AirHomingMissile;
 use App\UnitEquipment\AirGun\AirMachineGun;
@@ -21,6 +21,7 @@ use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\MassDestruction\HydrogenBomb;
 use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\UnitEquipmentType;
+use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
 
 class Supersonic extends UnitPlatformType
@@ -36,6 +37,8 @@ class Supersonic extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
+
             SealingTanks::get(),
             ChaffFlare::get(),
         ]);

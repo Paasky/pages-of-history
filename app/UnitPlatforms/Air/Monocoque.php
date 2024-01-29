@@ -2,14 +2,14 @@
 
 namespace App\UnitPlatforms\Air;
 
-use App\UnitArmor\Air\SealingTanks;
-use App\UnitArmor\UnitArmorType;
 use App\Enums\UnitPlatformCategory;
-use App\UnitPlatforms\UnitPlatformType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Modern\MetalAlloys;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\Air\SealingTanks;
+use App\UnitArmor\NoArmor;
+use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\AirGun\AirHomingMissile;
 use App\UnitEquipment\AirGun\AirMachineGun;
 use App\UnitEquipment\Bomb\HeavyBomb;
@@ -18,6 +18,7 @@ use App\UnitEquipment\MassDestruction\AtomBomb;
 use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\MassDestruction\HydrogenBomb;
 use App\UnitEquipment\UnitEquipmentType;
+use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
 
 class Monocoque extends UnitPlatformType
@@ -33,6 +34,8 @@ class Monocoque extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
+
             SealingTanks::get(),
         ]);
     }

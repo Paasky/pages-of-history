@@ -1,5 +1,7 @@
 @props([
     'name',
+    'title',
+    'icon',
     'show' => false,
     'maxWidth' => '2xl'
 ])
@@ -11,6 +13,12 @@
         'lg' => 'sm:max-w-lg',
         'xl' => 'sm:max-w-xl',
         '2xl' => 'sm:max-w-2xl',
+        '3xl' => 'sm:max-w-3xl',
+        '4xl' => 'sm:max-w-4xl',
+        '5xl' => 'sm:max-w-5xl',
+        '6xl' => 'sm:max-w-6xl',
+        '7xl' => 'sm:max-w-7xl',
+        '8xl' => 'sm:max-w-8xl',
     ][$maxWidth];
 @endphp
 
@@ -72,6 +80,21 @@
         x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
         x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
     >
+        <div class="text-lg bg-gray-800 dark:bg-gray-500 ">
+            <div class="p-2 pl-4 relative">
+                @if($icon)
+                    <i class="fa {{$icon}} mr-2"></i>
+                @endif
+                @if($title)
+                    {{ $title }}
+                @endif
+                <div class="absolute top-0 right-0 bg-red-500 pt-2 pb-2 px-4 clickable"
+                     x-on:click="show = false"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </div>
+            </div>
+        </div>
         {{ $slot }}
     </div>
 </div>

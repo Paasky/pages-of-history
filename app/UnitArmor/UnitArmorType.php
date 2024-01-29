@@ -7,12 +7,14 @@ use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Enums\UnitArmorCategory;
 use App\GameConcept;
-use App\UnitPlatforms\UnitPlatformType;
 use App\Resources\ResourceType;
+use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
 
 abstract class UnitArmorType extends AbstractType
 {
+    public int $weight = 1;
+
     public function icon(): string
     {
         return $this->category()->icon();

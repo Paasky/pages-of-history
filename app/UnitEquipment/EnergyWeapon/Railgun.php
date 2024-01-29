@@ -9,6 +9,8 @@ use App\UnitEquipment\UnitEquipmentType;
 
 class Railgun extends UnitEquipmentType
 {
+    public int $weight = 3;
+
     public function category(): UnitEquipmentCategory
     {
         return UnitEquipmentCategory::EnergyWeapon;

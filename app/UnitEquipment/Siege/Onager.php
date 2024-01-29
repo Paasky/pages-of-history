@@ -3,10 +3,8 @@
 namespace App\UnitEquipment\Siege;
 
 use App\Enums\UnitEquipmentCategory;
-use App\Technologies\Bronze\BronzeWorking;
 use App\Technologies\Classical\TreadwheelCrane;
 use App\Technologies\TechnologyType;
-use App\UnitEquipment\Melee\IronSword;
 use App\UnitEquipment\UnitEquipmentType;
 
 class Onager extends UnitEquipmentType

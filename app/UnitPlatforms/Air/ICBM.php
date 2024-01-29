@@ -16,9 +16,9 @@ use Illuminate\Support\Collection;
 
 class ICBM extends UnitPlatformType
 {
-    public int $equipmentSlots = 2;
+    public int $equipmentSlots = 1;
     public int $armorSlots = 0;
-    public int $maxWeight = 2;
+    public int $maxWeight = 1;
     public int $moves = 1;
     public int $range = -1;
     public int $maneuvering = 15;

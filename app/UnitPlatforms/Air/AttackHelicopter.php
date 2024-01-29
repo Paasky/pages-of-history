@@ -9,6 +9,7 @@ use App\Technologies\Digital\Microchips;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Air\ChaffFlare;
 use App\UnitArmor\Air\RadarJamming;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\Stealth\AdvancedStealth;
 use App\UnitArmor\Stealth\Stealth;
 use App\UnitArmor\UnitArmorType;
@@ -35,6 +36,8 @@ class AttackHelicopter extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
+
             ChaffFlare::get(),
             RadarJamming::get(),
 

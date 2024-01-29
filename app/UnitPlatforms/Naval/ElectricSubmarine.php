@@ -75,6 +75,6 @@ class ElectricSubmarine extends UnitPlatformType
 
     public function upgradesTo(): ?UnitPlatformType
     {
-        return NuclearSubmarine::get();
+        return null;
     }
 }

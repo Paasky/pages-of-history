@@ -3,11 +3,8 @@
 namespace App\UnitEquipment\RocketArtillery;
 
 use App\Enums\UnitEquipmentCategory;
-use App\Technologies\Bronze\BronzeWorking;
-use App\Technologies\Digital\Lasers;
 use App\Technologies\Digital\SatellitePositioning;
 use App\Technologies\TechnologyType;
-use App\UnitEquipment\Melee\IronSword;
 use App\UnitEquipment\UnitEquipmentType;
 
 class RocketSystem extends UnitEquipmentType

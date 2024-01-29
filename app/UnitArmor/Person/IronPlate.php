@@ -2,11 +2,10 @@
 
 namespace App\UnitArmor\Person;
 
-use App\UnitArmor\UnitArmorType;
 use App\Enums\UnitArmorCategory;
 use App\Technologies\Iron\IronWorking;
-use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\UnitArmorType;
 
 class IronPlate extends UnitArmorType
 {

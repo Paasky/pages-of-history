@@ -9,6 +9,7 @@ use App\Technologies\Modern\CombinedArms;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Air\ChaffFlare;
 use App\UnitArmor\Air\SealingTanks;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\AirGun\AirGuidedMissile;
 use App\UnitEquipment\AirGun\AirHomingMissile;
@@ -32,6 +33,8 @@ class Helicopter extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
+
             SealingTanks::get(),
             ChaffFlare::get(),
         ]);

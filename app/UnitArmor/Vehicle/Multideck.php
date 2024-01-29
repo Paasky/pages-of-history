@@ -2,11 +2,10 @@
 
 namespace App\UnitArmor\Vehicle;
 
-use App\UnitArmor\UnitArmorType;
 use App\Enums\UnitArmorCategory;
 use App\Technologies\Classical\Engineering;
-use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\UnitArmorType;
 
 class Multideck extends UnitArmorType
 {

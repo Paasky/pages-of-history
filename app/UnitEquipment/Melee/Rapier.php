@@ -4,13 +4,14 @@ namespace App\UnitEquipment\Melee;
 
 use App\Enums\UnitEquipmentCategory;
 use App\Technologies\Renaissance\Banking;
-use App\Technologies\Renaissance\Gunpowder;
 use App\Technologies\TechnologyType;
 use App\UnitEquipment\Firearm\FlintlockMusket;
 use App\UnitEquipment\UnitEquipmentType;
 
 class Rapier extends UnitEquipmentType
 {
+    public int $weight = 1;
+
     public function category(): UnitEquipmentCategory
     {
         return UnitEquipmentCategory::Melee;

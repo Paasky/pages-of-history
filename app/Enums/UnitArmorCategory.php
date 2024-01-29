@@ -2,8 +2,8 @@
 
 namespace App\Enums;
 
-use App\UnitArmor\UnitArmorType;
 use App\GameConcept;
+use App\UnitArmor\UnitArmorType;
 use Illuminate\Support\Collection;
 
 enum UnitArmorCategory: string implements GameConcept
@@ -11,6 +11,7 @@ enum UnitArmorCategory: string implements GameConcept
     use GameConceptEnum;
     use PohEnum;
 
+    case None = 'None';
     case Person = 'Human';
     case Vehicle = 'Vehicle';
     case Air = 'Air';
@@ -20,6 +21,7 @@ enum UnitArmorCategory: string implements GameConcept
     public function icon(): string
     {
         return match ($this) {
+            self::None => 'fa-ban',
             self::Person => 'fa-user-shield',
             self::Vehicle => 'fa-shield',
             self::Air => 'fa-plane-lock',
@@ -40,6 +42,7 @@ enum UnitArmorCategory: string implements GameConcept
     public function platformCategories(): Collection
     {
         return match ($this) {
+            self::None => collect(UnitPlatformCategory::cases()),
             self::Person => collect([
                 UnitPlatformCategory::Foot,
                 UnitPlatformCategory::Mounted,

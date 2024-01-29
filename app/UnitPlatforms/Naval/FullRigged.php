@@ -6,6 +6,7 @@ use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
 use App\Technologies\Enlightenment\Navigation;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitArmor\Vehicle\Ironclad;
 use App\UnitArmor\Vehicle\Multideck;
@@ -36,6 +37,7 @@ class FullRigged extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
             Multideck::get(),
             Ironclad::get(),
         ]);

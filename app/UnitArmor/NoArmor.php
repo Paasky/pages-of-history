@@ -1,26 +1,26 @@
 <?php
 
-namespace App\UnitArmor\Person;
+namespace App\UnitArmor;
 
 use App\Enums\UnitArmorCategory;
-use App\Technologies\HighMedieval\Steel;
 use App\Technologies\TechnologyType;
-use App\UnitArmor\UnitArmorType;
 
-class SteelPlate extends UnitArmorType
+class NoArmor extends UnitArmorType
 {
+    public int $weight = 0;
+
     public function category(): UnitArmorCategory
     {
-        return UnitArmorCategory::Person;
+        return UnitArmorCategory::None;
     }
 
     public function technology(): ?TechnologyType
     {
-        return Steel::get();
+        return null;
     }
 
     public function upgradesTo(): ?UnitArmorType
     {
-        return BodyArmor::get();
+        return null;
     }
 }

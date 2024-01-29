@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use App\GameConcept;
+use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
@@ -40,11 +41,6 @@ trait GameConceptEnum
         return \Str::title(str_replace('-', ' ', $this->slug()));
     }
 
-    public function slug(): string
-    {
-        return \Str::kebab($this->name);
-    }
-
     /** @return Collection<int, GameConcept> */
     public function requires(): Collection
     {
@@ -54,6 +50,16 @@ trait GameConceptEnum
     public function shortName(): string
     {
         return $this->name;
+    }
+
+    public function slug(): string
+    {
+        return \Str::kebab($this->name);
+    }
+
+    public function technology(): ?TechnologyType
+    {
+        return null;
     }
 
     public function typeName(): string

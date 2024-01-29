@@ -7,6 +7,7 @@ use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Modern\AssemblyLine;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitArmor\Vehicle\ActiveDefense;
 use App\UnitArmor\Vehicle\CompositeArmor;
@@ -41,6 +42,7 @@ class Tracked extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
             SteelArmor::get(),
             HeavyArmor::get(),
             CompositeArmor::get(),

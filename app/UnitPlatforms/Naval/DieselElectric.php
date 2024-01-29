@@ -7,6 +7,7 @@ use App\Enums\UnitPlatformCategory;
 use App\Technologies\Modern\Electronics;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Camouflage\Camouflage;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\Stealth\AdvancedStealth;
 use App\UnitArmor\Stealth\Stealth;
 use App\UnitArmor\UnitArmorType;
@@ -37,7 +38,7 @@ use App\UnitEquipment\Torpedo\GuidedTorpedo;
 use App\UnitEquipment\Torpedo\HomingTorpedo;
 use App\UnitEquipment\Torpedo\Torpedo;
 use App\UnitEquipment\Trade\CargoHold;
-use App\UnitEquipment\Trade\Container;
+use App\UnitEquipment\Trade\ContainerHold;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
@@ -53,6 +54,8 @@ class DieselElectric extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
+
             SteelArmor::get(),
             HeavyArmor::get(),
             CompositeArmor::get(),
@@ -74,7 +77,7 @@ class DieselElectric extends UnitPlatformType
             Archeologist::get(),
 
             CargoHold::get(),
-            Container::get(),
+            ContainerHold::get(),
 
             Artillery::get(),
             Howitzer::get(),
@@ -124,6 +127,6 @@ class DieselElectric extends UnitPlatformType
 
     public function upgradesTo(): ?UnitPlatformType
     {
-        return NuclearEngine::get();
+        return null;
     }
 }

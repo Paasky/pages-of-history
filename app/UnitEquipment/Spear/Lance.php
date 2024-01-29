@@ -5,7 +5,6 @@ namespace App\UnitEquipment\Spear;
 use App\Enums\UnitEquipmentCategory;
 use App\Technologies\Medieval\Stirrup;
 use App\Technologies\TechnologyType;
-use App\UnitEquipment\Melee\BronzeSword;
 use App\UnitEquipment\UnitEquipmentType;
 
 class Lance extends UnitEquipmentType

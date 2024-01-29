@@ -5,7 +5,6 @@ namespace App\UnitEquipment\Ranged;
 use App\Enums\UnitEquipmentCategory;
 use App\Technologies\Neolithic\Trapping;
 use App\Technologies\TechnologyType;
-use App\UnitEquipment\Melee\BronzeSword;
 use App\UnitEquipment\UnitEquipmentType;
 
 class Sling extends UnitEquipmentType

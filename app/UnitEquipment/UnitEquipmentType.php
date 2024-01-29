@@ -6,14 +6,20 @@ use App\AbstractType;
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Enums\UnitEquipmentCategory;
+use App\Enums\UnitEquipmentClass;
 use App\GameConcept;
-use App\UnitPlatforms\UnitPlatformType;
 use App\Resources\ResourceType;
+use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
 
 abstract class UnitEquipmentType extends AbstractType
 {
-    public int $weight;
+    public int $weight = 2;
+
+    public function canHaveArmor(): bool
+    {
+        return !$this->category()->class()->is(UnitEquipmentClass::NonCombat);
+    }
 
     public function icon(): string
     {

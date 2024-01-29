@@ -7,7 +7,7 @@ use App\Technologies\Digital\Globalization;
 use App\Technologies\TechnologyType;
 use App\UnitEquipment\UnitEquipmentType;
 
-class Container extends UnitEquipmentType
+class ContainerHold extends UnitEquipmentType
 {
     public function category(): UnitEquipmentCategory
     {

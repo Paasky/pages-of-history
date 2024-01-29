@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UnitPlatforms\Mounted;
+namespace App\UnitPlatforms\Vehicle;
 
 use App\Enums\UnitPlatformCategory;
 use App\Resources\ResourceType;
@@ -21,7 +21,7 @@ use App\UnitEquipment\SkirmishFirearm\AiGuidedMortar;
 use App\UnitEquipment\SkirmishFirearm\MachineGun;
 use App\UnitEquipment\SkirmishFirearm\Mortar;
 use App\UnitEquipment\Trade\CargoHold;
-use App\UnitEquipment\Trade\Container;
+use App\UnitEquipment\Trade\ContainerHold;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
@@ -52,7 +52,7 @@ class Wheeled extends UnitPlatformType
             Archeologist::get(),
 
             CargoHold::get(),
-            Container::get(),
+            ContainerHold::get(),
 
             RepeatingRifle::get(),
             AssaultRifle::get(),
@@ -66,7 +66,7 @@ class Wheeled extends UnitPlatformType
 
     public function category(): UnitPlatformCategory
     {
-        return UnitPlatformCategory::Mounted;
+        return UnitPlatformCategory::Vehicle;
     }
 
     /**

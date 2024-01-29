@@ -6,6 +6,7 @@ use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
 use App\Technologies\Renaissance\SquareRigging;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitArmor\Vehicle\Multideck;
 use App\UnitEquipment\Cannon\Bombard;
@@ -34,6 +35,7 @@ class CarvelHull extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
             Multideck::get(),
         ]);
     }

@@ -5,7 +5,6 @@ namespace App\UnitEquipment\Siege;
 use App\Enums\UnitEquipmentCategory;
 use App\Technologies\Bronze\Sieging;
 use App\Technologies\TechnologyType;
-use App\UnitEquipment\Melee\BronzeSword;
 use App\UnitEquipment\UnitEquipmentType;
 
 class Ram extends UnitEquipmentType

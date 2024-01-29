@@ -3,10 +3,8 @@
 namespace App\UnitEquipment\Torpedo;
 
 use App\Enums\UnitEquipmentCategory;
-use App\Technologies\Bronze\BronzeWorking;
 use App\Technologies\Modern\HydroEngineering;
 use App\Technologies\TechnologyType;
-use App\UnitEquipment\Melee\IronSword;
 use App\UnitEquipment\UnitEquipmentType;
 
 class Torpedo extends UnitEquipmentType

@@ -7,6 +7,7 @@ use App\Resources\ResourceType;
 use App\Resources\Strategic\Horses;
 use App\Technologies\Medieval\Stirrup;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\Person\BronzePlate;
 use App\UnitArmor\Person\Chainmail;
 use App\UnitArmor\Person\IronPlate;
@@ -40,6 +41,7 @@ use App\UnitEquipment\Trade\Merchant;
 use App\UnitEquipment\Trade\Trader;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\UnitPlatforms\Vehicle\Wheeled;
 use Illuminate\Support\Collection;
 
 class SaddledHorse extends UnitPlatformType
@@ -53,6 +55,8 @@ class SaddledHorse extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
+
             WoodenShield::get(),
             BronzePlate::get(),
             IronPlate::get(),

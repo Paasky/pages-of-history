@@ -5,6 +5,7 @@ namespace App\UnitPlatforms;
 use App\Enums\UnitPlatformCategory;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Camouflage\Camouflage;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\Person\BodyArmor;
 use App\UnitArmor\Person\BronzePlate;
 use App\UnitArmor\Person\Chainmail;
@@ -21,6 +22,7 @@ use App\UnitEquipment\Building\Peasant;
 use App\UnitEquipment\Building\Worker;
 use App\UnitEquipment\Diplomacy\Diplomat;
 use App\UnitEquipment\Diplomacy\Emissary;
+use App\UnitEquipment\Diplomacy\Envoy;
 use App\UnitEquipment\Espionage\Courtesan;
 use App\UnitEquipment\Espionage\Spy;
 use App\UnitEquipment\Espionage\Thief;
@@ -81,6 +83,8 @@ class Person extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
+
             WoodenShield::get(),
             BronzePlate::get(),
             IronPlate::get(),
@@ -109,8 +113,8 @@ class Person extends UnitPlatformType
             Courtesan::get(),
             Spy::get(),
             Emissary::get(),
+            Envoy::get(),
             Diplomat::get(),
-            Archeologist::get(),
 
             Trader::get(),
             Merchant::get(),

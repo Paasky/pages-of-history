@@ -20,6 +20,8 @@ abstract class AbstractType implements GameConcept
     /** @var AbstractType[] */
     protected static array $singletons = [];
 
+    public int $weight = 0;
+
     protected function __construct()
     {
     }
@@ -87,6 +89,16 @@ abstract class AbstractType implements GameConcept
     public function dataForInit(): array
     {
         return ['class' => str_replace('\\', '\\\\', get_class($this)), 'id' => null];
+    }
+
+    public static function fromSlug(string $slug): static
+    {
+        foreach (static::all() as $type) {
+            if ($type->slug() === $slug) {
+                return $type;
+            }
+        }
+        throw new \Exception("Could not find type with slug {$slug}");
     }
 
     public function hasDetails(): bool

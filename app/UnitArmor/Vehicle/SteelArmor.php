@@ -2,11 +2,10 @@
 
 namespace App\UnitArmor\Vehicle;
 
-use App\UnitArmor\UnitArmorType;
 use App\Enums\UnitArmorCategory;
 use App\Technologies\Gilded\StainlessSteel;
-use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\UnitArmorType;
 
 class SteelArmor extends UnitArmorType
 {

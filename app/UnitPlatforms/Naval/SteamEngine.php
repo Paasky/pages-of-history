@@ -7,6 +7,7 @@ use App\Enums\UnitPlatformCategory;
 use App\Technologies\Industrial\Industrialization;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Camouflage\Camouflage;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitArmor\Vehicle\Ironclad;
 use App\UnitArmor\Vehicle\Multideck;
@@ -36,6 +37,7 @@ class SteamEngine extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
+            NoArmor::get(),
             Multideck::get(),
             Ironclad::get(),
             SteelArmor::get(),

@@ -2,11 +2,10 @@
 
 namespace App\UnitArmor\Air;
 
-use App\UnitArmor\UnitArmorType;
 use App\Enums\UnitArmorCategory;
 use App\Technologies\Modern\MetalAlloys;
-use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\UnitArmorType;
 
 class SealingTanks extends UnitArmorType
 {

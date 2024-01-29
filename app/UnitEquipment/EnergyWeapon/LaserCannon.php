@@ -3,7 +3,6 @@
 namespace App\UnitEquipment\EnergyWeapon;
 
 use App\Enums\UnitEquipmentCategory;
-use App\Technologies\Nano\Railguns;
 use App\Technologies\Nano\WeaponizedLasers;
 use App\Technologies\TechnologyType;
 use App\UnitEquipment\UnitEquipmentType;

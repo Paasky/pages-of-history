@@ -9,6 +9,8 @@ use App\UnitEquipment\UnitEquipmentType;
 
 class IronSword extends UnitEquipmentType
 {
+    public int $weight = 1;
+
     public function category(): UnitEquipmentCategory
     {
         return UnitEquipmentCategory::Melee;

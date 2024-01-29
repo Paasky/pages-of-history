@@ -5,7 +5,6 @@ namespace App\UnitEquipment\Skirmish;
 use App\Enums\UnitEquipmentCategory;
 use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
-use App\UnitEquipment\Melee\BronzeSword;
 use App\UnitEquipment\UnitEquipmentType;
 
 class WoodThrowingSpear extends UnitEquipmentType

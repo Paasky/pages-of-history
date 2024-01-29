@@ -9,6 +9,8 @@ use App\UnitEquipment\UnitEquipmentType;
 
 class AtomBomb extends UnitEquipmentType
 {
+    public int $weight = 1;
+
     public function category(): UnitEquipmentCategory
     {
         return UnitEquipmentCategory::MassDestruction;
@@ -21,6 +23,6 @@ class AtomBomb extends UnitEquipmentType
 
     public function upgradesTo(): ?UnitEquipmentType
     {
-        return HydrogenBomb::get();
+        return null;
     }
 }

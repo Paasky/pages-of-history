@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
@@ -34,6 +35,8 @@ interface GameConcept
     public function shortName(): string;
 
     public function slug(): string;
+
+    public function technology(): ?TechnologyType;
 
     public function typeName(): string;
 

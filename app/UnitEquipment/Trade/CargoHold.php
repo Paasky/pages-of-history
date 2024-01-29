@@ -21,6 +21,6 @@ class CargoHold extends UnitEquipmentType
 
     public function upgradesTo(): ?UnitEquipmentType
     {
-        return Container::get();
+        return ContainerHold::get();
     }
 }
