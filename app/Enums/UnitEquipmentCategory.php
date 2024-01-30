@@ -36,7 +36,7 @@ enum UnitEquipmentCategory: string implements GameConcept
     case EnergyWeapon = 'EnergyWeapon';
     case AntiAir = 'AntiAir';
     case AirGun = 'AirGun';
-    case Bomb = 'AirBomb';
+    case AirBomb = 'AirBomb';
     case MassDestruction = 'MassDestruction';
 
     public function icon(): string
@@ -49,7 +49,7 @@ enum UnitEquipmentCategory: string implements GameConcept
             self::Diplomacy => 'fa-book',
             self::Espionage => 'fa-user-secret',
             self::Firearm => 'fa-gun',
-            self::Spear => YieldType::Defense->icon(),
+            self::Spear => 'fa-lines-leaning',
             self::Ranged => YieldType::Range->icon(),
             self::Cannon => 'fa-bomb',
             self::MissileBay => 'fa-arrow-up-from-water-pump',
@@ -87,7 +87,7 @@ enum UnitEquipmentCategory: string implements GameConcept
             self::AirGun
             => UnitEquipmentClass::Aerial,
 
-            self::Bomb
+            self::AirBomb
             => UnitEquipmentClass::Bomb,
 
             self::MassDestruction
@@ -131,7 +131,7 @@ enum UnitEquipmentCategory: string implements GameConcept
             self::Torpedo, self::MissileBay, self::FlightDeck => collect([
                 UnitPlatformCategory::Naval,
             ]),
-            self::AirGun, self::Bomb, self::MassDestruction => collect([
+            self::AirGun, self::AirBomb, self::MassDestruction => collect([
                 UnitPlatformCategory::Air,
             ]),
             self::Building => collect([
@@ -139,7 +139,7 @@ enum UnitEquipmentCategory: string implements GameConcept
                 UnitPlatformCategory::Vehicle,
             ]),
             self::Expansion, self::Trade,
-            self::Diplomacy, self::Espionage => collect([
+            self::Diplomacy, self::Espionage, self::Exploring => collect([
                 UnitPlatformCategory::Foot,
                 UnitPlatformCategory::Mounted,
                 UnitPlatformCategory::Naval,
@@ -150,21 +150,5 @@ enum UnitEquipmentCategory: string implements GameConcept
     public function typeSlug(): string
     {
         return $this->class()->typeSlug();
-    }
-
-    public function weight(): int
-    {
-        return match ($this) {
-            self::Melee, self::Firearm, self::Torpedo, self::MissileBay,
-            self::AirGun, self::Bomb, self::MassDestruction => 1,
-
-            self::Spear, self::Ranged,
-            self::FlightDeck, self::AntiAir,
-            self::Siege, self::Cannon, self::Artillery, self::RocketArtillery,
-            self::Skirmish, self::SkirmishFirearm,
-            self::AntiTank, self::AntiTankGun => 2,
-
-            self::EnergyWeapon => 3,
-        };
     }
 }

@@ -1,5 +1,5 @@
 <x-modal name="unit-designer" title="{{ __('Unit Designer') }}" icon="fa-screwdriver-wrench" maxWidth="4xl">
-    <div class="transition sm:p-2" wire:loading.class="opacity-50">
+    <div class="sm:p-2 transition" wire:loading.class="opacity-25">
         @if($platform)
             @php
                 $maxWeight = (int) $platform?->maxWeight;

@@ -1,5 +1,5 @@
 @php
-    use \App\Technologies\TechTree;
+    use App\Technologies\TechTree;
     use App\Enums\TechnologyEra;
 @endphp
 <div id="tech-tree-wire">
@@ -200,18 +200,20 @@
                     <div class="title tag-technology">
                         {{ $tech->name() }} ({{ $tech->cost() }})
                     </div>
+                    <!--
                     <div class="tech-details">
-                        @foreach($tech->allows()->filter(fn(\App\GameConcept $allow) => !$allow instanceof \App\Technologies\TechnologyType) as $gameConcept)
-                            @include('components.game-concept-tag', ['gameConcept' => $gameConcept, 'showFullName' => false])
-                        @endforeach
-                        @foreach($tech->yieldModifiers() as $yieldModifier)
-                            @if($yieldModifier instanceof \App\Yields\YieldModifier)
-                                @include('components.yield-modifier', ['yieldModifier' => $yieldModifier])
-                            @else
-                                    @include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier, 'showYieldName' => false])
-                            @endif
-                        @endforeach
+                        foreach($tech->allows()->filter(fn(\App\GameConcept $allow) => !$allow instanceof \App\Technologies\TechnologyType) as $gameConcept)
+                            include('components.game-concept-tag', ['gameConcept' => $gameConcept, 'showFullName' => false])
+                        endforeach
+                        foreach($tech->yieldModifiers() as $yieldModifier)
+                            if($yieldModifier instanceof \App\Yields\YieldModifier)
+                                include('components.yield-modifier', ['yieldModifier' => $yieldModifier])
+                            else
+                                include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier, 'showYieldName' => false])
+                            endif
+                        endforeach
                     </div>
+                    -->
                 </div>
             @endforeach
         </div>
@@ -221,18 +223,18 @@
         @foreach(TechTree::techs() as $tech)
         @foreach($tech->requires() as $requireTech)
 
-        new LeaderLine(
-            document.getElementById('tech-{{ $requireTech->slug() }}'),
-            document.getElementById('tech-{{ $tech->slug() }}'),
-            {
-                color: '#444',
-                size: 2,
-                endPlug: 'arrow3',
-                endPlugSize: 2,
-                startSocketGravity: {{ ($tech->xy()->x - $requireTech->xy()->x) ** 2 * 50 }},
-                endSocketGravity: {{ ($tech->xy()->x - $requireTech->xy()->x) ** 2 * 50 }},
-            }
-        );
+        {{--new LeaderLine(--}}
+        {{--    document.getElementById('tech-{{ $requireTech->slug() }}'),--}}
+        {{--    document.getElementById('tech-{{ $tech->slug() }}'),--}}
+        {{--    {--}}
+        {{--        color: '#444',--}}
+        {{--        size: 2,--}}
+        {{--        endPlug: 'arrow3',--}}
+        {{--        endPlugSize: 2,--}}
+        {{--        startSocketGravity: {{ ($tech->xy()->x - $requireTech->xy()->x) ** 2 * 50 }},--}}
+        {{--        endSocketGravity: {{ ($tech->xy()->x - $requireTech->xy()->x) ** 2 * 50 }},--}}
+        {{--    }--}}
+        {{--);--}}
 
         @endforeach
         @endforeach
@@ -246,5 +248,4 @@
             techArrows.appendChild(line);
         }
     </script>
-    <livewire:game-concepts-wire/>
 </div>

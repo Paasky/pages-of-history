@@ -10,6 +10,7 @@ use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
 use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
 abstract class AbstractType implements GameConcept
@@ -200,9 +201,7 @@ abstract class AbstractType implements GameConcept
         return null;
     }
 
-    /**
-     * @return Collection<int, YieldModifier>
-     */
+    /** @return Collection<int, YieldModifier|YieldModifiersFor> */
     public function yieldModifiers(): Collection
     {
         return collect();

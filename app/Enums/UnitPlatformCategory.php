@@ -2,7 +2,6 @@
 
 namespace App\Enums;
 
-use App\UnitArmor\UnitArmorType;
 use App\GameConcept;
 use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
@@ -10,7 +9,6 @@ use Illuminate\Support\Collection;
 enum UnitPlatformCategory: string implements GameConcept
 {
     use GameConceptEnum;
-    use PohEnum;
 
     case Foot = 'Foot';
     case Mounted = 'Mounted';

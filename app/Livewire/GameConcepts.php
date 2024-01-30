@@ -6,17 +6,16 @@ use App\GameConcept;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
-class GameConceptsWire extends Component
+class GameConcepts extends Component
 {
-    /** @var string[]|GameConcept[] */
-    public array $breadcrumbs = [];
-    public bool $showModal = false;
     protected ?GameConcept $current = null;
 
     #[On('show-game-concept')]
     public function show(string $class, string|int $id = null): void
     {
-        $this->showModal = true;
+        // Fix any wonky escapes that swam through
+        $class = str_replace('\\\\', '\\', $class);
+
         $this->current = match (true) {
             method_exists($class, 'get') => $class::get(),
             method_exists($class, 'from') => $class::from($id),
@@ -26,6 +25,7 @@ class GameConceptsWire extends Component
 
     public function render()
     {
-        return view('livewire.game-concepts-wire', ['current' => $this->current]);
+        $this->dispatch('open-modal', 'game-concepts');
+        return view('livewire.game-concepts', ['current' => $this->current]);
     }
 }

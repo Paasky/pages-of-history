@@ -11,7 +11,7 @@ class MachineGun extends UnitEquipmentType
 {
     public function category(): UnitEquipmentCategory
     {
-        return UnitEquipmentCategory::Skirmish;
+        return UnitEquipmentCategory::SkirmishFirearm;
     }
 
     public function technology(): ?TechnologyType

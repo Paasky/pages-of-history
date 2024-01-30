@@ -43,12 +43,22 @@ class ICBM extends UnitPlatformType
         return UnitPlatformCategory::Air;
     }
 
+    public function name(): string
+    {
+        return 'ICBM';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
     public function resources(): Collection
     {
         return collect([Oil::get()]);
+    }
+
+    public function shortName(): string
+    {
+        return 'ICBM';
     }
 
     public function technology(): ?TechnologyType

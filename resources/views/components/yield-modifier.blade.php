@@ -1,11 +1,12 @@
+@php use App\Yields\YieldModifier; @endphp
 @php
-    /** @var \App\Yields\YieldModifier $yieldModifier */
+    /** @var YieldModifier $yieldModifier */
     /** @var bool|null $showName */
 @endphp
 <div class="yield-modifier" style="color: {{ $yieldModifier->color }}">
     {{ $yieldModifier->effect }}
     <i class="fa-solid {{ $yieldModifier->type->icon() }}"></i>
     @if($showName ?? true)
-        {{ $yieldModifier->type->name }}
+        {{ $yieldModifier->type->name() }}
     @endif
 </div>

@@ -49,7 +49,7 @@ trait GameConceptEnum
 
     public function shortName(): string
     {
-        return $this->name;
+        return $this->name();
     }
 
     public function slug(): string

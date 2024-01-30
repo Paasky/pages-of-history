@@ -13,7 +13,7 @@ class LightBomb extends UnitEquipmentType
 
     public function category(): UnitEquipmentCategory
     {
-        return UnitEquipmentCategory::Bomb;
+        return UnitEquipmentCategory::AirBomb;
     }
 
     public function technology(): ?TechnologyType

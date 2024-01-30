@@ -1,7 +1,7 @@
 @props([
     'name',
-    'title',
-    'icon',
+    'title' => '',
+    'icon' => '',
     'show' => false,
     'maxWidth' => '2xl'
 ])
@@ -38,6 +38,7 @@
         prevFocusable() { return this.focusables()[this.prevFocusableIndex()] || this.lastFocusable() },
         nextFocusableIndex() { return (this.focusables().indexOf(document.activeElement) + 1) % (this.focusables().length + 1) },
         prevFocusableIndex() { return Math.max(0, this.focusables().indexOf(document.activeElement)) -1 },
+        z: 50,
     }"
     x-init="$watch('show', value => {
         if (value) {
@@ -47,14 +48,22 @@
             document.body.classList.remove('overflow-y-hidden');
         }
     })"
-    x-on:open-modal.window="$event.detail == '{{ $name }}' ? show = true : null"
+    x-on:open-modal.window="
+    if ($event.detail == '{{ $name }}') {
+        show = true;
+        z = 50;
+    } else {
+        z = Math.max(40, z - 1);
+    }"
     x-on:close.stop="show = false"
     x-on:keydown.escape.window="show = false"
     x-on:keydown.tab.prevent="$event.shiftKey || nextFocusable().focus()"
     x-on:keydown.shift.tab.prevent="prevFocusable().focus()"
     x-show="show"
-    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50"
+    class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0"
+    :class="'z-' + z"
     style="display: {{ $show ? 'block' : 'none' }};"
+    id="{{ $name }}"
 >
     <div
         x-show="show"
@@ -72,7 +81,7 @@
 
     <div
         x-show="show"
-        class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto"
+        class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full {{ $maxWidth }} sm:mx-auto drop-shadow-lg"
         x-transition:enter="ease-out duration-300"
         x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"

@@ -4,8 +4,11 @@ namespace App\Enums;
 
 enum YieldType: string
 {
+    use GameConceptEnum;
+
     case Attack = 'Attack';
     case Bombard = 'Bombard';
+    case Cost = 'Cost';
     case Culture = 'Culture';
     case Damage = 'Damage';
     case Defense = 'Defense';
@@ -19,6 +22,10 @@ enum YieldType: string
     case Production = 'Production';
     case Range = 'Range';
     case Science = 'Science';
+    case Strength = 'Strength';
+    case StrengthBack = 'StrengthBack';
+    case StrengthFront = 'StrengthFront';
+    case StrengthSide = 'StrengthSide';
     case Trade = 'Trade';
 
     public function icon(): string
@@ -39,6 +46,10 @@ enum YieldType: string
             self::Movement => 'fa-arrows-up-down-left-right',
             self::Range => 'fa-bullseye',
             self::Science => 'fa-flask',
+            self::Strength => 'fa-hand-fist',
+            self::StrengthBack => 'fa-arrows-up-to-line',
+            self::StrengthFront => 'fa-arrow-up-from-bracket',
+            self::StrengthSide => 'fa-arrows-left-right-to-line',
             self::Trade => 'fa-route',
         };
     }

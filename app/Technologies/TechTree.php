@@ -55,6 +55,17 @@ class TechTree
         ];
     }
 
+    /**
+     * @param Collection<int, TechnologyType> $eraTechs
+     * @return int
+     */
+    public static function eraWidth(Collection $eraTechs): int
+    {
+        $minX = $eraTechs->min(fn($tech) => $tech->xy()->x);
+        $maxX = $eraTechs->max(fn($tech) => $tech->xy()->x);
+        return $maxX - $minX + 1;
+    }
+
     public static function heightEm(): float
     {
         return static::xy()->y * (static::$techHeight + static::$techHeightGutter) + static::$techTopPadding * 2 + static::$eraTopPadding * 3;

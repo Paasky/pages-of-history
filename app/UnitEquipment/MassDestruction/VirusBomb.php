@@ -16,6 +16,11 @@ class VirusBomb extends UnitEquipmentType
         return UnitEquipmentCategory::MassDestruction;
     }
 
+    public function icon(): string
+    {
+        return 'fa-biohazard';
+    }
+
     public function technology(): ?TechnologyType
     {
         return Genetics::get();

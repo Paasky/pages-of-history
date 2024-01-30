@@ -6,6 +6,50 @@
 
 @layer base {
     .clickable {
-        @apply cursor-pointer hover:bg-gray-600;
+        @apply cursor-pointer hover:bg-gray-600
+    }
+
+    .tag:hover .details-modal {
+        @apply block
+    }
+
+    .details-modal > div, .details-modal > span {
+        @apply block float-none
+    }
+
+    .details-modal > .clickable {
+        @apply py-0 px-0.5 m-0.5
+    }
+
+    .details-modal .yield-modifier {
+        @apply block float-none pl-0.5
+    }
+
+    .armor {
+        @apply bg-gray-300 text-black
+    }
+
+    .building {
+        @apply bg-blue-200 text-black
+    }
+
+    .improvement {
+        @apply bg-green-100 text-black
+    }
+
+    .equipment {
+        @apply bg-red-100 text-black
+    }
+
+    .resource {
+        @apply bg-yellow-100 text-black
+    }
+
+    .platform {
+        @apply bg-teal-100 text-black
+    }
+
+    .technology {
+        @apply bg-white text-black
     }
 }
