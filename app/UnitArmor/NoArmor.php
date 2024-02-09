@@ -4,6 +4,9 @@ namespace App\UnitArmor;
 
 use App\Enums\UnitArmorCategory;
 use App\Technologies\TechnologyType;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
+use Illuminate\Support\Collection;
 
 class NoArmor extends UnitArmorType
 {
@@ -22,5 +25,11 @@ class NoArmor extends UnitArmorType
     public function upgradesTo(): ?UnitArmorType
     {
         return null;
+    }
+
+    /** @return Collection<int, YieldModifier|YieldModifiersFor> */
+    public function yieldModifiers(): Collection
+    {
+        return collect();
     }
 }

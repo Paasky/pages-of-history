@@ -5,6 +5,7 @@ namespace App\Technologies\Digital;
 use App\Coordinate;
 use App\Enums\TechnologyEra;
 use App\Technologies\Atomic\Environmentalism;
+use App\Technologies\Atomic\Robotics;
 use App\Technologies\TechnologyType;
 use Illuminate\Support\Collection;
 
@@ -21,12 +22,13 @@ class Composites extends TechnologyType
     public function requires(): Collection
     {
         return collect([
+            Robotics::get(),
             Environmentalism::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(47, 8);
+        return new Coordinate(47, 7);
     }
 }

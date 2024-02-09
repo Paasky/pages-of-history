@@ -6,7 +6,6 @@ use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
 use App\Technologies\Industrial\Industrialization;
 use App\Technologies\TechnologyType;
-use App\UnitArmor\Camouflage\Camouflage;
 use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitArmor\Vehicle\Ironclad;
@@ -20,6 +19,7 @@ use App\UnitEquipment\Espionage\Spy;
 use App\UnitEquipment\Expansion\Pioneer;
 use App\UnitEquipment\Exploring\Archeologist;
 use App\UnitEquipment\Exploring\Naturalist;
+use App\UnitEquipment\NavalAssault\MusketMarines;
 use App\UnitEquipment\Torpedo\Torpedo;
 use App\UnitEquipment\Trade\CargoHold;
 use App\UnitEquipment\UnitEquipmentType;
@@ -41,8 +41,6 @@ class SteamEngine extends UnitPlatformType
             Multideck::get(),
             Ironclad::get(),
             SteelArmor::get(),
-
-            Camouflage::get(),
         ]);
     }
 
@@ -50,6 +48,8 @@ class SteamEngine extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
+            MusketMarines::get(),
+
             Cannon::get(),
             Artillery::get(),
             Howitzer::get(),

@@ -1,26 +1,26 @@
 <?php
 
-namespace App\UnitEquipment\Siege;
+namespace App\UnitEquipment\NavalAssault;
 
 use App\Enums\UnitEquipmentCategory;
-use App\Technologies\Bronze\Sieging;
+use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
 use App\UnitEquipment\UnitEquipmentType;
 
-class Ram extends UnitEquipmentType
+class WoodRam extends UnitEquipmentType
 {
     public function category(): UnitEquipmentCategory
     {
-        return UnitEquipmentCategory::Siege;
+        return UnitEquipmentCategory::NavalAssault;
     }
 
     public function technology(): ?TechnologyType
     {
-        return Sieging::get();
+        return WoodWorking::get();
     }
 
     public function upgradesTo(): ?UnitEquipmentType
     {
-        return Catapult::get();
+        return BronzeRam::get();
     }
 }

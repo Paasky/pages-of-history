@@ -11,7 +11,8 @@ use App\UnitEquipment\Diplomacy\Emissary;
 use App\UnitEquipment\Espionage\Thief;
 use App\UnitEquipment\Expansion\Settler;
 use App\UnitEquipment\Exploring\Scout;
-use App\UnitEquipment\Siege\Ram;
+use App\UnitEquipment\NavalAssault\BronzeRam;
+use App\UnitEquipment\NavalAssault\WoodRam;
 use App\UnitEquipment\Trade\Trader;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
@@ -34,7 +35,8 @@ class Galley extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
-            Ram::get(),
+            WoodRam::get(),
+            BronzeRam::get(),
 
             Settler::get(),
             Trader::get(),

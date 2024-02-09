@@ -8,6 +8,8 @@ use App\UnitArmor\UnitArmorType;
 
 class Stealth extends UnitArmorType
 {
+    public int $weight = 0;
+
     public function category(): UnitArmorCategory
     {
         return UnitArmorCategory::Stealth;

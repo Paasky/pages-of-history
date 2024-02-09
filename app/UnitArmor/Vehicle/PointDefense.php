@@ -3,11 +3,11 @@
 namespace App\UnitArmor\Vehicle;
 
 use App\Enums\UnitArmorCategory;
-use App\Technologies\Information\Graphene;
+use App\Technologies\Nano\Nanobots;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
 
-class ActiveDefense extends UnitArmorType
+class PointDefense extends UnitArmorType
 {
     public function category(): UnitArmorCategory
     {
@@ -16,7 +16,7 @@ class ActiveDefense extends UnitArmorType
 
     public function technology(): ?TechnologyType
     {
-        return Graphene::get();
+        return Nanobots::get();
     }
 
     public function upgradesTo(): ?UnitArmorType

@@ -11,6 +11,7 @@ use Illuminate\Support\Collection;
 
 abstract class TechnologyType extends AbstractType
 {
+    public int $known = 0;
     /**
      * @return Collection<int, TechnologyType>
      */
@@ -18,8 +19,29 @@ abstract class TechnologyType extends AbstractType
     {
         return static::instances(
             app_path('Technologies'),
-            [TechnologyType::class, TechTree::class]
+            [TechnologyType::class]
         );
+    }
+
+    public static function requiredTechs(TechnologyType $for, Collection $knownTechs = null): Collection
+    {
+        $requiredTechs = collect();
+        foreach ($for->requires() as $require) {
+            if (!$require instanceof TechnologyType) {
+                continue;
+            }
+            if (isset($knownTechs[$require->slug()])) {
+                continue;
+            }
+            if (isset($requiredTechs[$require->slug()])) {
+                continue;
+            }
+            $requiredTechs[$require->slug()] = $require;
+            $requiredTechs = $requiredTechs->merge(
+                static::requiredTechs($require, $requiredTechs->merge($knownTechs ?: []))
+            );
+        }
+        return $requiredTechs;
     }
 
     public function category(): GameConcept

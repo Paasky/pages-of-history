@@ -2,24 +2,24 @@
 
 namespace App\UnitPlatforms\Naval;
 
-use App\UnitArmor\UnitArmorType;
-use App\Enums\UnitPlatformCategory;
 use App\Enums\UnitCapability;
-use App\UnitPlatforms\UnitPlatformType;
+use App\Enums\UnitPlatformCategory;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Modern\HydroEngineering;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\Torpedo\HomingTorpedo;
 use App\UnitEquipment\Torpedo\Torpedo;
 use App\UnitEquipment\UnitEquipmentType;
+use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
 
 class Submarine extends UnitPlatformType
 {
-    public int $equipmentSlots = 1;
+    public int $equipmentSlots = 2;
     public int $armorSlots = 0;
-    public int $maxWeight = 1;
+    public int $maxWeight = 2;
     public int $moves = 4;
 
     /** @return Collection<int, UnitArmorType> */

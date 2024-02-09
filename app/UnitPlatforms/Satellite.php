@@ -2,14 +2,15 @@
 
 namespace App\UnitPlatforms;
 
-use App\UnitArmor\UnitArmorType;
 use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\Satellites;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\EnergyWeapon\LaserCannon;
+use App\UnitEquipment\Espionage\Spy;
 use App\UnitEquipment\UnitEquipmentType;
 use Illuminate\Support\Collection;
 
@@ -31,6 +32,7 @@ class Satellite extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
+            Spy::get(),
             LaserCannon::get(),
         ]);
     }

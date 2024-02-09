@@ -10,20 +10,18 @@ use App\Technologies\TechnologyType;
 use App\UnitArmor\Air\SealingTanks;
 use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
-use App\UnitEquipment\AirGun\AirHomingMissile;
 use App\UnitEquipment\AirGun\AirMachineGun;
 use App\UnitEquipment\Bomb\HeavyBomb;
 use App\UnitEquipment\Bomb\LightBomb;
 use App\UnitEquipment\MassDestruction\AtomBomb;
 use App\UnitEquipment\MassDestruction\GasBomb;
-use App\UnitEquipment\MassDestruction\HydrogenBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
 
 class Monocoque extends UnitPlatformType
 {
-    public int $equipmentSlots = 1;
+    public int $equipmentSlots = 2;
     public int $armorSlots = 1;
     public int $maxWeight = 2;
     public int $moves = 1;
@@ -35,7 +33,6 @@ class Monocoque extends UnitPlatformType
     {
         return collect([
             NoArmor::get(),
-
             SealingTanks::get(),
         ]);
     }
@@ -45,14 +42,12 @@ class Monocoque extends UnitPlatformType
     {
         return collect([
             AirMachineGun::get(),
-            AirHomingMissile::get(),
 
             LightBomb::get(),
             HeavyBomb::get(),
 
             GasBomb::get(),
             AtomBomb::get(),
-            HydrogenBomb::get(),
         ]);
     }
 

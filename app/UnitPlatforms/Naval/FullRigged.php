@@ -7,10 +7,10 @@ use App\Enums\UnitPlatformCategory;
 use App\Technologies\Enlightenment\Navigation;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
+use App\UnitArmor\Stealth\Privateer;
 use App\UnitArmor\UnitArmorType;
 use App\UnitArmor\Vehicle\Ironclad;
 use App\UnitArmor\Vehicle\Multideck;
-use App\UnitEquipment\Artillery\Artillery;
 use App\UnitEquipment\Cannon\Bombard;
 use App\UnitEquipment\Cannon\Cannon;
 use App\UnitEquipment\Diplomacy\Diplomat;
@@ -21,6 +21,8 @@ use App\UnitEquipment\Expansion\Colonist;
 use App\UnitEquipment\Expansion\Pioneer;
 use App\UnitEquipment\Exploring\Archeologist;
 use App\UnitEquipment\Exploring\Naturalist;
+use App\UnitEquipment\NavalAssault\Buccaneers;
+use App\UnitEquipment\NavalAssault\MusketMarines;
 use App\UnitEquipment\Trade\CargoHold;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
@@ -39,6 +41,7 @@ class FullRigged extends UnitPlatformType
         return collect([
             NoArmor::get(),
             Multideck::get(),
+            Privateer::get(),
             Ironclad::get(),
         ]);
     }
@@ -47,9 +50,11 @@ class FullRigged extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
+            Buccaneers::get(),
+            MusketMarines::get(),
+
             Bombard::get(),
             Cannon::get(),
-            Artillery::get(),
 
             Colonist::get(),
             Pioneer::get(),
@@ -79,6 +84,11 @@ class FullRigged extends UnitPlatformType
     public function modifiers(): Collection
     {
         return collect([UnitCapability::CanTravelOnSea, UnitCapability::CanTravelOnOcean]);
+    }
+
+    public function name(): string
+    {
+        return 'Full-Rigged';
     }
 
     public function technology(): ?TechnologyType

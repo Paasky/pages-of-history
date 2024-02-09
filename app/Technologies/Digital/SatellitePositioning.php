@@ -27,6 +27,6 @@ class SatellitePositioning extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(49, 6);
+        return new Coordinate(49, 5);
     }
 }

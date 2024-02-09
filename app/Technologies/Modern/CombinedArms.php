@@ -21,12 +21,12 @@ class CombinedArms extends TechnologyType
     {
         return collect([
             Radar::get(),
-            MetalAlloys::get(),
+            Rocketry::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(42, 3);
+        return new Coordinate(42, 4);
     }
 }

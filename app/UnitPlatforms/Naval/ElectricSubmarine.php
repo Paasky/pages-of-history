@@ -8,6 +8,9 @@ use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\Plastics;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\NoArmor;
+use App\UnitArmor\Stealth\AdvancedStealth;
+use App\UnitArmor\Stealth\Stealth;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\MissileBay\MissileBay;
 use App\UnitEquipment\Torpedo\AiTorpedo;
@@ -20,15 +23,19 @@ use Illuminate\Support\Collection;
 
 class ElectricSubmarine extends UnitPlatformType
 {
-    public int $equipmentSlots = 1;
-    public int $armorSlots = 0;
-    public int $maxWeight = 1;
+    public int $equipmentSlots = 2;
+    public int $armorSlots = 1;
+    public int $maxWeight = 2;
     public int $moves = 5;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
     {
-        return collect();
+        return collect([
+            NoArmor::get(),
+            Stealth::get(),
+            AdvancedStealth::get(),
+        ]);
     }
 
     /** @return Collection<int, UnitEquipmentType> */

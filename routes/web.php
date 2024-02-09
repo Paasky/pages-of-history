@@ -1,8 +1,6 @@
 <?php
 
 use App\Livewire\MapWire;
-use App\Livewire\TechTreeWire;
-use App\Livewire\UnitDesigner;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,5 +27,3 @@ Route::view('profile', 'profile')
 require __DIR__ . '/auth.php';
 
 Route::get('/map', MapWire::class);
-Route::get('/tech-tree', TechTreeWire::class);
-Route::get('/unit-designer', UnitDesigner::class);

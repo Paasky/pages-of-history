@@ -27,6 +27,6 @@ class Cloning extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(57, 7);
+        return new Coordinate(57, 6);
     }
 }

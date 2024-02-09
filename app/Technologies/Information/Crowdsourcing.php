@@ -26,6 +26,6 @@ class Crowdsourcing extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(52, 8);
+        return new Coordinate(52, 7);
     }
 }

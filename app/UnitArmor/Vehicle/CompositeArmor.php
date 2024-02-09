@@ -21,6 +21,6 @@ class CompositeArmor extends UnitArmorType
 
     public function upgradesTo(): ?UnitArmorType
     {
-        return ActiveDefense::get();
+        return PointDefense::get();
     }
 }

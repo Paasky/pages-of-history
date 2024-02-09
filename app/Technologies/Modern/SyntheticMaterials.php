@@ -26,6 +26,6 @@ class SyntheticMaterials extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(42, 5);
+        return new Coordinate(42, 8);
     }
 }

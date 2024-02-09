@@ -1,3 +1,4 @@
+@php use App\Yields\YieldModifier; @endphp
 <x-modal name="unit-designer" title="{{ __('Unit Designer') }}" icon="fa-screwdriver-wrench" maxWidth="4xl">
     <div class="sm:p-2 transition" wire:loading.class="opacity-25">
         @if($platform)
@@ -12,23 +13,41 @@
                 };
             @endphp
 
-            <div class="grid grid-cols-3 justify-items-center pt-0 sm:p-4 border-2 m-4 rounded-xl">
-                <div @class([
-                    'text-orange-600' => !$armor && $platform?->armorSlots && $equipment?->canHaveArmor() && $totalWeight >= $maxWeight
-                ])>
-                    <i class="fa-solid fa-weight-hanging"></i>
-                    Weight
-                    {{ $totalWeight }}/{{ $maxWeight }}
+            <div class="pt-0 sm:p-4 border-2 m-4 rounded-xl">
+                <div class="grid grid-cols-3 justify-items-center">
+                    <div @class([
+                        'text-orange-600' => !$armor && $platform?->armorSlots && $equipment?->canHaveArmor() && $totalWeight >= $maxWeight
+                    ])>
+                        <i class="fa-solid fa-weight-hanging"></i>
+                        Weight
+                        {{ $totalWeight }}/{{ $maxWeight }}
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-screwdriver-wrench"></i>
+                        Equipment
+                        {{ $equipmentWeight }}/{{ (int) $platform?->equipmentSlots }}
+                    </div>
+                    <div>
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Armor
+                        {{ $armorWeight }}/{{ $maxArmorSlots }}
+                    </div>
                 </div>
-                <div>
-                    <i class="fa-solid fa-screwdriver-wrench"></i>
-                    Equipment
-                    {{ $equipmentWeight }}/{{ (int) $platform?->equipmentSlots }}
-                </div>
-                <div>
-                    <i class="fa-solid fa-shield-halved"></i>
-                    Armor
-                    {{ $armorWeight }}/{{ $maxArmorSlots }}
+                <div class="grid grid-cols-4 justify-items-center items-center">
+                    @php
+                        $yieldModifiers = YieldModifier::mergeModifiers(
+                            $platform->yieldModifiers()
+                                ->merge($equipment?->yieldModifiers() ?: collect())
+                                ->merge($armor?->yieldModifiers() ?: collect())
+                        );
+                    @endphp
+                    @foreach($yieldModifiers as $yieldModifier)
+                        @if($yieldModifier instanceof YieldModifier)
+                            @include('components.yield-modifier', ['yieldModifier' => $yieldModifier])
+                        @else
+                            @include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier])
+                        @endif
+                    @endforeach
                 </div>
             </div>
         @endif
@@ -64,10 +83,10 @@
         @if($platform && $equipment && ($armorItems->isEmpty() || $armor))
             <hr class="mt-2">
 
-            <div class="grid grid-cols-2 p-4 gap-4">
-                <x-text-input name="design_name" placeholder="Design Name"/>
+            <form class="grid grid-cols-2 p-4 gap-4" wire:submit="save">
+                <x-text-input placeholder="{{ $namePlaceholder }}" wire:model="name"/>
                 <x-primary-button class="justify-center">Save</x-primary-button>
-            </div>
+            </form>
         @endif
     </div>
 </x-modal>

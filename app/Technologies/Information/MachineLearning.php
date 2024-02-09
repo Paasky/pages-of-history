@@ -27,6 +27,6 @@ class MachineLearning extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(53, 7);
+        return new Coordinate(53, 6);
     }
 }

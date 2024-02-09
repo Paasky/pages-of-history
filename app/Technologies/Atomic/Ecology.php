@@ -26,6 +26,6 @@ class Ecology extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(45, 8);
+        return new Coordinate(45, 9);
     }
 }

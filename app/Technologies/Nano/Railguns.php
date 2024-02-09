@@ -27,6 +27,6 @@ class Railguns extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(55, 3);
+        return new Coordinate(55, 2);
     }
 }

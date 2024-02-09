@@ -9,21 +9,17 @@ use App\Technologies\Modern\AssemblyLine;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
-use App\UnitArmor\Vehicle\ActiveDefense;
 use App\UnitArmor\Vehicle\CompositeArmor;
 use App\UnitArmor\Vehicle\HeavyArmor;
+use App\UnitArmor\Vehicle\PointDefense;
 use App\UnitArmor\Vehicle\SteelArmor;
-use App\UnitEquipment\AntiAir\AiMissile;
-use App\UnitEquipment\AntiAir\AntiAirGun;
-use App\UnitEquipment\AntiAir\GuidedMissile;
-use App\UnitEquipment\AntiAir\HomingMissile;
 use App\UnitEquipment\AntiTankGun\AntiTankGun;
 use App\UnitEquipment\AntiTankGun\HighVelocityGun;
 use App\UnitEquipment\AntiTankGun\SmoothBoreGun;
-use App\UnitEquipment\Artillery\Artillery;
 use App\UnitEquipment\Artillery\Howitzer;
 use App\UnitEquipment\Building\Excavator;
 use App\UnitEquipment\Building\Tractor;
+use App\UnitEquipment\EnergyWeapon\Railgun;
 use App\UnitEquipment\RocketArtillery\AiRocketSystem;
 use App\UnitEquipment\RocketArtillery\RocketArtillery;
 use App\UnitEquipment\RocketArtillery\RocketSystem;
@@ -33,10 +29,10 @@ use Illuminate\Support\Collection;
 
 class Tracked extends UnitPlatformType
 {
-    public int $equipmentSlots = 2;
-    public int $armorSlots = 2;
-    public int $maxWeight = 4;
-    public int $moves = 4;
+    public int $equipmentSlots = 3;
+    public int $armorSlots = 1;
+    public int $maxWeight = 3;
+    public int $moves = 3;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -46,7 +42,7 @@ class Tracked extends UnitPlatformType
             SteelArmor::get(),
             HeavyArmor::get(),
             CompositeArmor::get(),
-            ActiveDefense::get(),
+            PointDefense::get(),
         ]);
     }
 
@@ -57,18 +53,15 @@ class Tracked extends UnitPlatformType
             Tractor::get(),
             Excavator::get(),
 
-            Artillery::get(),
             Howitzer::get(),
             RocketArtillery::get(),
             RocketSystem::get(),
             AiRocketSystem::get(),
-            AntiAirGun::get(),
-            HomingMissile::get(),
-            GuidedMissile::get(),
-            AiMissile::get(),
+
             AntiTankGun::get(),
             HighVelocityGun::get(),
             SmoothBoreGun::get(),
+            Railgun::get(),
         ]);
     }
 

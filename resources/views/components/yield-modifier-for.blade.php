@@ -12,10 +12,11 @@
     /** @var string|null $prepend */
     /** @var string|null $append */
 @endphp
-<div>
+<div class=" inline-block p-1 m-1 border rounded-md border-gray-500 yield-modifier-for">
     @foreach($yieldModifiersFor->modifiers as $yieldModifier)
         @include('components.yield-modifier', ['yieldModifier' => $yieldModifier, 'showName' => $showYieldName ?? true])
     @endforeach
+    <br>
     @if($yieldModifiersFor instanceof YieldModifiersAgainst)
         vs
     @else

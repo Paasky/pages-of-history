@@ -6,7 +6,7 @@
 
 @layer base {
     .clickable {
-        @apply cursor-pointer hover:bg-gray-600
+        @apply cursor-pointer drop-shadow-md
     }
 
     .tag:hover .details-modal {
@@ -23,6 +23,10 @@
 
     .details-modal .yield-modifier {
         @apply block float-none pl-0.5
+    }
+
+    .yield-modifier-for > div {
+        @apply inline-block
     }
 
     .armor {

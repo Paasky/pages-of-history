@@ -1,6 +1,6 @@
 <?php
 
-namespace App\UnitPlatforms\Air;
+namespace App\UnitPlatforms\Missile;
 
 use App\Enums\UnitPlatformCategory;
 use App\Resources\ResourceType;
@@ -20,9 +20,9 @@ use Illuminate\Support\Collection;
 
 class CruiseMissile extends UnitPlatformType
 {
-    public int $equipmentSlots = 1;
+    public int $equipmentSlots = 2;
     public int $armorSlots = 0;
-    public int $maxWeight = 1;
+    public int $maxWeight = 2;
     public int $moves = 1;
     public int $range = 6;
     public int $maneuvering = 5;
@@ -49,7 +49,7 @@ class CruiseMissile extends UnitPlatformType
 
     public function category(): UnitPlatformCategory
     {
-        return UnitPlatformCategory::Air;
+        return UnitPlatformCategory::Missile;
     }
 
     /**

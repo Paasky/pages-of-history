@@ -20,13 +20,13 @@ class Macroeconomics extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            NuclearFission::get(),
             Plastics::get(),
+            NuclearFission::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(44, 7);
+        return new Coordinate(44, 8);
     }
 }

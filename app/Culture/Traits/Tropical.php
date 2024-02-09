@@ -21,7 +21,7 @@ class Tropical extends CultureTrait
                     new YieldModifier(YieldType::Food, 1),
                     new YieldModifier(YieldType::Health, 1),
                     new YieldModifier(YieldType::Damage, percent: -10),
-                    new YieldModifier(YieldType::Movement, 1),
+                    new YieldModifier(YieldType::Moves, 1),
                 ]),
                 Feature::Jungle
             ),

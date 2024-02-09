@@ -25,10 +25,4 @@ abstract class ImprovementType extends AbstractType
     {
         return $this->category()->icon();
     }
-
-    /** @return Collection<int, ImprovementType> */
-    public function upgradesFrom(): Collection
-    {
-        return $this::all()->filter(fn(ImprovementType $improvementType) => $improvementType->upgradesTo() === $this);
-    }
 }

@@ -26,6 +26,6 @@ class Computers extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(44, 3);
+        return new Coordinate(44, 4);
     }
 }

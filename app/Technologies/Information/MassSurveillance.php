@@ -27,6 +27,6 @@ class MassSurveillance extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(51, 7);
+        return new Coordinate(51, 6);
     }
 }

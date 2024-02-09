@@ -26,6 +26,6 @@ class MrnaVaccines extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(53, 3);
+        return new Coordinate(53, 2);
     }
 }

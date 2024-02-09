@@ -30,7 +30,7 @@ class Bedouin extends CultureTrait
                 Surface::Desert
             ),
             new YieldModifiersFor(
-                collect([new YieldModifier(YieldType::Movement, 1)]),
+                collect([new YieldModifier(YieldType::Moves, 1)]),
                 Feature::Dunes
             ),
         ]);

@@ -36,6 +36,20 @@ trait GameConceptEnum
         return false;
     }
 
+    /**
+     * @param ...$items
+     * @return bool
+     */
+    public function is(...$items): bool
+    {
+        foreach ($items as $item) {
+            if ($this === $item || $this->slug() === $item) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function name(): string
     {
         return \Str::title(str_replace('-', ' ', $this->slug()));

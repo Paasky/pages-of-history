@@ -13,19 +13,29 @@ class YieldModifiersFor
     public Collection $for;
 
     /**
-     * @param Collection<int, YieldModifier> $modifiers
-     * @param GameConcept|GameConcept[]|Collection $for
+     * @param YieldModifier|YieldModifier[]|Collection<int, YieldModifier> $modifiers
+     * @param GameConcept|GameConcept[]|Collection<int, GameConcept> $for
      */
-    public function __construct(Collection $modifiers, GameConcept|array|Collection $for)
+    public function __construct(YieldModifier|array|Collection $modifiers, GameConcept|array|Collection $for)
     {
-        $this->modifiers = $modifiers;
+        $this->modifiers = collect();
+        if ($modifiers instanceof YieldModifier) {
+            $modifiers = [$modifiers];
+        }
+        foreach ($modifiers as $modifiersItem) {
+            if (!$modifiersItem instanceof YieldModifier) {
+                throw new \Exception('$modifiers is not a YieldModifier!');
+            }
+            $this->modifiers->push($modifiersItem);
+        }
+
+        $this->for = collect();
         if ($for instanceof GameConcept) {
             $for = [$for];
         }
-        $this->for = collect();
         foreach ($for as $forItem) {
             if (!$forItem instanceof GameConcept) {
-                throw new \Exception('$for is not a game concept!');
+                throw new \Exception('$for is not a GameConcept!');
             }
             $this->for->push($forItem);
         }

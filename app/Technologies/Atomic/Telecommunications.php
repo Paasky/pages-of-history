@@ -27,6 +27,6 @@ class Telecommunications extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(45, 6);
+        return new Coordinate(45, 7);
     }
 }

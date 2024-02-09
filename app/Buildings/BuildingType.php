@@ -44,10 +44,4 @@ abstract class BuildingType extends AbstractType
     {
         return collect();
     }
-
-    /** @return Collection<int, BuildingType> */
-    public function upgradesFrom(): Collection
-    {
-        return $this::all()->filter(fn(BuildingType $buildingType) => $buildingType->upgradesTo() === $this);
-    }
 }

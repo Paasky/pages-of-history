@@ -14,6 +14,11 @@ class AiMissile extends UnitEquipmentType
         return UnitEquipmentCategory::AntiAir;
     }
 
+    public function name(): string
+    {
+        return 'AI Missile';
+    }
+
     public function technology(): ?TechnologyType
     {
         return ArtificialIntelligence::get();

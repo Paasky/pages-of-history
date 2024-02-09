@@ -10,12 +10,13 @@ use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitArmor\Vehicle\Multideck;
 use App\UnitEquipment\Cannon\Bombard;
-use App\UnitEquipment\Cannon\Cannon;
 use App\UnitEquipment\Diplomacy\Emissary;
 use App\UnitEquipment\Diplomacy\Envoy;
 use App\UnitEquipment\Espionage\Courtesan;
 use App\UnitEquipment\Expansion\Settler;
 use App\UnitEquipment\Exploring\Scout;
+use App\UnitEquipment\NavalAssault\RaidingParty;
+use App\UnitEquipment\NavalAssault\SteelRam;
 use App\UnitEquipment\Siege\Onager;
 use App\UnitEquipment\Siege\Trebuchet;
 use App\UnitEquipment\Trade\Merchant;
@@ -43,10 +44,12 @@ class ClinkerHull extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
+            SteelRam::get(),
+            RaidingParty::get(),
+
             Onager::get(),
             Trebuchet::get(),
             Bombard::get(),
-            Cannon::get(),
 
             Settler::get(),
             Merchant::get(),

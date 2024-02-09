@@ -27,6 +27,6 @@ class Biosynthetics extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(52, 4);
+        return new Coordinate(52, 3);
     }
 }

@@ -5,7 +5,6 @@ namespace App\Technologies\Digital;
 use App\Coordinate;
 use App\Enums\TechnologyEra;
 use App\Technologies\Atomic\GuidanceSystems;
-use App\Technologies\Atomic\Robotics;
 use App\Technologies\TechnologyType;
 use Illuminate\Support\Collection;
 
@@ -23,12 +22,11 @@ class Lasers extends TechnologyType
     {
         return collect([
             GuidanceSystems::get(),
-            Robotics::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(47, 4);
+        return new Coordinate(47, 3);
     }
 }

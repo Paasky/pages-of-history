@@ -9,8 +9,6 @@ use App\UnitEquipment\UnitEquipmentType;
 
 class VirusBomb extends UnitEquipmentType
 {
-    public int $weight = 1;
-
     public function category(): UnitEquipmentCategory
     {
         return UnitEquipmentCategory::MassDestruction;

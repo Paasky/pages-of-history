@@ -29,6 +29,6 @@ class NuclearFusion extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(55, 5);
+        return new Coordinate(55, 4);
     }
 }

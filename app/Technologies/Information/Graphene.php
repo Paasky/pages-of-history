@@ -27,6 +27,6 @@ class Graphene extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(52, 6);
+        return new Coordinate(52, 5);
     }
 }

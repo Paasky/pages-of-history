@@ -4,7 +4,7 @@ namespace App\Technologies\Digital;
 
 use App\Coordinate;
 use App\Enums\TechnologyEra;
-use App\Technologies\Atomic\Environmentalism;
+use App\Technologies\Atomic\GuidanceSystems;
 use App\Technologies\Atomic\Robotics;
 use App\Technologies\TechnologyType;
 use Illuminate\Support\Collection;
@@ -22,13 +22,13 @@ class Microchips extends TechnologyType
     public function requires(): Collection
     {
         return collect([
+            GuidanceSystems::get(),
             Robotics::get(),
-            Environmentalism::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(47, 6);
+        return new Coordinate(47, 5);
     }
 }

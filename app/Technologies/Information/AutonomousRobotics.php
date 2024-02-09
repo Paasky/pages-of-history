@@ -27,6 +27,6 @@ class AutonomousRobotics extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(54, 4);
+        return new Coordinate(54, 3);
     }
 }

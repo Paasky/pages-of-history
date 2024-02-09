@@ -11,22 +11,22 @@ enum UnitArmorCategory: string implements GameConcept
     use GameConceptEnum;
     use PohEnum;
 
-    case None = 'None';
-    case Person = 'Human';
-    case Vehicle = 'Vehicle';
     case Air = 'Air';
-    case Camouflage = 'Camouflage';
+    case None = 'None';
+    case Parachute = 'Parachute';
+    case Person = 'Person';
     case Stealth = 'Stealth';
+    case Vehicle = 'Vehicle';
 
     public function icon(): string
     {
         return match ($this) {
-            self::None => 'fa-ban',
-            self::Person => 'fa-user-shield',
-            self::Vehicle => 'fa-shield',
             self::Air => 'fa-plane-lock',
-            self::Camouflage => 'fa-tree',
+            self::None => 'fa-ban',
+            self::Parachute => 'fa-parachute-box',
+            self::Person => 'fa-user-shield',
             self::Stealth => 'fa-eye-slash',
+            self::Vehicle => 'fa-shield',
         };
     }
 
@@ -36,32 +36,6 @@ enum UnitArmorCategory: string implements GameConcept
         return UnitArmorType::all()->filter(
             fn(UnitArmorType $type) => $type->category() === $this
         );
-    }
-
-    /** @return Collection<int, UnitPlatformCategory> */
-    public function platformCategories(): Collection
-    {
-        return match ($this) {
-            self::None => collect(UnitPlatformCategory::cases()),
-            self::Person => collect([
-                UnitPlatformCategory::Foot,
-                UnitPlatformCategory::Mounted,
-            ]),
-            self::Vehicle => collect([
-                UnitPlatformCategory::Naval,
-                UnitPlatformCategory::Vehicle,
-            ]),
-            self::Air => collect([
-                UnitPlatformCategory::Air,
-            ]),
-            self::Camouflage => collect([
-                UnitPlatformCategory::Foot,
-            ]),
-            self::Stealth => collect([
-                UnitPlatformCategory::Air,
-                UnitPlatformCategory::Naval,
-            ]),
-        };
     }
 
     public function typeSlug(): string

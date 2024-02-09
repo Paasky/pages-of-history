@@ -1,19 +1,21 @@
-@php use App\Enums\BuildingCategory; @endphp
-@php use App\Buildings\BuildingType; @endphp
-@php use App\Enums\ImprovementCategory; @endphp
-@php use App\Improvements\ImprovementType; @endphp
-@php use App\Enums\ResourceCategory; @endphp
-@php use App\Resources\ResourceType; @endphp
-@php use App\Enums\TechnologyEra; @endphp
-@php use App\Technologies\TechnologyType; @endphp
-@php use App\Enums\UnitPlatformCategory; @endphp
-@php use App\UnitPlatforms\UnitPlatformType; @endphp
-@php use App\Enums\UnitEquipmentCategory; @endphp
-@php use App\UnitEquipment\UnitEquipmentType; @endphp
-@php use App\Enums\UnitArmorCategory; @endphp
-@php use App\UnitArmor\UnitArmorType; @endphp
-@php use App\GameConcept; @endphp
-@php use App\Yields\YieldModifier; @endphp
+@php
+    use App\Enums\BuildingCategory;
+    use App\Buildings\BuildingType;
+    use App\Enums\ImprovementCategory;
+    use App\Improvements\ImprovementType;
+    use App\Enums\ResourceCategory;
+    use App\Resources\ResourceType;
+    use App\Enums\TechnologyEra;
+    use App\Technologies\TechnologyType;
+    use App\Enums\UnitPlatformCategory;
+    use App\UnitPlatforms\UnitPlatformType;
+    use App\Enums\UnitEquipmentCategory;
+    use App\UnitEquipment\UnitEquipmentType;
+    use App\Enums\UnitArmorCategory;
+    use App\UnitArmor\UnitArmorType;
+    use App\GameConcept;
+    use App\Yields\YieldModifier;
+@endphp
 <x-modal name="game-concepts" title="{{ __('Game Concepts') }}" icon="fa-circle-question" maxWidth="6xl">
     <style>
         .game-concept-info > hr:last-child {
@@ -28,7 +30,7 @@
             ])
 
             @include('components.game-concepts-section', [
-                'gameConcepts' => BuildingType::all()->sortBy(fn (GameConcept $b) => $b->name()),
+                'gameConcepts' => BuildingType::all()->sortBy(fn (BuildingType $b) => $b->name()),
                  'title' => __('Buildings'),
             ])
 
@@ -38,7 +40,7 @@
             ])
 
             @include('components.game-concepts-section', [
-                'gameConcepts' => ImprovementType::all()->sortBy(fn (GameConcept $b) => $b->name()),
+                'gameConcepts' => ImprovementType::all()->sortBy(fn (ImprovementType $b) => $b->name()),
                  'title' => __('Improvements'),
             ])
 
@@ -48,7 +50,7 @@
             ])
 
             @include('components.game-concepts-section', [
-                'gameConcepts' => ResourceType::all()->sortBy(fn (GameConcept $b) => $b->name()),
+                'gameConcepts' => ResourceType::all()->sortBy(fn (ResourceType $b) => $b->name()),
                  'title' => __('Resources'),
             ])
 
@@ -58,7 +60,7 @@
             ])
 
             @include('components.game-concepts-section', [
-                'gameConcepts' => TechnologyType::all()->sortBy(fn (GameConcept $b) => $b->name()),
+                'gameConcepts' => TechnologyType::all()->sortBy(fn (TechnologyType $b) => $b->name()),
                  'title' => __('Technologies'),
             ])
 
@@ -68,7 +70,7 @@
             ])
 
             @include('components.game-concepts-section', [
-                'gameConcepts' => UnitPlatformType::all()->sortBy(fn (GameConcept $b) => $b->name()),
+                'gameConcepts' => UnitPlatformType::all()->sortBy(fn (UnitPlatformType $b) => $b->name()),
                  'title' => __('Unit Platforms'),
             ])
 
@@ -78,7 +80,7 @@
             ])
 
             @include('components.game-concepts-section', [
-                'gameConcepts' => UnitEquipmentType::all()->sortBy(fn (GameConcept $b) => $b->name()),
+                'gameConcepts' => UnitEquipmentType::all()->sortBy(fn (UnitEquipmentType $b) => $b->name()),
                  'title' => __('Unit Equipment'),
             ])
 
@@ -88,7 +90,7 @@
             ])
 
             @include('components.game-concepts-section', [
-                'gameConcepts' => UnitArmorType::all()->sortBy(fn (GameConcept $b) => $b->name()),
+                'gameConcepts' => UnitArmorType::all()->sortBy(fn (UnitArmorType $b) => $b->name()),
                  'title' => __('Unit Armors'),
             ])
         </div>

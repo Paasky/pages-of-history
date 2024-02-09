@@ -9,7 +9,6 @@ use App\Technologies\Digital\Microchips;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Air\ChaffFlare;
 use App\UnitArmor\Air\RadarJamming;
-use App\UnitArmor\NoArmor;
 use App\UnitArmor\Stealth\Stealth;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\AirGun\AirGuidedMissile;
@@ -17,7 +16,6 @@ use App\UnitEquipment\AirGun\AirHomingMissile;
 use App\UnitEquipment\Bomb\GuidedBomb;
 use App\UnitEquipment\Bomb\HeavyBomb;
 use App\UnitEquipment\MassDestruction\AtomBomb;
-use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\MassDestruction\HydrogenBomb;
 use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\UnitEquipmentType;
@@ -26,9 +24,9 @@ use Illuminate\Support\Collection;
 
 class FlyByWire extends UnitPlatformType
 {
-    public int $equipmentSlots = 1;
+    public int $equipmentSlots = 2;
     public int $armorSlots = 1;
-    public int $maxWeight = 2;
+    public int $maxWeight = 3;
     public int $moves = 1;
     public int $range = 8;
     public int $maneuvering = 8;
@@ -37,11 +35,8 @@ class FlyByWire extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
-            NoArmor::get(),
-
             ChaffFlare::get(),
             RadarJamming::get(),
-
             Stealth::get(),
         ]);
     }
@@ -56,7 +51,6 @@ class FlyByWire extends UnitPlatformType
             HeavyBomb::get(),
             GuidedBomb::get(),
 
-            GasBomb::get(),
             AtomBomb::get(),
             HydrogenBomb::get(),
             VirusBomb::get(),

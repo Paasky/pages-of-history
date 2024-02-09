@@ -5,10 +5,14 @@ namespace App\UnitArmor;
 use App\AbstractType;
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
+use App\Enums\TechnologyEra;
 use App\Enums\UnitArmorCategory;
+use App\Enums\YieldType;
 use App\GameConcept;
 use App\Resources\ResourceType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
 abstract class UnitArmorType extends AbstractType
@@ -66,9 +70,18 @@ abstract class UnitArmorType extends AbstractType
         );
     }
 
-    /** @return Collection<int, UnitArmorType> */
-    public function upgradesFrom(): Collection
+    /** @return Collection<int, YieldModifier|YieldModifiersFor> */
+    public function yieldModifiers(): Collection
     {
-        return $this::all()->filter(fn(UnitArmorType $armorType) => $armorType->upgradesTo() === $this);
+        return collect([
+            new YieldModifier(
+                YieldType::Cost,
+                percent: 25
+            ),
+            new YieldModifier(
+                YieldType::Strength,
+                $this->technology()?->era()->baseArmorStrength() ?: TechnologyEra::BASE_ARMOR_STRENGTH
+            ),
+        ]);
     }
 }

@@ -26,6 +26,6 @@ class Biotech extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(50, 2);
+        return new Coordinate(50, 1);
     }
 }

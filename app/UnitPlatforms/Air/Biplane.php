@@ -7,6 +7,7 @@ use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Gilded\Flight;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\AirGun\AirMachineGun;
 use App\UnitEquipment\Bomb\LightBomb;
@@ -16,9 +17,9 @@ use Illuminate\Support\Collection;
 
 class Biplane extends UnitPlatformType
 {
-    public int $equipmentSlots = 1;
+    public int $equipmentSlots = 2;
     public int $armorSlots = 0;
-    public int $maxWeight = 1;
+    public int $maxWeight = 2;
     public int $moves = 1;
     public int $range = 4;
     public int $maneuvering = 2;
@@ -26,7 +27,7 @@ class Biplane extends UnitPlatformType
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
     {
-        return collect();
+        return collect([NoArmor::get()]);
     }
 
     /** @return Collection<int, UnitEquipmentType> */
@@ -34,7 +35,6 @@ class Biplane extends UnitPlatformType
     {
         return collect([
             AirMachineGun::get(),
-
             LightBomb::get(),
         ]);
     }

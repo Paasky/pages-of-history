@@ -1,18 +1,22 @@
 <?php
 
-namespace App\UnitArmor\Camouflage;
+namespace App\UnitArmor\Stealth;
 
 use App\Enums\UnitArmorCategory;
 use App\Technologies\Modern\ArtDeco;
 use App\Technologies\TechnologyType;
-use App\UnitArmor\Stealth\Stealth;
 use App\UnitArmor\UnitArmorType;
 
 class Camouflage extends UnitArmorType
 {
     public function category(): UnitArmorCategory
     {
-        return UnitArmorCategory::Camouflage;
+        return UnitArmorCategory::Stealth;
+    }
+
+    public function icon(): string
+    {
+        return 'fa-tree';
     }
 
     public function technology(): ?TechnologyType

@@ -27,6 +27,6 @@ class JetEngine extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(42, 7);
+        return new Coordinate(42, 6);
     }
 }

@@ -30,6 +30,7 @@ enum UnitEquipmentCategory: string implements GameConcept
     case Cannon = 'Cannon';
     case Artillery = 'Artillery';
     case RocketArtillery = 'RocketArtillery';
+    case NavalAssault = 'NavalAssault';
     case Torpedo = 'Torpedo';
     case MissileBay = 'MissileBay';
     case FlightDeck = 'FlightDeck';
@@ -55,6 +56,7 @@ enum UnitEquipmentCategory: string implements GameConcept
             self::MissileBay => 'fa-arrow-up-from-water-pump',
             self::RocketArtillery => 'fa-rocket',
             self::FlightDeck => 'fa-plane-arrival',
+            self::NavalAssault => 'fa-ship',
             self::Torpedo => 'fa-water',
             self::AntiAir => 'fa-plane-slash',
             self::Siege => 'fa-arrow-right-to-city',
@@ -71,9 +73,10 @@ enum UnitEquipmentCategory: string implements GameConcept
     {
         return match ($this) {
             self::Building, self::Expansion, self::Trade,
-            self::Diplomacy, self::Espionage, self::Exploring => UnitEquipmentClass::NonCombat,
+            self::Diplomacy, self::Espionage, self::Exploring
+            => UnitEquipmentClass::NonCombat,
 
-            self::Melee, self::Firearm, self::Spear, self::AntiTank, self::AntiTankGun
+            self::Melee, self::Firearm, self::Spear, self::AntiTank, self::AntiTankGun, self::NavalAssault
             => UnitEquipmentClass::CloseCombat,
 
             self::Skirmish, self::SkirmishFirearm, self::Ranged, self::Siege,

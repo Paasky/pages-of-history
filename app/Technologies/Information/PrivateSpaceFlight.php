@@ -27,6 +27,6 @@ class PrivateSpaceFlight extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(53, 5);
+        return new Coordinate(53, 4);
     }
 }

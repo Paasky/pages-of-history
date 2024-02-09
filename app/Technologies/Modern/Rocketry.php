@@ -20,13 +20,13 @@ class Rocketry extends TechnologyType
     public function requires(): Collection
     {
         return collect([
+            Electronics::get(),
             HydroEngineering::get(),
-            Militarism::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(41, 7);
+        return new Coordinate(41, 5);
     }
 }

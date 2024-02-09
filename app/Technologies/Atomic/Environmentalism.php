@@ -27,6 +27,6 @@ class Environmentalism extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(46, 7);
+        return new Coordinate(46, 8);
     }
 }

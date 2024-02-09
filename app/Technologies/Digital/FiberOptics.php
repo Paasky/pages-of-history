@@ -28,6 +28,6 @@ class FiberOptics extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(50, 6);
+        return new Coordinate(50, 5);
     }
 }

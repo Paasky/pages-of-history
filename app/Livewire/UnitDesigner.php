@@ -2,13 +2,17 @@
 
 namespace App\Livewire;
 
-use App\Enums\UnitPlatformCategory;
+use App\Models\Player;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\UnitEquipmentType;
+use App\UnitName;
 use App\UnitPlatforms\UnitPlatformType;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Component;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class UnitDesigner extends Component
 {
@@ -16,18 +20,24 @@ class UnitDesigner extends Component
     public ?string $platformSlug = null;
     public ?string $equipmentSlug = null;
     public ?string $armorSlug = null;
+    public ?string $name = null;
+    public ?string $namePlaceholder = null;
+
+    protected Player $player;
+    protected Collection $knownTechs;
+
+    protected ?UnitPlatformType $platform = null;
+    protected ?UnitEquipmentType $equipment = null;
+    protected ?UnitArmorType $armor = null;
 
     public function setPlatform(?string $slug): void
     {
         $this->platformSlug = $slug;
-        $this->equipmentSlug = null;
-        $this->armorSlug = null;
     }
 
     public function setEquipment(?string $slug): void
     {
         $this->equipmentSlug = $slug;
-        $this->armorSlug = null;
     }
 
     public function setArmor(?string $slug): void
@@ -35,85 +45,174 @@ class UnitDesigner extends Component
         $this->armorSlug = $slug;
     }
 
-    public function render()
+    public static function isValid(
+        ?UnitPlatformType  $platform,
+        ?UnitEquipmentType $equipment,
+        ?UnitArmorType     $armor,
+        Collection         $knownTechs
+    ): bool
     {
-        $platform = $this->platformSlug ? UnitPlatformType::fromSlug($this->platformSlug) : null;
-        $equipment = $this->equipmentSlug ? UnitEquipmentType::fromSlug($this->equipmentSlug) : null;
-        $armor = $this->armorSlug ? UnitArmorType::fromSlug($this->armorSlug) : null;
-        $knownTechs = TechnologyType::all()
-            ->filter(fn(TechnologyType $tech) => $tech->xy()->x < 24)
+        if ($armor === NoArmor::get()) {
+            $armor = null;
+        }
+
+        // Run tech tests for each component
+        if ($platform?->technology() && !$knownTechs->contains($platform->technology())) {
+            return false;
+        }
+        if ($platform?->upgradesTo()?->technology() && $knownTechs->contains($platform->upgradesTo()->technology())) {
+            return false;
+        }
+
+        if ($equipment?->technology() && !$knownTechs->contains($equipment->technology())) {
+            return false;
+        }
+        if ($equipment?->upgradesTo()?->technology() && $knownTechs->contains($equipment->upgradesTo()->technology())) {
+            return false;
+        }
+
+        if ($armor?->technology() && !$knownTechs->contains($armor->technology())) {
+            return false;
+        }
+        if ($armor?->upgradesTo()?->technology() && $knownTechs->contains($armor->upgradesTo()->technology())) {
+            return false;
+        }
+
+        if (!$platform || !$equipment) {
+            return true;
+        }
+
+        return $platform->canHave($equipment, $armor);
+    }
+
+    protected function init(): void
+    {
+        $this->player = Player::firstOrCreate(
+            ['user_id' => auth()->id(), 'map_id' => 1],
+            ['color1' => '#009', 'color2' => '#eee']
+        );
+        $this->knownTechs = TechnologyType::all()
+            ->filter(fn(TechnologyType $tech) => $tech->xy()->x < 29)
             ->keyBy(fn(TechnologyType $tech) => $tech->slug());
 
-        $weightRemaining = $platform?->maxWeight
-            - $equipment?->weight
-            - $armor?->weight;
-        $equipmentRemaining = $platform?->equipmentSlots - $equipment?->weight;
-        $armorRemaining = $platform?->armorSlots - $armor?->weight;
+        $this->platform = $this->platformSlug ? UnitPlatformType::fromSlug($this->platformSlug) : null;
 
+        // Check Platform is known
+        if ($this->platform && $this->platform->technology() && !isset($this->knownTechs[$this->platform->technology()->slug()])) {
+            $this->platform = null;
+            $this->platformSlug = null;
+        }
+
+        // Check Platform can have the Equipment
+        $this->equipment = $this->equipmentSlug ? UnitEquipmentType::fromSlug($this->equipmentSlug) : null;
+        if ($this->platform && $this->equipment && !$this->platform->canHave($this->equipment)) {
+            $this->equipmentSlug = null;
+            $this->equipment = null;
+        }
+
+        // Check can Platform & Equipment have armor
+        if ($this->platform && !$this->platform->armorSlots) {
+            $this->armorSlug = null;
+        }
+        if ($this->equipment && !$this->equipment->canHaveArmor()) {
+            $this->armorSlug = null;
+        }
+        $this->armor = $this->armorSlug ? UnitArmorType::fromSlug($this->armorSlug) : null;
+
+        // If the Platform can't support the Armor, unset the armor
+        if ($this->platform && $this->armor && !$this->platform->armors()->contains($this->armor)) {
+            $this->armorSlug = null;
+            $this->armor = null;
+        }
+
+        // If the Platform can't support the Equipment & Armor, unset the armor
+        if ($this->platform && $this->equipment && $this->armor && !$this->platform->canHave($this->equipment, $this->armor)) {
+            $this->armorSlug = null;
+            $this->armor = null;
+        }
+
+        // Finally set the name placeholder
+        if ($this->platform && $this->equipment) {
+            $this->namePlaceholder = UnitName::name(
+                $this->platform,
+                $this->equipment,
+                $this->armor
+            );
+        }
+    }
+
+    public function render(): View
+    {
+        $this->init();
+
+        // Load Platform data
         $platformItems = collect();
-        foreach (UnitPlatformCategory::cases() as $category) {
-            foreach ($category->items() as $platformItem) {
+        if (!$this->platform) {
+            foreach (UnitPlatformType::all() as $platformItem) {
+                if ($this->equipment && !$platformItem->canHave($this->equipment)) {
+                    continue;
+                }
                 $this->setUnitComponentToItems(
                     $platformItems,
                     $platformItem,
-                    0,
-                    0,
-                    $knownTechs
+                    $this->knownTechs
                 );
             }
         }
-        $platformTitle = $platform
+        $platformTitle = $this->platform
             ? 'Platform'
             : 'Select Platform';
 
+        // Load Equipment Data
         $equipmentItems = collect();
-        if ($platform && !$equipment) {
-            foreach ($platform->equipment() ?: [] as $equipmentItem) {
+        if (!$this->equipment) {
+            foreach ($this->platform?->equipment() ?: UnitEquipmentType::all() as $equipmentItem) {
+                if ($this->platform && !$this->platform->canHave($equipmentItem)) {
+                    continue;
+                }
                 $this->setUnitComponentToItems(
                     $equipmentItems,
                     $equipmentItem,
-                    $weightRemaining,
-                    $equipmentRemaining,
-                    $knownTechs
+                    $this->knownTechs
                 );
             }
         }
         $equipmentTitle = match (true) {
-            !$platform => 'To select equipment, select the Platform first',
-            !$equipment => 'Select Equipment',
+            !$this->equipment => 'Select Equipment',
             default => 'Equipment',
         };
 
+        // Load Armor Data
         $armorItems = collect();
-        if ($platform && $equipment?->canHaveArmor() && !$armor) {
-            foreach ($platform->armors() ?: [] as $armorItem) {
+        if ($this->platform && $this->equipment?->canHaveArmor() && !$this->armor) {
+            foreach ($this->platform->armors() ?: [] as $armorItem) {
+                if (!$this->platform->canHave($this->equipment, $armorItem)) {
+                    continue;
+                }
                 $this->setUnitComponentToItems(
                     $armorItems,
                     $armorItem,
-                    $weightRemaining,
-                    $armorRemaining,
-                    $knownTechs
+                    $this->knownTechs
                 );
             }
         }
-
         $armorTitle = match (true) {
-            !$platform => 'To select Armor, select the Platform first',
-            $platform->armors()->isEmpty() => 'This Platform cannot have Armor',
-            !$equipment => 'To select Armor, select the Equipment first',
-            !$equipment->canHaveArmor() => 'This Equipment cannot have Armor',
-            !$armor => 'Select Armor',
+            !$this->platform => 'To select Armor, select the Platform first',
+            $this->platform->armors()->isEmpty() => 'This Platform cannot have Armor',
+            !$this->equipment => 'To select Armor, select the Equipment first',
+            !$this->equipment->canHaveArmor() => 'This Equipment cannot have Armor',
+            !$this->armor => 'Select Armor',
             default => 'Armor',
         };
 
         return view('livewire.unit-designer', [
-            'platform' => $platform,
+            'platform' => $this->platform,
             'platformTitle' => $platformTitle,
             'platformItems' => $platformItems,
-            'equipment' => $equipment,
+            'equipment' => $this->equipment,
             'equipmentTitle' => $equipmentTitle,
             'equipmentItems' => $equipmentItems,
-            'armor' => $armor,
+            'armor' => $this->armor,
             'armorTitle' => $armorTitle,
             'armorItems' => $armorItems,
         ]);
@@ -122,17 +221,15 @@ class UnitDesigner extends Component
     protected function setUnitComponentToItems(
         Collection                                       $items,
         UnitArmorType|UnitEquipmentType|UnitPlatformType $component,
-        int                                              $weightRemaining,
-        int                                              $slotsRemaining,
         Collection                                       $knownTechs
     ): void
     {
         $techSlug = $component->technology()?->slug();
         $upgradesToTechSlug = $component->upgradesTo()?->technology()?->slug();
         if (
-            ($component->weight && $weightRemaining < $component->weight) ||
-            ($component->weight && $slotsRemaining < $component->weight) ||
+            // Required Tech is not known
             ($techSlug && !isset($knownTechs[$techSlug])) ||
+            // Already know the tech required for the upgrade
             ($upgradesToTechSlug && isset($knownTechs[$upgradesToTechSlug]))
         ) {
             return;
@@ -146,5 +243,36 @@ class UnitDesigner extends Component
         $categoryData['items']->push($component);
 
         $items[$component->category()->slug()] = $categoryData;
+    }
+
+    public function save(): void
+    {
+        $this->init();
+
+        if (!$this->platform || !$this->equipment || !$this->platform->canHave($this->equipment, $this->armor)) {
+            throw new BadRequestHttpException(
+                'Invalid platform + equipment + armor combination: ' .
+                "[$this->platform, $this->equipment, $this->armor]"
+            );
+        }
+
+        if ($this->player->unitDesigns()->where([
+            'platform' => $this->platform,
+            'equipment' => $this->equipment,
+            'armor' => $this->armor,
+        ])->exists()
+        ) {
+            throw new BadRequestHttpException(
+                'Unit Design with platform + equipment + armor combination: ' .
+                "[$this->platform, $this->equipment, $this->armor] already exists"
+            );
+        }
+
+        $this->player->unitDesigns()->create([
+            'platform' => $this->platform,
+            'equipment' => $this->equipment,
+            'armor' => $this->armor,
+            'name' => $this->name ?: $this->namePlaceholder,
+        ]);
     }
 }

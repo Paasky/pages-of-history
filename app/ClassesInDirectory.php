@@ -2,8 +2,6 @@
 
 namespace App;
 
-use App\Technologies\TechnologyType;
-use App\Technologies\TechTree;
 use Illuminate\Support\Collection;
 
 class ClassesInDirectory

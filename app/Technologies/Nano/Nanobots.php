@@ -26,6 +26,6 @@ class Nanobots extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(57, 9);
+        return new Coordinate(57, 8);
     }
 }

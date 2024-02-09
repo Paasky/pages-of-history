@@ -27,6 +27,6 @@ class Globalization extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(49, 4);
+        return new Coordinate(49, 3);
     }
 }

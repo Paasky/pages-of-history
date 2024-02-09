@@ -10,7 +10,7 @@ use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
 use App\UnitArmor\Person\BronzePlate;
 use App\UnitArmor\Person\IronPlate;
-use App\UnitArmor\Person\WoodenShield;
+use App\UnitArmor\Person\WoodShield;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\Diplomacy\Emissary;
 use App\UnitEquipment\Espionage\Thief;
@@ -44,7 +44,7 @@ class Horseback extends UnitPlatformType
         return collect([
             NoArmor::get(),
 
-            WoodenShield::get(),
+            WoodShield::get(),
             BronzePlate::get(),
             IronPlate::get(),
         ]);

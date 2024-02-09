@@ -27,6 +27,6 @@ class WeaponizedLasers extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(56, 4);
+        return new Coordinate(56, 3);
     }
 }

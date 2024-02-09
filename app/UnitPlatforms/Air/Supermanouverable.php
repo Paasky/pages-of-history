@@ -8,7 +8,6 @@ use App\Resources\Strategic\Oil;
 use App\Technologies\Information\Graphene;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Air\RadarJamming;
-use App\UnitArmor\NoArmor;
 use App\UnitArmor\Stealth\AdvancedStealth;
 use App\UnitArmor\Stealth\Stealth;
 use App\UnitArmor\UnitArmorType;
@@ -17,7 +16,6 @@ use App\UnitEquipment\AirGun\AirGuidedMissile;
 use App\UnitEquipment\Bomb\AiGuidedBomb;
 use App\UnitEquipment\Bomb\GuidedBomb;
 use App\UnitEquipment\MassDestruction\AtomBomb;
-use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\MassDestruction\HydrogenBomb;
 use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\UnitEquipmentType;
@@ -37,10 +35,7 @@ class Supermanouverable extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
-            NoArmor::get(),
-
             RadarJamming::get(),
-
             Stealth::get(),
             AdvancedStealth::get(),
         ]);
@@ -56,7 +51,6 @@ class Supermanouverable extends UnitPlatformType
             GuidedBomb::get(),
             AiGuidedBomb::get(),
 
-            GasBomb::get(),
             AtomBomb::get(),
             HydrogenBomb::get(),
             VirusBomb::get(),

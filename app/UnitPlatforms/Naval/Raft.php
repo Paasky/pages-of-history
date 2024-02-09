@@ -11,6 +11,7 @@ use App\UnitEquipment\Espionage\Thief;
 use App\UnitEquipment\Expansion\Settler;
 use App\UnitEquipment\Expansion\Tribe;
 use App\UnitEquipment\Exploring\Scout;
+use App\UnitEquipment\NavalAssault\WoodRam;
 use App\UnitEquipment\Trade\Trader;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
@@ -33,6 +34,8 @@ class Raft extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
+            WoodRam::get(),
+
             Tribe::get(),
             Settler::get(),
             Trader::get(),

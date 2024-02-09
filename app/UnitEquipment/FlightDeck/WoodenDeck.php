@@ -3,12 +3,19 @@
 namespace App\UnitEquipment\FlightDeck;
 
 use App\Enums\UnitEquipmentCategory;
+use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Technologies\Modern\Electronics;
 use App\Technologies\TechnologyType;
 use App\UnitEquipment\UnitEquipmentType;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
+use Illuminate\Support\Collection;
 
 class WoodenDeck extends UnitEquipmentType
 {
+    public int $weight = 3;
+
     public function category(): UnitEquipmentCategory
     {
         return UnitEquipmentCategory::FlightDeck;
@@ -22,5 +29,15 @@ class WoodenDeck extends UnitEquipmentType
     public function upgradesTo(): ?UnitEquipmentType
     {
         return CatapultDeck::get();
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return parent::yieldModifiers()->merge([
+            new YieldModifiersFor(
+                collect([new YieldModifier(YieldType::Cargo, 1)]),
+                [UnitPlatformCategory::Air]
+            ),
+        ]);
     }
 }

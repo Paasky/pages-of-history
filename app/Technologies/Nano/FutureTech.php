@@ -32,7 +32,7 @@ class FutureTech extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(58, 7);
+        return new Coordinate(58, 6);
     }
 
     /**

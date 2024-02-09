@@ -26,6 +26,6 @@ class NeuralNetworks extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(56, 8);
+        return new Coordinate(56, 7);
     }
 }

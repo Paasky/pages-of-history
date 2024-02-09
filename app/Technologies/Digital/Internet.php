@@ -27,6 +27,6 @@ class Internet extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(48, 5);
+        return new Coordinate(48, 4);
     }
 }

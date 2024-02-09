@@ -27,6 +27,6 @@ class FusionPropulsion extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(57, 5);
+        return new Coordinate(57, 4);
     }
 }

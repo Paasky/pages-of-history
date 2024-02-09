@@ -27,6 +27,6 @@ class QuantumComputing extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(54, 6);
+        return new Coordinate(54, 5);
     }
 }

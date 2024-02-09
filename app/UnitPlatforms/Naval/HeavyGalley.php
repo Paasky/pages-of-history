@@ -15,9 +15,10 @@ use App\UnitEquipment\Espionage\Courtesan;
 use App\UnitEquipment\Espionage\Thief;
 use App\UnitEquipment\Expansion\Settler;
 use App\UnitEquipment\Exploring\Scout;
+use App\UnitEquipment\NavalAssault\BronzeRam;
+use App\UnitEquipment\NavalAssault\IronRam;
 use App\UnitEquipment\Siege\Catapult;
 use App\UnitEquipment\Siege\Onager;
-use App\UnitEquipment\Siege\Ram;
 use App\UnitEquipment\Siege\Trebuchet;
 use App\UnitEquipment\Trade\Merchant;
 use App\UnitEquipment\Trade\Trader;
@@ -45,7 +46,8 @@ class HeavyGalley extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
-            Ram::get(),
+            BronzeRam::get(),
+            IronRam::get(),
             Catapult::get(),
             Onager::get(),
             Trebuchet::get(),

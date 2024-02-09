@@ -26,6 +26,6 @@ class Genetics extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(48, 3);
+        return new Coordinate(48, 2);
     }
 }

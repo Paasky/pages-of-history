@@ -3,6 +3,7 @@
 namespace App\Yields;
 
 use App\Enums\YieldType;
+use Illuminate\Support\Collection;
 
 class YieldModifier
 {
@@ -17,9 +18,43 @@ class YieldModifier
     {
         $this->color = ($amount ?: $percent) < 0 ? 'red' : 'green';
         $this->effect = implode([
-            ($amount ?: $percent) < 0 ? '' : '+',
+            $percent && $this->percent > 0 ? '+' : '',
             $amount ?: $percent,
             $this->percent ? '%' : '',
         ]);
+    }
+
+    /**
+     * @param Collection<int, YieldModifier|YieldModifiersFor> $modifiers
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
+     */
+    public static function mergeModifiers(Collection $modifiers): Collection
+    {
+        /** @var YieldModifier[] $modifierByYieldType */
+        $modifierByYieldType = [];
+        $modifierFors = [];
+
+        foreach ($modifiers as $modifier) {
+            if ($modifier instanceof YieldModifier) {
+                $slug = $modifier->type->slug();
+                if (!isset($modifierByYieldType[$slug])) {
+                    $modifierByYieldType[$slug] = $modifier;
+                    continue;
+                }
+
+                $modifierByYieldType[$slug] = new YieldModifier(
+                    $modifier->type,
+                    $modifierByYieldType[$slug]->amount + $modifier->amount,
+                    $modifierByYieldType[$slug]->percent + $modifier->percent
+                );
+                continue;
+            }
+
+            $modifierFors[] = $modifier;
+        }
+
+        ksort($modifierByYieldType);
+
+        return collect($modifierByYieldType)->merge($modifierFors);
     }
 }

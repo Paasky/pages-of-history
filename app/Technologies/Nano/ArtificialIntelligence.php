@@ -4,7 +4,6 @@ namespace App\Technologies\Nano;
 
 use App\Coordinate;
 use App\Enums\TechnologyEra;
-use App\Technologies\Information\AutonomousRobotics;
 use App\Technologies\Information\QuantumComputing;
 use App\Technologies\TechnologyType;
 use Illuminate\Support\Collection;
@@ -28,6 +27,6 @@ class ArtificialIntelligence extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(55, 7);
+        return new Coordinate(55, 6);
     }
 }

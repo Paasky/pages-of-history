@@ -13,10 +13,16 @@ use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
-abstract class AbstractType implements GameConcept
+abstract class AbstractType implements GameConcept, \Stringable
 {
     /** @var Collection<int, AbstractType>[] */
     protected static array $all;
+
+    /** @var Collection<int, AbstractType>[] */
+    protected static array $allowsPerType = [];
+
+    /** @var Collection<int, AbstractType>[] */
+    protected static array $upgradesFromPerType = [];
 
     /** @var AbstractType[] */
     protected static array $singletons = [];
@@ -32,57 +38,27 @@ abstract class AbstractType implements GameConcept
      */
     public function allows(): Collection
     {
-        $allows = collect();
-        foreach (BuildingType::all() as $gameConcept) {
-            foreach ($gameConcept->requires() as $require) {
-                if ($require === $this) {
-                    $allows->push($gameConcept);
+        if (!static::$allowsPerType) {
+            foreach (
+                [
+                    BuildingType::all(),
+                    ImprovementType::all(),
+                    ResourceType::all(),
+                    UnitPlatformType::all(),
+                    UnitArmorType::all(),
+                    UnitEquipmentType::all(),
+                    TechnologyType::all(),
+                ] as $gameConcepts
+            ) {
+                /** @var GameConcept $gameConcept */
+                foreach ($gameConcepts as $gameConcept) {
+                    foreach ($gameConcept->requires() as $require) {
+                        static::$allowsPerType[get_class($require)][] = $gameConcept;
+                    }
                 }
             }
         }
-        foreach (ImprovementType::all() as $gameConcept) {
-            foreach ($gameConcept->requires() as $require) {
-                if ($require === $this) {
-                    $allows->push($gameConcept);
-                }
-            }
-        }
-        foreach (ResourceType::all() as $gameConcept) {
-            foreach ($gameConcept->requires() as $require) {
-                if ($require === $this) {
-                    $allows->push($gameConcept);
-                }
-            }
-        }
-        foreach (UnitPlatformType::all() as $gameConcept) {
-            foreach ($gameConcept->requires() as $require) {
-                if ($require === $this) {
-                    $allows->push($gameConcept);
-                }
-            }
-        }
-        foreach (UnitArmorType::all() as $gameConcept) {
-            foreach ($gameConcept->requires() as $require) {
-                if ($require === $this) {
-                    $allows->push($gameConcept);
-                }
-            }
-        }
-        foreach (UnitEquipmentType::all() as $gameConcept) {
-            foreach ($gameConcept->requires() as $require) {
-                if ($require === $this) {
-                    $allows->push($gameConcept);
-                }
-            }
-        }
-        foreach (TechnologyType::all() as $gameConcept) {
-            foreach ($gameConcept->requires() as $require) {
-                if ($require === $this) {
-                    $allows->push($gameConcept);
-                }
-            }
-        }
-        return $allows;
+        return collect(static::$allowsPerType[get_class($this)] ?? []);
     }
 
     abstract public function category(): GameConcept;
@@ -121,6 +97,20 @@ abstract class AbstractType implements GameConcept
             }
         }
         return static::$all[$path];
+    }
+
+    /**
+     * @param ...$items
+     * @return bool
+     */
+    public function is(...$items): bool
+    {
+        foreach ($items as $item) {
+            if ($this === $item || $this->slug() === $item) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -193,7 +183,27 @@ abstract class AbstractType implements GameConcept
     /** @return Collection<int, GameConcept> */
     public function upgradesFrom(): Collection
     {
-        return collect();
+        if (!static::$upgradesFromPerType) {
+            foreach (
+                [
+                    BuildingType::all(),
+                    ImprovementType::all(),
+                    ResourceType::all(),
+                    UnitPlatformType::all(),
+                    UnitArmorType::all(),
+                    UnitEquipmentType::all(),
+                    TechnologyType::all(),
+                ] as $gameConcepts
+            ) {
+                /** @var GameConcept $gameConcept */
+                foreach ($gameConcepts as $gameConcept) {
+                    if ($upgradesTo = $gameConcept->upgradesTo()) {
+                        static::$upgradesFromPerType[get_class($upgradesTo)][] = $gameConcept;
+                    }
+                }
+            }
+        }
+        return collect(static::$upgradesFromPerType[get_class($this)] ?? []);
     }
 
     public function upgradesTo(): ?GameConcept
@@ -205,5 +215,10 @@ abstract class AbstractType implements GameConcept
     public function yieldModifiers(): Collection
     {
         return collect();
+    }
+
+    public function __toString(): string
+    {
+        return $this->slug();
     }
 }

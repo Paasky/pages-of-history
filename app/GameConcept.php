@@ -24,6 +24,8 @@ interface GameConcept
 
     public function icon(): string;
 
+    public function is(...$items): bool;
+
     /** @return Collection<int, GameConcept> */
     public function items(): Collection;
 

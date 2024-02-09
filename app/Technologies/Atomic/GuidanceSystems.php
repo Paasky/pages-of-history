@@ -26,6 +26,6 @@ class GuidanceSystems extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(46, 3);
+        return new Coordinate(46, 4);
     }
 }

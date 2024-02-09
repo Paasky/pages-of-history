@@ -9,26 +9,22 @@ use App\Technologies\Atomic\OrbitalBallistics;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Air\ChaffFlare;
 use App\UnitArmor\Air\SealingTanks;
-use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\AirGun\AirGuidedMissile;
 use App\UnitEquipment\AirGun\AirHomingMissile;
-use App\UnitEquipment\AirGun\AirMachineGun;
 use App\UnitEquipment\Bomb\GuidedBomb;
 use App\UnitEquipment\Bomb\HeavyBomb;
 use App\UnitEquipment\MassDestruction\AtomBomb;
-use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\MassDestruction\HydrogenBomb;
-use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
 
 class Supersonic extends UnitPlatformType
 {
-    public int $equipmentSlots = 1;
+    public int $equipmentSlots = 2;
     public int $armorSlots = 1;
-    public int $maxWeight = 2;
+    public int $maxWeight = 3;
     public int $moves = 1;
     public int $range = 6;
     public int $maneuvering = 5;
@@ -37,8 +33,6 @@ class Supersonic extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
-            NoArmor::get(),
-
             SealingTanks::get(),
             ChaffFlare::get(),
         ]);
@@ -48,17 +42,14 @@ class Supersonic extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
-            AirMachineGun::get(),
             AirHomingMissile::get(),
             AirGuidedMissile::get(),
 
             HeavyBomb::get(),
             GuidedBomb::get(),
 
-            GasBomb::get(),
             AtomBomb::get(),
             HydrogenBomb::get(),
-            VirusBomb::get(),
         ]);
     }
 

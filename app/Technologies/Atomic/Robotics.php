@@ -27,6 +27,6 @@ class Robotics extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(46, 5);
+        return new Coordinate(46, 6);
     }
 }

@@ -4,14 +4,16 @@ namespace App\UnitPlatforms;
 
 use App\Enums\UnitPlatformCategory;
 use App\Technologies\TechnologyType;
-use App\UnitArmor\Camouflage\Camouflage;
 use App\UnitArmor\NoArmor;
+use App\UnitArmor\Parachute\HALO;
+use App\UnitArmor\Parachute\Parachute;
 use App\UnitArmor\Person\BodyArmor;
 use App\UnitArmor\Person\BronzePlate;
 use App\UnitArmor\Person\Chainmail;
 use App\UnitArmor\Person\IronPlate;
 use App\UnitArmor\Person\SteelPlate;
-use App\UnitArmor\Person\WoodenShield;
+use App\UnitArmor\Person\WoodShield;
+use App\UnitArmor\Stealth\Camouflage;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\AntiTank\AntiTankMissile;
 use App\UnitEquipment\AntiTank\AntiTankRifle;
@@ -85,13 +87,16 @@ class Person extends UnitPlatformType
         return collect([
             NoArmor::get(),
 
-            WoodenShield::get(),
+            WoodShield::get(),
             BronzePlate::get(),
             IronPlate::get(),
             Chainmail::get(),
             SteelPlate::get(),
             Camouflage::get(),
             BodyArmor::get(),
+
+            Parachute::get(),
+            HALO::get(),
         ]);
     }
 

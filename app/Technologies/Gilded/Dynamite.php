@@ -20,7 +20,6 @@ class Dynamite extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            Sanitization::get(),
             SmokelessPowder::get(),
         ]);
     }

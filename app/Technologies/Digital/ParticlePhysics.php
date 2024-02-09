@@ -26,6 +26,6 @@ class ParticlePhysics extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(50, 4);
+        return new Coordinate(50, 3);
     }
 }

@@ -30,7 +30,7 @@ class Arctic extends CultureTrait
                 Surface::Snow
             ),
             new YieldModifiersFor(
-                collect([new YieldModifier(YieldType::Movement, 1)]),
+                collect([new YieldModifier(YieldType::Moves, 1)]),
                 Feature::Snowdrifts
             ),
         ]);

@@ -9,11 +9,7 @@ use App\Technologies\Modern\CombinedArms;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\Air\ChaffFlare;
 use App\UnitArmor\Air\SealingTanks;
-use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
-use App\UnitEquipment\AirGun\AirGuidedMissile;
-use App\UnitEquipment\AirGun\AirHomingMissile;
-use App\UnitEquipment\AirGun\AirMachineGun;
 use App\UnitEquipment\Bomb\GuidedBomb;
 use App\UnitEquipment\Bomb\HeavyBomb;
 use App\UnitEquipment\UnitEquipmentType;
@@ -22,9 +18,9 @@ use Illuminate\Support\Collection;
 
 class Helicopter extends UnitPlatformType
 {
-    public int $equipmentSlots = 1;
+    public int $equipmentSlots = 2;
     public int $armorSlots = 1;
-    public int $maxWeight = 2;
+    public int $maxWeight = 3;
     public int $moves = 2;
     public int $range = 4;
     public int $maneuvering = 2;
@@ -33,8 +29,6 @@ class Helicopter extends UnitPlatformType
     public function armors(): Collection
     {
         return collect([
-            NoArmor::get(),
-
             SealingTanks::get(),
             ChaffFlare::get(),
         ]);
@@ -44,10 +38,6 @@ class Helicopter extends UnitPlatformType
     public function equipment(): Collection
     {
         return collect([
-            AirMachineGun::get(),
-            AirHomingMissile::get(),
-            AirGuidedMissile::get(),
-
             HeavyBomb::get(),
             GuidedBomb::get(),
         ]);

@@ -2,32 +2,39 @@
 
 namespace App\UnitPlatforms\Naval;
 
-use App\UnitArmor\UnitArmorType;
-use App\Enums\UnitPlatformCategory;
 use App\Enums\UnitCapability;
-use App\UnitPlatforms\UnitPlatformType;
+use App\Enums\UnitPlatformCategory;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\Robotics;
 use App\Technologies\TechnologyType;
+use App\UnitArmor\NoArmor;
+use App\UnitArmor\Stealth\AdvancedStealth;
+use App\UnitArmor\Stealth\Stealth;
+use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\MissileBay\MissileBay;
 use App\UnitEquipment\Torpedo\AiTorpedo;
 use App\UnitEquipment\Torpedo\GuidedTorpedo;
 use App\UnitEquipment\Torpedo\HomingTorpedo;
 use App\UnitEquipment\UnitEquipmentType;
+use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Support\Collection;
 
 class NuclearSubmarine extends UnitPlatformType
 {
     public int $equipmentSlots = 2;
-    public int $armorSlots = 0;
+    public int $armorSlots = 1;
     public int $maxWeight = 2;
     public int $moves = 5;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
     {
-        return collect();
+        return collect([
+            NoArmor::get(),
+            Stealth::get(),
+            AdvancedStealth::get(),
+        ]);
     }
 
     /** @return Collection<int, UnitEquipmentType> */

@@ -20,13 +20,13 @@ class OrbitalBallistics extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            Transistor::get(),
             Plastics::get(),
+            Transistor::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(44, 5);
+        return new Coordinate(44, 6);
     }
 }

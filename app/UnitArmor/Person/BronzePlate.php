@@ -3,9 +3,14 @@
 namespace App\UnitArmor\Person;
 
 use App\Enums\UnitArmorCategory;
+use App\Enums\UnitEquipmentCategory;
+use App\Enums\YieldType;
 use App\Technologies\Bronze\BronzeWorking;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersAgainst;
+use Illuminate\Support\Collection;
 
 class BronzePlate extends UnitArmorType
 {
@@ -22,5 +27,15 @@ class BronzePlate extends UnitArmorType
     public function upgradesTo(): ?UnitArmorType
     {
         return IronPlate::get();
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return parent::yieldModifiers()->add(
+            new YieldModifiersAgainst(
+                new YieldModifier(YieldType::Strength, percent: 10),
+                UnitEquipmentCategory::Melee
+            )
+        );
     }
 }

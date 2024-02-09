@@ -14,6 +14,11 @@ class AiGuidedMortar extends UnitEquipmentType
         return UnitEquipmentCategory::SkirmishFirearm;
     }
 
+    public function name(): string
+    {
+        return 'AI Guided Mortar';
+    }
+
     public function technology(): ?TechnologyType
     {
         return NeuralNetworks::get();

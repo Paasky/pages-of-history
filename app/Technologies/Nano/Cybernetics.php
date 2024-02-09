@@ -27,6 +27,6 @@ class Cybernetics extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(56, 6);
+        return new Coordinate(56, 5);
     }
 }

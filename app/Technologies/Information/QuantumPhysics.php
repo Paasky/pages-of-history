@@ -29,6 +29,6 @@ class QuantumPhysics extends TechnologyType
 
     public function xy(): Coordinate
     {
-        return new Coordinate(51, 3);
+        return new Coordinate(51, 2);
     }
 }

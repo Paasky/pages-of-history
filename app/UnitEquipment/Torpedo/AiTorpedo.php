@@ -14,6 +14,11 @@ class AiTorpedo extends UnitEquipmentType
         return UnitEquipmentCategory::Torpedo;
     }
 
+    public function name(): string
+    {
+        return 'AI Torpedo';
+    }
+
     public function technology(): ?TechnologyType
     {
         return ArtificialIntelligence::get();

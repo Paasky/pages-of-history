@@ -22,13 +22,13 @@ class Plastics extends TechnologyType
     public function requires(): Collection
     {
         return collect([
-            SyntheticMaterials::get(),
             JetEngine::get(),
+            SyntheticMaterials::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(43, 6);
+        return new Coordinate(43, 7);
     }
 }

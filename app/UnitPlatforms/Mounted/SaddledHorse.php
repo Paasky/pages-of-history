@@ -12,7 +12,7 @@ use App\UnitArmor\Person\BronzePlate;
 use App\UnitArmor\Person\Chainmail;
 use App\UnitArmor\Person\IronPlate;
 use App\UnitArmor\Person\SteelPlate;
-use App\UnitArmor\Person\WoodenShield;
+use App\UnitArmor\Person\WoodShield;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\Diplomacy\Diplomat;
 use App\UnitEquipment\Diplomacy\Emissary;
@@ -30,7 +30,9 @@ use App\UnitEquipment\Melee\Rapier;
 use App\UnitEquipment\Melee\SteelSword;
 use App\UnitEquipment\Ranged\Bow;
 use App\UnitEquipment\Ranged\CompositeBow;
+use App\UnitEquipment\Skirmish\Crossbow;
 use App\UnitEquipment\Skirmish\IronThrowingSpear;
+use App\UnitEquipment\SkirmishFirearm\Arquebus;
 use App\UnitEquipment\SkirmishFirearm\FlintlockCarbine;
 use App\UnitEquipment\SkirmishFirearm\RifleCarbine;
 use App\UnitEquipment\Spear\Grenadier;
@@ -41,7 +43,7 @@ use App\UnitEquipment\Trade\Merchant;
 use App\UnitEquipment\Trade\Trader;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
-use App\UnitPlatforms\Vehicle\Wheeled;
+use App\UnitPlatforms\Vehicle\Motorized;
 use Illuminate\Support\Collection;
 
 class SaddledHorse extends UnitPlatformType
@@ -57,7 +59,7 @@ class SaddledHorse extends UnitPlatformType
         return collect([
             NoArmor::get(),
 
-            WoodenShield::get(),
+            WoodShield::get(),
             BronzePlate::get(),
             IronPlate::get(),
             Chainmail::get(),
@@ -96,7 +98,8 @@ class SaddledHorse extends UnitPlatformType
             Grenadier::get(),
 
             IronThrowingSpear::get(),
-
+            Crossbow::get(),
+            Arquebus::get(),
             FlintlockCarbine::get(),
             RifleCarbine::get(),
 
@@ -125,7 +128,7 @@ class SaddledHorse extends UnitPlatformType
 
     public function upgradesTo(): ?UnitPlatformType
     {
-        return Wheeled::get();
+        return Motorized::get();
     }
 
     public function icon(): string

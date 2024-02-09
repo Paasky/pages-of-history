@@ -14,6 +14,11 @@ class AiRocketSystem extends UnitEquipmentType
         return UnitEquipmentCategory::RocketArtillery;
     }
 
+    public function name(): string
+    {
+        return 'AI Rocket System';
+    }
+
     public function technology(): ?TechnologyType
     {
         return NeuralNetworks::get();

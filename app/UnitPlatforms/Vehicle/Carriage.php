@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Vehicle;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Technologies\Bronze\Sieging;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
@@ -21,12 +22,14 @@ use App\UnitEquipment\MassDestruction\DiseaseCatapult;
 use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\RocketArtillery\RocketArtillery;
+use App\UnitEquipment\Siege\BatteringRam;
 use App\UnitEquipment\Siege\Catapult;
 use App\UnitEquipment\Siege\Onager;
-use App\UnitEquipment\Siege\Ram;
 use App\UnitEquipment\Siege\Trebuchet;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
 class Carriage extends UnitPlatformType
@@ -42,11 +45,16 @@ class Carriage extends UnitPlatformType
         return collect();
     }
 
+    public function category(): UnitPlatformCategory
+    {
+        return UnitPlatformCategory::Vehicle;
+    }
+
     /** @return Collection<int, UnitEquipmentType> */
     public function equipment(): Collection
     {
         return collect([
-            Ram::get(),
+            BatteringRam::get(),
             Catapult::get(),
             Onager::get(),
             Trebuchet::get(),
@@ -72,9 +80,9 @@ class Carriage extends UnitPlatformType
         ]);
     }
 
-    public function category(): UnitPlatformCategory
+    public function icon(): string
     {
-        return UnitPlatformCategory::Vehicle;
+        return 'fa-inbox';
     }
 
     public function technology(): ?TechnologyType
@@ -87,8 +95,11 @@ class Carriage extends UnitPlatformType
         return Tracked::get();
     }
 
-    public function icon(): string
+    /** @return Collection<int, YieldModifier|YieldModifiersFor> */
+    public function yieldModifiers(): Collection
     {
-        return 'fa-inbox';
+        return parent::yieldModifiers()->add(
+            new YieldModifier(YieldType::Defense, percent: -50)
+        );
     }
 }

@@ -5,7 +5,7 @@ namespace App\Technologies\Atomic;
 use App\Coordinate;
 use App\Enums\TechnologyEra;
 use App\Technologies\Modern\CombinedArms;
-use App\Technologies\Modern\SyntheticMaterials;
+use App\Technologies\Modern\JetEngine;
 use App\Technologies\TechnologyType;
 use Illuminate\Support\Collection;
 
@@ -23,12 +23,12 @@ class Transistor extends TechnologyType
     {
         return collect([
             CombinedArms::get(),
-            SyntheticMaterials::get(),
+            JetEngine::get(),
         ]);
     }
 
     public function xy(): Coordinate
     {
-        return new Coordinate(43, 4);
+        return new Coordinate(43, 5);
     }
 }
