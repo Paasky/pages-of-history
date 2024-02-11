@@ -28,7 +28,7 @@
             @endif
         </div>
 
-        @if($itemsPerCategory->isNotEmpty())
+        @if(!$current && $itemsPerCategory->isNotEmpty())
             <div class="mt-6 flex flex-wrap">
                 @foreach($itemsPerCategory as $categoryData)
                     @php

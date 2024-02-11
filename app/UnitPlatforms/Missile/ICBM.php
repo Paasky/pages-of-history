@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Missile;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\Satellites;
@@ -15,6 +16,7 @@ use App\UnitEquipment\MassDestruction\HydrogenBomb;
 use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class ICBM extends UnitPlatformType
@@ -22,9 +24,6 @@ class ICBM extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 0;
     public int $maxWeight = 2;
-    public int $moves = 1;
-    public int $range = -1;
-    public int $maneuvering = 15;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -47,6 +46,11 @@ class ICBM extends UnitPlatformType
     public function category(): UnitPlatformCategory
     {
         return UnitPlatformCategory::Missile;
+    }
+
+    public function icon(): string
+    {
+        return 'fa-rocket';
     }
 
     public function name(): string
@@ -77,8 +81,11 @@ class ICBM extends UnitPlatformType
         return null;
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-rocket';
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 40),
+            new YieldModifier(YieldType::Agility, 15),
+        ]);
     }
 }

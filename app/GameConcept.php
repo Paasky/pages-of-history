@@ -20,6 +20,8 @@ interface GameConcept
      */
     public function dataForInit(): array;
 
+    public function description(): string;
+
     public function hasDetails(): bool;
 
     public function icon(): string;

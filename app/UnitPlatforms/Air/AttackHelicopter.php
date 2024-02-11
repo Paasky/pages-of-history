@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Air;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Digital\Microchips;
@@ -17,6 +18,7 @@ use App\UnitEquipment\Bomb\GuidedBomb;
 use App\UnitEquipment\Bomb\HeavyBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class AttackHelicopter extends UnitPlatformType
@@ -24,9 +26,6 @@ class AttackHelicopter extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 1;
     public int $maxWeight = 3;
-    public int $moves = 2;
-    public int $range = 6;
-    public int $maneuvering = 5;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -55,6 +54,11 @@ class AttackHelicopter extends UnitPlatformType
         return UnitPlatformCategory::Air;
     }
 
+    public function icon(): string
+    {
+        return 'fa-helicopter';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
@@ -73,8 +77,13 @@ class AttackHelicopter extends UnitPlatformType
         return null;
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-helicopter';
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 40),
+            new YieldModifier(YieldType::Agility, 5),
+            new YieldModifier(YieldType::Moves, 2),
+            new YieldModifier(YieldType::Range, 6),
+        ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\UnitPlatforms\Naval;
 
 use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Technologies\Atomic\Robotics;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
@@ -19,6 +20,7 @@ use App\UnitEquipment\RocketArtillery\AiRocketSystem;
 use App\UnitEquipment\RocketArtillery\RocketSystem;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class NuclearEngine extends UnitPlatformType
@@ -26,7 +28,6 @@ class NuclearEngine extends UnitPlatformType
     public int $equipmentSlots = 3;
     public int $armorSlots = 1;
     public int $maxWeight = 4;
-    public int $moves = 6;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -77,5 +78,13 @@ class NuclearEngine extends UnitPlatformType
     public function upgradesTo(): ?UnitPlatformType
     {
         return null;
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 100),
+            new YieldModifier(YieldType::Moves, 7),
+        ]);
     }
 }

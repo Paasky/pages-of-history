@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Air;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Modern\MetalAlloys;
@@ -17,6 +18,7 @@ use App\UnitEquipment\MassDestruction\AtomBomb;
 use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class Monocoque extends UnitPlatformType
@@ -24,9 +26,6 @@ class Monocoque extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 1;
     public int $maxWeight = 2;
-    public int $moves = 1;
-    public int $range = 6;
-    public int $maneuvering = 3;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -56,6 +55,11 @@ class Monocoque extends UnitPlatformType
         return UnitPlatformCategory::Air;
     }
 
+    public function icon(): string
+    {
+        return 'fa-plane';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
@@ -74,8 +78,13 @@ class Monocoque extends UnitPlatformType
         return Supersonic::get();
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-plane';
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 15),
+            new YieldModifier(YieldType::Agility, 3),
+            new YieldModifier(YieldType::Moves, 1),
+            new YieldModifier(YieldType::Range, 6),
+        ]);
     }
 }

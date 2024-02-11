@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Mounted;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Horses;
 use App\Technologies\Bronze\Wheel;
@@ -17,6 +18,7 @@ use App\UnitEquipment\Spear\WoodSpear;
 use App\UnitEquipment\Trade\Trader;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class Chariot extends UnitPlatformType
@@ -73,5 +75,13 @@ class Chariot extends UnitPlatformType
     public function upgradesTo(): ?UnitPlatformType
     {
         return Horseback::get();
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 50),
+            new YieldModifier(YieldType::Moves, 3),
+        ]);
     }
 }

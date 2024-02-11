@@ -6,6 +6,7 @@ enum YieldType: string
 {
     use GameConceptEnum;
 
+    case Agility = 'Agility';
     case Attack = 'Attack';
     case Bombard = 'Bombard';
     case Cargo = 'Cargo';
@@ -34,6 +35,7 @@ enum YieldType: string
     public function icon(): string
     {
         return match ($this) {
+            self::Agility => 'fa-plane-circle-check',
             self::Attack => 'fa-arrows-to-circle',
             self::Bombard => 'fa-crosshairs',
             self::Cargo => 'fa-box',

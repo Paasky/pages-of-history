@@ -4,6 +4,7 @@ namespace App\UnitPlatforms\Naval;
 
 use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Technologies\Modern\Electronics;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
@@ -38,6 +39,7 @@ use App\UnitEquipment\Trade\CargoHold;
 use App\UnitEquipment\Trade\ContainerHold;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class DieselElectric extends UnitPlatformType
@@ -45,7 +47,6 @@ class DieselElectric extends UnitPlatformType
     public int $equipmentSlots = 3;
     public int $armorSlots = 1;
     public int $maxWeight = 3;
-    public int $moves = 6;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -121,5 +122,13 @@ class DieselElectric extends UnitPlatformType
     public function upgradesTo(): ?UnitPlatformType
     {
         return null;
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 70),
+            new YieldModifier(YieldType::Moves, 6),
+        ]);
     }
 }

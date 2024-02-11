@@ -37,7 +37,6 @@ class Carriage extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 0;
     public int $maxWeight = 2;
-    public int $moves = 2;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -98,8 +97,9 @@ class Carriage extends UnitPlatformType
     /** @return Collection<int, YieldModifier|YieldModifiersFor> */
     public function yieldModifiers(): Collection
     {
-        return parent::yieldModifiers()->add(
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 25),
             new YieldModifier(YieldType::Defense, percent: -50)
-        );
+        ]);
     }
 }

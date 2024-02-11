@@ -76,7 +76,7 @@ abstract class UnitArmorType extends AbstractType
         return collect([
             new YieldModifier(
                 YieldType::Cost,
-                percent: 25
+                percent: 50
             ),
             new YieldModifier(
                 YieldType::Strength,

@@ -33,7 +33,7 @@ class WoodenDeck extends UnitEquipmentType
 
     public function yieldModifiers(): Collection
     {
-        return parent::yieldModifiers()->merge([
+        return collect([
             new YieldModifiersFor(
                 collect([new YieldModifier(YieldType::Cargo, 1)]),
                 [UnitPlatformCategory::Air]

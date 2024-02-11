@@ -12,7 +12,7 @@ class TechTree extends Component
     {
         $knownTechs = TechnologyType::all()
             ->filter(fn(TechnologyType $tech) => $tech->xy()->x < 29)
-            ->each(fn(TechnologyType $tech) => $tech->known = $tech->cost())
+            ->each(fn(TechnologyType $tech) => $tech->research = $tech->cost())
             ->keyBy(fn(TechnologyType $tech) => $tech->slug());
 
         return view('livewire.tech-tree', ['knownTechs' => $knownTechs]);

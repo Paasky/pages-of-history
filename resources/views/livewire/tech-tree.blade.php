@@ -96,7 +96,7 @@
                  style="min-width: {{ $eraWidth * $techWidthWithGutter - $techWidthGutter + 1 }}rem; min-height: {{ 10.5 * $techHeightWithGutter + 1 }}rem"
             >
                 <div class="p-2 tracking-wide uppercase whitespace-nowrap rounded-t-xl text-center">
-                    {{ $era->name() }} {{ __('Era') }}
+                    {{ $era->name() }}
                 </div>
                 <div class="relative">
                     @if($drawArrowContainer)
@@ -125,7 +125,7 @@
                         >
                             <div class="px-2 technology whitespace-nowrap rounded-t-md">
                                 {{ $tech->name() }}
-                                <span class="float-right">({{ $tech->known }}/{{ $tech->cost() }} <i
+                                <span class="float-right">({{ $tech->research }}/{{ $tech->cost() }} <i
                                         class="fa {{$tech->icon() }}"></i>)</span>
                             </div>
                             <div class="text-sm p-1">

@@ -38,7 +38,7 @@ class AiRadarDeck extends UnitEquipmentType
 
     public function yieldModifiers(): Collection
     {
-        return parent::yieldModifiers()->merge([
+        return collect([
             new YieldModifier(YieldType::VisionRange, 2),
             new YieldModifiersFor(
                 collect([new YieldModifier(YieldType::Cargo, 2)]),

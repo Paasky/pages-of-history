@@ -26,6 +26,11 @@ trait GameConceptEnum
         return ['class' => str_replace('\\', '\\\\', get_class($this)), 'id' => $this->value];
     }
 
+    public function description(): string
+    {
+        return 'Description TBA';
+    }
+
     public function category(): ?GameConcept
     {
         return null;

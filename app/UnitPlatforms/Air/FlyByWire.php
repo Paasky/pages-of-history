@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Air;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Digital\Microchips;
@@ -20,6 +21,7 @@ use App\UnitEquipment\MassDestruction\HydrogenBomb;
 use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class FlyByWire extends UnitPlatformType
@@ -27,9 +29,6 @@ class FlyByWire extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 1;
     public int $maxWeight = 3;
-    public int $moves = 1;
-    public int $range = 8;
-    public int $maneuvering = 8;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -83,5 +82,15 @@ class FlyByWire extends UnitPlatformType
     public function upgradesTo(): ?UnitPlatformType
     {
         return Supermanouverable::get();
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 45),
+            new YieldModifier(YieldType::Agility, 8),
+            new YieldModifier(YieldType::Moves, 1),
+            new YieldModifier(YieldType::Range, 8),
+        ]);
     }
 }

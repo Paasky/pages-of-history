@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Air;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\OrbitalBallistics;
@@ -18,6 +19,7 @@ use App\UnitEquipment\MassDestruction\AtomBomb;
 use App\UnitEquipment\MassDestruction\HydrogenBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class Supersonic extends UnitPlatformType
@@ -25,9 +27,6 @@ class Supersonic extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 1;
     public int $maxWeight = 3;
-    public int $moves = 1;
-    public int $range = 6;
-    public int $maneuvering = 5;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -79,5 +78,15 @@ class Supersonic extends UnitPlatformType
     public function upgradesTo(): ?UnitPlatformType
     {
         return FlyByWire::get();
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 30),
+            new YieldModifier(YieldType::Agility, 5),
+            new YieldModifier(YieldType::Moves, 1),
+            new YieldModifier(YieldType::Range, 6),
+        ]);
     }
 }

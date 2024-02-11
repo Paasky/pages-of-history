@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Vehicle;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Modern\AssemblyLine;
@@ -25,6 +26,7 @@ use App\UnitEquipment\RocketArtillery\RocketArtillery;
 use App\UnitEquipment\RocketArtillery\RocketSystem;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class Tracked extends UnitPlatformType
@@ -32,7 +34,6 @@ class Tracked extends UnitPlatformType
     public int $equipmentSlots = 3;
     public int $armorSlots = 1;
     public int $maxWeight = 3;
-    public int $moves = 3;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -70,6 +71,11 @@ class Tracked extends UnitPlatformType
         return UnitPlatformCategory::Vehicle;
     }
 
+    public function icon(): string
+    {
+        return 'fa-compress';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
@@ -88,8 +94,11 @@ class Tracked extends UnitPlatformType
         return null;
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-compress';
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 75),
+            new YieldModifier(YieldType::Moves, 3),
+        ]);
     }
 }

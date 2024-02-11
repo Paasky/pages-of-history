@@ -3,6 +3,8 @@
 namespace App;
 
 use App\Buildings\BuildingType;
+use App\Enums\TechnologyEra;
+use App\Enums\YieldType;
 use App\Improvements\ImprovementType;
 use App\Resources\ResourceType;
 use App\Technologies\TechnologyType;
@@ -66,6 +68,11 @@ abstract class AbstractType implements GameConcept, \Stringable
     public function dataForInit(): array
     {
         return ['class' => str_replace('\\', '\\\\', get_class($this)), 'id' => null];
+    }
+
+    public function description(): string
+    {
+        return 'Description TBA';
     }
 
     public static function fromSlug(string $slug): static
@@ -210,12 +217,17 @@ abstract class AbstractType implements GameConcept, \Stringable
     {
         return null;
     }
-
     /** @return Collection<int, YieldModifier|YieldModifiersFor> */
     public function yieldModifiers(): Collection
     {
-        return collect();
+        return collect([
+            new YieldModifier(
+                YieldType::Cost,
+                $this->technology()?->era()->baseCost() ?: TechnologyEra::BASE_COST
+            )
+        ]);
     }
+
 
     public function __toString(): string
     {

@@ -53,6 +53,15 @@ class YieldModifier
             $modifierFors[] = $modifier;
         }
 
+        foreach ($modifierByYieldType as $slug => $modifier) {
+            if ($modifier->amount && $modifier->percent) {
+                $modifierByYieldType[$slug] = new YieldModifier(
+                    $modifier->type,
+                    round($modifier->amount * ((100 + $modifier->percent) / 100))
+                );
+            }
+        }
+
         ksort($modifierByYieldType);
 
         return collect($modifierByYieldType)->merge($modifierFors);

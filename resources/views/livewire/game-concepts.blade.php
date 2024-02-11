@@ -100,6 +100,8 @@
                     {{ $current->name() }} ({{ $current->typeName() }})
                 </div>
                 <div class="">
+                    <img class="float-right w-1/2 p-2 ml-4 mb-1" src="/images/{{ $current->slug() }}.jpeg"
+                         alt="{{ $current->slug() }}"/>
                     <div class="game-concept-info float-right inline-block w-1/2 bg-gray-700 p-2 ml-4 mb-1 rounded-xl">
                         @if($current->category())
                             <div class="text-lg">Category</div>
@@ -157,39 +159,8 @@
                             <hr class="border-gray-600 my-2">
                         @endif
                     </div>
-                    <p>
-                        Stretch kitty scratches couch bad kitty catch eat throw up catch eat throw up bad birds. Chase
-                        red
-                        laser dot knock dish off table head butt cant eat out of my own dish or why dog in house? i'm
-                        the
-                        sole ruler of this home and its inhabitants smelly, stupid dogs, inferior furballs time for
-                        night-hunt, human freakout but where is my slave? I'm getting hungry but tweeting a baseball
-                        instantly break out into full speed gallop across the house for no reason sleeping in the box.
-                        Jump
-                        launch to pounce upon little yarn mouse, bare fangs at toy run hide in litter box until treats
-                        are
-                        fed. Eat grass, throw it back up. Eat the fat cats food meow meow pee in shoe. To pet a cat, rub
-                        its
-                        belly, endure blood and agony, quietly weep, keep rubbing belly man running from cops stops to
-                        pet
-                        cats, goes to jail. Slap owner's face at 5am until human fills food dish ask to go outside and
-                        ask
-                        to come inside and ask to go outside and ask to come inside cat slap dog in face. Drink water
-                        out of
-                        the faucet take a big fluffing crap ðŸ’© or plays league of legends spread kitty litter all over
-                        house. Why can't i catch that stupid red dot human give me attention meow. Gate keepers of hell
-                        weigh eight pounds but take up a full-size bed for carefully drink from water glass and then
-                        spill
-                        it everywhere and proceed to lick the puddle. Thug cat eat a plant, kill a hand. Is good you
-                        understand your place in my world purr purr purr until owner pets why owner not pet me hiss
-                        scratch
-                        meow sleeping in the box pet me pet me don't pet me. I bet my nine lives on you-oooo-ooo-hooo
-                        prow??
-                        ew dog you drink from the toilet, yum yum warm milk hotter pls, ouch too hot for do doodoo in
-                        the
-                        litter-box, clickityclack on the piano, be frumpygrumpy, and dont wait for the storm to pass,
-                        dance
-                        in the rain or scratch me now! stop scratching me!.
+                    <p class="text-justify">
+                        {!! nl2br(e($current->description())) !!}
                     </p>
                 </div>
             @else

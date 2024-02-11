@@ -7,11 +7,12 @@ use App\Coordinate;
 use App\Enums\TechnologyEra;
 use App\Enums\YieldType;
 use App\GameConcept;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 abstract class TechnologyType extends AbstractType
 {
-    public int $known = 0;
+    public int $research = 0;
     /**
      * @return Collection<int, TechnologyType>
      */
@@ -54,6 +55,11 @@ abstract class TechnologyType extends AbstractType
         return round(pow($this->xy()->x, 1.5) * 5 + 10);
     }
 
+    public function icon(): string
+    {
+        return YieldType::Science->icon();
+    }
+
     public function order(): int
     {
         return (int)(
@@ -64,10 +70,13 @@ abstract class TechnologyType extends AbstractType
 
     abstract public function era(): TechnologyEra;
 
-    public function icon(): string
-    {
-        return YieldType::Science->icon();
-    }
-
     abstract public function xy(): Coordinate;
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([new YieldModifier(
+            YieldType::Science,
+            $this->cost()
+        )]);
+    }
 }

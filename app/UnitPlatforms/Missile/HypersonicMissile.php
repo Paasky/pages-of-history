@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Missile;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Information\Graphene;
@@ -15,6 +16,7 @@ use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class HypersonicMissile extends UnitPlatformType
@@ -22,9 +24,6 @@ class HypersonicMissile extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 0;
     public int $maxWeight = 2;
-    public int $moves = 1;
-    public int $range = 8;
-    public int $maneuvering = 20;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -50,6 +49,11 @@ class HypersonicMissile extends UnitPlatformType
         return UnitPlatformCategory::Missile;
     }
 
+    public function icon(): string
+    {
+        return 'fa-rocket';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
@@ -68,8 +72,12 @@ class HypersonicMissile extends UnitPlatformType
         return null;
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-rocket';
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 20),
+            new YieldModifier(YieldType::Agility, 20),
+            new YieldModifier(YieldType::Range, 8),
+        ]);
     }
 }

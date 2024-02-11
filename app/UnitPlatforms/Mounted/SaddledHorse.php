@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Mounted;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Horses;
 use App\Technologies\Medieval\Stirrup;
@@ -44,6 +45,7 @@ use App\UnitEquipment\Trade\Trader;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
 use App\UnitPlatforms\Vehicle\Motorized;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class SaddledHorse extends UnitPlatformType
@@ -113,6 +115,11 @@ class SaddledHorse extends UnitPlatformType
         return UnitPlatformCategory::Mounted;
     }
 
+    public function icon(): string
+    {
+        return 'fa-horse';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
@@ -131,8 +138,11 @@ class SaddledHorse extends UnitPlatformType
         return Motorized::get();
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-horse';
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 50),
+            new YieldModifier(YieldType::Moves, 3),
+        ]);
     }
 }

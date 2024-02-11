@@ -4,6 +4,7 @@ namespace App\UnitPlatforms\Naval;
 
 use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Technologies\Enlightenment\Navigation;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
@@ -26,6 +27,7 @@ use App\UnitEquipment\NavalAssault\MusketMarines;
 use App\UnitEquipment\Trade\CargoHold;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class FullRigged extends UnitPlatformType
@@ -33,7 +35,6 @@ class FullRigged extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 1;
     public int $maxWeight = 3;
-    public int $moves = 5;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -99,5 +100,13 @@ class FullRigged extends UnitPlatformType
     public function upgradesTo(): ?UnitPlatformType
     {
         return SteamEngine::get();
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 50),
+            new YieldModifier(YieldType::Moves, 5),
+        ]);
     }
 }

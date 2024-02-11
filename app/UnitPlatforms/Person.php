@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
 use App\UnitArmor\Parachute\HALO;
@@ -72,6 +73,7 @@ use App\UnitEquipment\Spear\WoodSpear;
 use App\UnitEquipment\Trade\Merchant;
 use App\UnitEquipment\Trade\Trader;
 use App\UnitEquipment\UnitEquipmentType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class Person extends UnitPlatformType
@@ -179,6 +181,11 @@ class Person extends UnitPlatformType
         return UnitPlatformCategory::Foot;
     }
 
+    public function icon(): string
+    {
+        return 'fa-person';
+    }
+
     public function technology(): ?TechnologyType
     {
         return null;
@@ -189,8 +196,10 @@ class Person extends UnitPlatformType
         return null;
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-person';
+        return collect([
+            new YieldModifier(YieldType::Moves, 2)
+        ]);
     }
 }

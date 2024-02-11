@@ -5,20 +5,16 @@ namespace App\UnitPlatforms;
 use App\AbstractType;
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Enums\TechnologyEra;
 use App\Enums\UnitArmorCategory;
 use App\Enums\UnitCapability;
 use App\Enums\UnitEquipmentCategory;
 use App\Enums\UnitPlatformCategory;
-use App\Enums\YieldType;
 use App\GameConcept;
 use App\Resources\ResourceType;
 use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
 use App\UnitArmor\Vehicle\Multideck;
 use App\UnitEquipment\UnitEquipmentType;
-use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
 abstract class UnitPlatformType extends AbstractType
@@ -140,15 +136,4 @@ abstract class UnitPlatformType extends AbstractType
 
     /** @return Collection<int, UnitEquipmentType> */
     abstract public function equipment(): Collection;
-
-    /** @return Collection<int, YieldModifier|YieldModifiersFor> */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-            new YieldModifier(
-                YieldType::Cost,
-                $this->technology()?->era()->baseCost() ?: TechnologyEra::BASE_COST
-            )
-        ]);
-    }
 }

@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Vehicle;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Gilded\Combustion;
@@ -32,6 +33,7 @@ use App\UnitEquipment\Trade\CargoHold;
 use App\UnitEquipment\Trade\ContainerHold;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class Motorized extends UnitPlatformType
@@ -39,7 +41,6 @@ class Motorized extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 1;
     public int $maxWeight = 2;
-    public int $moves = 4;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -88,6 +89,11 @@ class Motorized extends UnitPlatformType
         return UnitPlatformCategory::Vehicle;
     }
 
+    public function icon(): string
+    {
+        return 'fa-truck';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
@@ -106,8 +112,11 @@ class Motorized extends UnitPlatformType
         return null;
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-truck';
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 50),
+            new YieldModifier(YieldType::Moves, 3),
+        ]);
     }
 }

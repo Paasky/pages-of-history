@@ -4,6 +4,7 @@ namespace App\UnitPlatforms;
 
 use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\Satellites;
@@ -12,6 +13,7 @@ use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\EnergyWeapon\LaserCannon;
 use App\UnitEquipment\Espionage\Spy;
 use App\UnitEquipment\UnitEquipmentType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class Satellite extends UnitPlatformType
@@ -19,8 +21,6 @@ class Satellite extends UnitPlatformType
     public int $equipmentSlots = 3;
     public int $armorSlots = 0;
     public int $maxWeight = 3;
-    public int $moves = 1;
-    public int $maneuvering = 20;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -69,5 +69,14 @@ class Satellite extends UnitPlatformType
     public function icon(): string
     {
         return 'fa-satellite';
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 100),
+            new YieldModifier(YieldType::Agility, 20),
+            new YieldModifier(YieldType::Moves, 1),
+        ]);
     }
 }

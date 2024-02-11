@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Air;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Modern\CombinedArms;
@@ -14,6 +15,7 @@ use App\UnitEquipment\Bomb\GuidedBomb;
 use App\UnitEquipment\Bomb\HeavyBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class Helicopter extends UnitPlatformType
@@ -48,6 +50,11 @@ class Helicopter extends UnitPlatformType
         return UnitPlatformCategory::Air;
     }
 
+    public function icon(): string
+    {
+        return 'fa-helicopter';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
@@ -66,8 +73,13 @@ class Helicopter extends UnitPlatformType
         return AttackHelicopter::get();
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-helicopter';
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 20),
+            new YieldModifier(YieldType::Agility, 2),
+            new YieldModifier(YieldType::Moves, 2),
+            new YieldModifier(YieldType::Range, 4),
+        ]);
     }
 }

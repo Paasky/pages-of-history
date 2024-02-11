@@ -15,6 +15,13 @@ class Coordinate
         $this->y = $y;
     }
 
+    public function key(): string
+    {
+        $padX = str_pad($this->x, 5, '0', STR_PAD_LEFT);
+        $padY = str_pad($this->y, 5, '0', STR_PAD_LEFT);
+        return "{$padY}_{$padX}";
+    }
+
     public static function fromArray(array $coords): static
     {
         $x = $coords['x'] ?? $coords['lng'] ?? $coords['long'] ?? $coords['longitude'] ?? Arr::first($coords);

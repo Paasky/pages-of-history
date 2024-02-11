@@ -4,6 +4,7 @@ namespace App\UnitPlatforms\Naval;
 
 use App\Enums\UnitCapability;
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Technologies\HighMedieval\Compass;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
@@ -22,6 +23,7 @@ use App\UnitEquipment\Siege\Trebuchet;
 use App\UnitEquipment\Trade\Merchant;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class ClinkerHull extends UnitPlatformType
@@ -84,5 +86,13 @@ class ClinkerHull extends UnitPlatformType
     public function upgradesTo(): ?UnitPlatformType
     {
         return CarvelHull::get();
+    }
+
+    public function yieldModifiers(): Collection
+    {
+        return collect([
+            new YieldModifier(YieldType::Cost, percent: 30),
+            new YieldModifier(YieldType::Moves, 4),
+        ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\UnitPlatforms\Missile;
 
 use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Modern\JetEngine;
@@ -16,6 +17,7 @@ use App\UnitEquipment\MassDestruction\GasBomb;
 use App\UnitEquipment\MassDestruction\VirusBomb;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
 class CruiseMissile extends UnitPlatformType
@@ -23,9 +25,6 @@ class CruiseMissile extends UnitPlatformType
     public int $equipmentSlots = 2;
     public int $armorSlots = 0;
     public int $maxWeight = 2;
-    public int $moves = 1;
-    public int $range = 6;
-    public int $maneuvering = 5;
 
     /** @return Collection<int, UnitArmorType> */
     public function armors(): Collection
@@ -52,6 +51,11 @@ class CruiseMissile extends UnitPlatformType
         return UnitPlatformCategory::Missile;
     }
 
+    public function icon(): string
+    {
+        return 'fa-rocket';
+    }
+
     /**
      * @return Collection<int, ResourceType>
      */
@@ -70,8 +74,11 @@ class CruiseMissile extends UnitPlatformType
         return HypersonicMissile::get();
     }
 
-    public function icon(): string
+    public function yieldModifiers(): Collection
     {
-        return 'fa-rocket';
+        return collect([
+            new YieldModifier(YieldType::Agility, 5),
+            new YieldModifier(YieldType::Range, 6),
+        ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\UnitEquipmentCategory;
 use App\Models\Player;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
@@ -159,6 +160,10 @@ class UnitDesigner extends Component
                 );
             }
         }
+        if ($platformItems->count() === 1 && $platformItems->first()['items']->count() === 1) {
+            $this->platform = $platformItems->first()['items']->first();
+        }
+
         $platformTitle = $this->platform
             ? 'Platform'
             : 'Select Platform';
@@ -170,6 +175,9 @@ class UnitDesigner extends Component
                 if ($this->platform && !$this->platform->canHave($equipmentItem)) {
                     continue;
                 }
+                if ($equipmentItem->category() === UnitEquipmentCategory::MassDestruction) {
+                    continue;
+                }
                 $this->setUnitComponentToItems(
                     $equipmentItems,
                     $equipmentItem,
@@ -177,6 +185,10 @@ class UnitDesigner extends Component
                 );
             }
         }
+        if ($equipmentItems->count() === 1 && $equipmentItems->first()['items']->count() === 1) {
+            $this->equipment = $equipmentItems->first()['items']->first();
+        }
+
         $equipmentTitle = match (true) {
             !$this->equipment => 'Select Equipment',
             default => 'Equipment',
@@ -196,6 +208,10 @@ class UnitDesigner extends Component
                 );
             }
         }
+        if ($armorItems->count() === 1 && $armorItems->first()['items']->count() === 1) {
+            $this->armor = $armorItems->first()['items']->first();
+        }
+
         $armorTitle = match (true) {
             !$this->platform => 'To select Armor, select the Platform first',
             $this->platform->armors()->isEmpty() => 'This Platform cannot have Armor',
@@ -204,6 +220,15 @@ class UnitDesigner extends Component
             !$this->armor => 'Select Armor',
             default => 'Armor',
         };
+
+        // Finally set the name placeholder
+        if ($this->platform && $this->equipment) {
+            $this->namePlaceholder = UnitName::name(
+                $this->platform,
+                $this->equipment,
+                $this->armor
+            );
+        }
 
         return view('livewire.unit-designer', [
             'platform' => $this->platform,
