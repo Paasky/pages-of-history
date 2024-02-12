@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedInteger('x');
             $table->unsignedInteger('y');
             $table->string('surface');
-            $table->unsignedInteger('elevation');
+            $table->integer('elevation');
             $table->string('feature')->nullable();
             $table->timestamps();
             $table->index(['x', 'y']);
