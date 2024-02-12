@@ -4,13 +4,14 @@ namespace App\Map;
 
 use App\Coordinate;
 use App\Enums\Domain;
+use App\Enums\Feature;
 use App\Enums\Surface;
 use Illuminate\Support\Arr;
 
 class MapGenerator
 {
-    public int $worldRegionsX = 60;
-    public int $worldRegionsY = 30;
+    public int $worldRegionsX = 54;
+    public int $worldRegionsY = 27;
     public float $waterVsLandDistribution = 0.67;
     public float $initialOceansOrContinents = 7;
     public float $faultLinesMultiplier = 2;
@@ -38,6 +39,7 @@ class MapGenerator
             // Surfaces
             ->generateSurfaces()
             // Features
+            ->generateFeatures()
             ->draw()
         ;
         return $this;
@@ -418,6 +420,95 @@ class MapGenerator
         return $this;
     }
 
+    protected function generateFeatures(): self
+    {
+        // 1) Generate Features by latitude
+        $twentieth = $this->worldRegionsY / 20;
+        $featuresConfig = [
+            // Top row is Snow
+            [0, [null, Feature::Snowdrifts], [null]],
+
+            // Next 2 rows are Tundra
+            [2, [null, Feature::LightForest, Feature::PineForest], [null, Feature::Shrubs]],
+
+            // Grass
+            [(int)round($twentieth * 5), [null, Feature::LushForest], [null, Feature::LightForest, Feature::PineForest]],
+
+            // Plains
+            [(int)round($twentieth * 7), [null, null, Feature::LightForest], [null, Feature::Shrubs]],
+
+            // Desert
+            [(int)round($twentieth * 9), [null, Feature::Dunes, Feature::Oasis], [null, Feature::Shrubs]],
+
+            // Grass
+            [(int)round($twentieth * 15), [Feature::Jungle], [null, Feature::LushForest, Feature::Jungle]],
+
+            // Plains, leave 3 bottom rows for Tundra & Snow
+            [$this->worldRegionsY - 4, [null, null, Feature::LightForest], [null, Feature::Shrubs]],
+
+            // Next two rows are Tundra
+            [$this->worldRegionsY - 2, [null, Feature::LightForest, Feature::PineForest], [null, Feature::Shrubs]],
+
+            // Should be one row left as Snow
+            [$this->worldRegionsY, [null, Feature::Snowdrifts], [null]],
+        ];
+        $regionsToGenerate = $this->generatedRegions;
+        while ($regionsToGenerate) {
+            /** @var Region $region */
+            $region = Arr::random($regionsToGenerate);
+            unset($regionsToGenerate[$region->key()]);
+            if ($region->domain === Domain::Water && $region->height <= 0) {
+                continue;
+            }
+            if ($region->height >= 5) {
+                continue;
+            }
+
+            $features = [];
+            $this->forEachNeighbor($region, function (Region $neighbor) use (&$features, $regionsToGenerate) {
+                if (!$neighbor->feature) {
+                    return;
+                }
+                $features[] = $neighbor->feature;
+            });
+
+            foreach ($featuresConfig as $key => $featureConfig) {
+                [$maxY, $flatFeatures, $hillFeatures] = $featureConfig;
+                if ($region->xy->y <= $maxY) {
+                    $features = array_merge(
+                        $features,
+                        $region->height <= 0
+                            ? $flatFeatures
+                            : $hillFeatures
+                    );
+
+                    if ($prevFeatureConfig = $featureConfig[$key - 1] ?? null) {
+                        [$maxY, $flatFeatures, $hillFeatures] = $prevFeatureConfig;
+                        if ($region->xy->y - 1 === $maxY) {
+                            $features = array_merge(
+                                $features,
+                                $region->height <= 0
+                                    ? $flatFeatures
+                                    : $hillFeatures
+                            );
+                        }
+                    }
+                    $features = array_filter(
+                        $features,
+                        fn(?Feature $feature) => in_array($feature, Feature::casesForSurface($region->surface))
+                    );
+                    if (!$features) {
+                        $features = Feature::casesForSurface($region->surface);
+                    }
+                    $region->feature = Arr::random($features);
+                    $this->generatedRegions[$region->key()] = $region;
+                    continue 2;
+                }
+            }
+        }
+        return $this;
+    }
+
     protected function validCoords(Coordinate $coords): ?Coordinate
     {
         $xy = clone $coords;
@@ -573,6 +664,44 @@ class MapGenerator
                     $counts['island']++;
                 }
                 $heights[$region->height] = ($heights[$region->height] ?? 0) + 1;
+            }
+            echo PHP_EOL;
+        }
+
+        echo PHP_EOL;
+        for ($y = -1; $y < $this->worldRegionsY; $y++) {
+            if ($y < 0) {
+                echo '  ';
+            } else {
+                echo str_pad($y, 2, ' ', STR_PAD_LEFT) . ' ';
+            }
+
+            for ($x = 0; $x < $this->worldRegionsX; $x++) {
+                if ($y < 0) {
+                    echo str_pad($x, 4, ' ', STR_PAD_LEFT);
+                    continue;
+                }
+                $xy = new Coordinate($x, $y);
+                $region = $this->generatedRegions[$xy->key()];
+                echo match (true) {
+                    $region->feature === Feature::Snowdrifts => 's',
+                    $region->feature === Feature::Shrubs => 'S',
+                    $region->feature === Feature::LightForest => 'l',
+                    $region->feature === Feature::PineForest => 'P',
+                    $region->feature === Feature::LushForest => 'L',
+                    $region->feature === Feature::Jungle => 'J',
+                    $region->feature === Feature::Dunes => 'D',
+                    $region->feature === Feature::Oasis => 'O',
+                    default => ' ',
+                };
+                echo match (true) {
+                    $region->surface == Surface::Snow => '🟪',
+                    $region->surface == Surface::Tundra => '🟫',
+                    $region->surface == Surface::Grass => '🟩',
+                    $region->surface == Surface::Plains => '🟧',
+                    $region->surface == Surface::Desert => '🟨',
+                    $region->surface == Surface::Ocean => '🟦',
+                };
             }
             echo PHP_EOL;
         }
