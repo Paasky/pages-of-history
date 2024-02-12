@@ -10,8 +10,8 @@ use Illuminate\Support\Arr;
 
 class MapGenerator
 {
-    public int $worldRegionsX = 54;
-    public int $worldRegionsY = 27;
+    public int $worldRegionsX = 56;
+    public int $worldRegionsY = 28;
     public float $waterVsLandDistribution = 0.67;
     public float $initialOceansOrContinents = 7;
     public float $faultLinesMultiplier = 2;
@@ -65,14 +65,8 @@ class MapGenerator
             $region = Arr::random($regionsToGenerate);
 
             switch (true) {
-                // Region is top or bottom row: must be water
+                // Region is top or bottom row: 33-67 chance
                 case in_array($region->xy->y, [0, $this->worldRegionsY - 1]):
-                    $region->domain = Domain::Water;
-                    $region->height = -5;
-                    break;
-
-                // Region is 2nd top or 2nd bottom row or no land regions left: 33-67 chance
-                case in_array($region->xy->y, [1, $this->worldRegionsY - 2]):
                     $region->domain = rand(0, 2) ? Domain::Water : Domain::Land;
                     $region->height = $region->domain === Domain::Water
                         ? (rand(0, 1) ? 0 : -5)
@@ -426,13 +420,13 @@ class MapGenerator
         $twentieth = $this->worldRegionsY / 20;
         $featuresConfig = [
             // Top row is Snow
-            [0, [null, Feature::Snowdrifts], [null]],
+            [0, [Feature::Snowdrifts], [Feature::Snowdrifts]],
 
             // Next 2 rows are Tundra
-            [2, [null, Feature::LightForest, Feature::PineForest], [null, Feature::Shrubs]],
+            [2, [null, Feature::LightForest, Feature::PineForest], [null, Feature::PineForest, Feature::Shrubs]],
 
             // Grass
-            [(int)round($twentieth * 5), [null, Feature::LushForest], [null, Feature::LightForest, Feature::PineForest]],
+            [(int)round($twentieth * 5), [null, Feature::LushForest, Feature::PineForest], [null, Feature::LightForest, Feature::PineForest]],
 
             // Plains
             [(int)round($twentieth * 7), [null, null, Feature::LightForest], [null, Feature::Shrubs]],
@@ -547,14 +541,24 @@ class MapGenerator
     public function draw(): self
     {
         $counts = [
-            Domain::Land->value => 0,
-            Domain::Water->value => 0,
             'lake' => 0,
-            'deep' => 0,
-            'island' => 0,
             'hill' => 0,
             'mountain' => 0,
+
+            'deep' => 0,
+            'island' => 0,
         ];
+        foreach (Domain::cases() as $domain) {
+            $counts[$domain->value] = 0;
+        }
+        foreach (Surface::cases() as $surface) {
+            $counts[$surface->value] = 0;
+        }
+        foreach (Feature::cases() as $feature) {
+            $counts[$feature->value] = 0;
+        }
+
+        // 1) Heightmap
         $heights = [];
         for ($y = -1; $y < $this->worldRegionsY; $y++) {
             if ($y < 0) {
@@ -624,50 +628,7 @@ class MapGenerator
             ) . PHP_EOL;
         echo implode(', ', array_merge($this->generatedContinents, $this->generatedOceans)) . PHP_EOL;
 
-        echo PHP_EOL;
-        for ($y = -1; $y < $this->worldRegionsY; $y++) {
-            if ($y < 0) {
-                echo '  ';
-            } else {
-                echo str_pad($y, 2, ' ', STR_PAD_LEFT) . ' ';
-            }
-
-            for ($x = 0; $x < $this->worldRegionsX; $x++) {
-                if ($y < 0) {
-                    echo str_pad($x, 3, ' ', STR_PAD_LEFT);
-                    continue;
-                }
-                $xy = new Coordinate($x, $y);
-                $region = $this->generatedRegions[$xy->key()];
-                echo match ($region->surface) {
-                    Surface::Snow => '🟪',
-                    Surface::Tundra => '🟫',
-                    Surface::Grass => '🟩',
-                    Surface::Plains => '🟧',
-                    Surface::Desert => '🟨',
-                    Surface::Ocean => '🟦',
-                };
-                $counts[$region->domain->value]++;
-                if ($region->domain === Domain::Land && $region->height < 0) {
-                    $counts['lake']++;
-                }
-                if ($region->domain === Domain::Land && $region->height >= 5) {
-                    $counts['mountain']++;
-                }
-                if ($region->domain === Domain::Land && $region->height > 0) {
-                    $counts['hill']++;
-                }
-                if ($region->domain === Domain::Water && $region->height <= -3) {
-                    $counts['deep']++;
-                }
-                if ($region->domain === Domain::Water && $region->height > 0) {
-                    $counts['island']++;
-                }
-                $heights[$region->height] = ($heights[$region->height] ?? 0) + 1;
-            }
-            echo PHP_EOL;
-        }
-
+        // 2) Terrain & Feature Map
         echo PHP_EOL;
         for ($y = -1; $y < $this->worldRegionsY; $y++) {
             if ($y < 0) {
@@ -702,9 +663,44 @@ class MapGenerator
                     $region->surface == Surface::Desert => '🟨',
                     $region->surface == Surface::Ocean => '🟦',
                 };
+                if ($region->surface) {
+                    $counts[$region->surface->value]++;
+                }
+                if ($region->feature) {
+                    $counts[$region->feature->value]++;
+                }
             }
             echo PHP_EOL;
         }
+
+        echo str_pad(Feature::Snowdrifts->name, 13, ' ') . ' s:  ';
+        echo str_pad($counts[Feature::Snowdrifts->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::Shrubs->name, 13, ' ') . ' S:  ';
+        echo str_pad($counts[Feature::Shrubs->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::LightForest->name, 13, ' ') . ' l:  ';
+        echo str_pad($counts[Feature::LightForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::PineForest->name, 13, ' ') . ' P:  ';
+        echo str_pad($counts[Feature::PineForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::LushForest->name, 13, ' ') . ' L:  ';
+        echo str_pad($counts[Feature::LushForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::Jungle->name, 13, ' ') . ' J:  ';
+        echo str_pad($counts[Feature::Jungle->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::Dunes->name, 13, ' ') . ' D:  ';
+        echo str_pad($counts[Feature::Dunes->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::Oasis->name, 13, ' ') . ' O:  ';
+        echo str_pad($counts[Feature::Oasis->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Snow->name, 13, ' ') . '🟪: ';
+        echo str_pad($counts[Surface::Snow->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Tundra->name, 13, ' ') . '🟫: ';
+        echo str_pad($counts[Surface::Tundra->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Grass->name, 13, ' ') . '🟩: ';
+        echo str_pad($counts[Surface::Grass->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Plains->name, 13, ' ') . '🟧: ';
+        echo str_pad($counts[Surface::Plains->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Desert->name, 13, ' ') . '🟨: ';
+        echo str_pad($counts[Surface::Desert->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Ocean->name, 13, ' ') . '🟦: ';
+        echo str_pad($counts[Surface::Ocean->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
         return $this;
     }
 
