@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Map\MapGenerator;
+use App\Models\Map;
 use Illuminate\Database\Seeder;
 
 class MapSeeder extends Seeder
@@ -12,6 +13,17 @@ class MapSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        $generator = new MapGenerator();
+        $generator->generate();
+        $map = Map::factory(['height' => $generator->worldRegionsY, 'width' => $generator->worldRegionsX])->create();
+        foreach ($generator->generatedRegions as $region) {
+            $map->hexes()->create([
+                'x' => $region->xy->x,
+                'y' => $region->xy->y,
+                'surface' => $region->surface,
+                'elevation' => $region->height,
+                'feature' => $region->feature,
+            ]);
+        }
     }
 }
