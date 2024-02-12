@@ -53,8 +53,8 @@ enum Feature: string
             self::Snowdrifts => "url('/tiles/snowdrifts.jpg')",
             self::Shoals => "url('/tiles/shoals.png')",
             self::Reef => "url('/tiles/reef.png')",
-            self::FloodPlain => throw new \Exception('To be implemented'),
-            self::Oasis => throw new \Exception('To be implemented'),
+            self::FloodPlain => "url('/tiles/dunes.jpg')",
+            self::Oasis => "url('/tiles/shoals.png')",
         };
     }
 

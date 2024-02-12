@@ -2,20 +2,23 @@
     use App\Enums\Surface;
     use App\Enums\Feature;
     use App\Models\Hex;
+    $hexSize = 50;
+    $hexHeight = $hexSize * 0.905;
+    $hexWidth = $hexSize * 0.78;
 @endphp
 
 <div id="hexmap-{{ $map->id }}" class="hexmap">
     <style>
         .hexmap {
             background: #999;
-            width: {{ $map->width * 156 }}px;
-            height: {{ $map->height * 181 }}px;
+            width: {{ ($map->width * 1.06) * $hexWidth }}px;
+            height: {{ ($map->height * 1.08) * $hexHeight }}px;
             padding: 10px;
         }
 
         .hex-row {
-            line-height: 14px;
-            margin-left: 54px;
+            margin-left: {{ $hexWidth * 0.346 }}px;
+            margin-bottom: -{{ $hexWidth * 0.346 / 5 }}px;
         }
 
         .hex {
@@ -29,7 +32,7 @@
         }
 
         .hex.odd {
-            top: 87px;
+            top: {{ $hexHeight * 0.48 }}px;
         }
 
         .hex-feature {
@@ -58,11 +61,11 @@
         .hex {
             display: inline-block;
             position: relative;
-            margin-left: -53px;
+            margin-left: -{{ $hexWidth * 0.34 }}px;
             background-size: cover;
 
             --radius: 0px;
-            --size: 200px;
+            --size: {{ $hexSize }}px;
             --f: 5;
 
             width: var(--size);
@@ -93,7 +96,7 @@
             .dummy {
         }
 
-        .hex-surface-{{ $surface->cssClass() }}           {
+        .hex-surface-{{ $surface->cssClass() }}            {
             background-image: {!! $surface->cssBackground() !!};
         }
 
@@ -102,7 +105,7 @@
             .dummy {
         }
 
-        .hex-feature-{{ $feature->cssClass() }}           {
+        .hex-feature-{{ $feature->cssClass() }}            {
             background-image: {!! $feature->cssBackground() !!};
         }
         @endforeach

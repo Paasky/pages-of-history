@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Enums\UnitEquipmentCategory;
+use App\Models\Map;
 use App\Models\Player;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
@@ -89,7 +90,7 @@ class UnitDesigner extends Component
     protected function init(): void
     {
         $this->player = Player::firstOrCreate(
-            ['user_id' => auth()->id(), 'map_id' => 1],
+            ['user_id' => auth()->id(), 'map_id' => Map::firstOrFail()->id],
             ['color1' => '#009', 'color2' => '#eee']
         );
         $this->knownTechs = TechnologyType::all()

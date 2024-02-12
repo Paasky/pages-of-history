@@ -10,8 +10,8 @@ use Illuminate\Support\Arr;
 
 class MapGenerator
 {
-    public int $worldRegionsX = 56;
-    public int $worldRegionsY = 30;
+    public int $worldRegionsX = 120;
+    public int $worldRegionsY = 60;
     public float $waterVsLandDistribution = 0.6;
     public float $initialOceansOrContinents = 7;
     public float $faultLinesMultiplier = 2;
@@ -129,7 +129,7 @@ class MapGenerator
                             unset($regionsToGenerate[$neighbor->key()]);
                             $landRegionsLeft--;
                         },
-                        3
+                        round($this->worldRegionsY / 10)
                     );
                     break;
 
@@ -176,7 +176,7 @@ class MapGenerator
                             unset($regionsToGenerate[$neighbor->key()]);
                             $waterRegionsLeft--;
                         },
-                        3
+                        round($this->worldRegionsY / 10)
                     );
                     break;
 
