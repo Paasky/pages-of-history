@@ -14,7 +14,7 @@
     </x-slot>
 
     <div class="w-full overflow-scroll" style="height: calc(100vh - 9.2rem);">
-        <livewire:map-wire/>
+        <livewire:map-wire lazy/>
     </div>
     <livewire:unit-designer/>
     <livewire:game-concepts/>

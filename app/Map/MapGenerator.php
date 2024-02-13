@@ -10,8 +10,8 @@ use Illuminate\Support\Arr;
 
 class MapGenerator
 {
-    public int $worldRegionsX = 60;
-    public int $worldRegionsY = 30;
+    public int $worldRegionsX = 90;
+    public int $worldRegionsY = 45;
     public float $waterVsLandDistribution = 0.6;
     public float $initialOceansOrContinents = 7;
     public float $faultLinesMultiplier = 2;
@@ -527,6 +527,40 @@ class MapGenerator
                 $region->feature = Feature::Shoals;
                 $this->generatedRegions[$region->key()] = $region;
             }
+
+            // Water with land neighbors must be Coast
+            if ($region->domain === Domain::Water && $region->surface !== Surface::Coast) {
+                $hasLandNeighbor = false;
+                $this->forEachNeighbor($region, function (Region $neighbor) use (&$hasLandNeighbor) {
+                    if ($neighbor->domain === Domain::Land) {
+                        $hasLandNeighbor = true;
+                        return false;
+                    }
+                    return null;
+                });
+                if ($hasLandNeighbor) {
+                    $region->surface = Surface::Coast;
+                    $this->generatedRegions[$region->key()] = $region;
+                }
+            }
+        }
+
+        foreach ($this->generatedRegions as $region) {
+            // Ocean with Coast neighbors must be Sea
+            if ($region->surface === Surface::Ocean) {
+                $hasCoastNeighbor = false;
+                $this->forEachNeighbor($region, function (Region $neighbor) use (&$hasCoastNeighbor) {
+                    if ($neighbor->surface === Surface::Coast) {
+                        $hasCoastNeighbor = true;
+                        return false;
+                    }
+                    return null;
+                });
+                if ($hasCoastNeighbor) {
+                    $region->surface = Surface::Sea;
+                    $this->generatedRegions[$region->key()] = $region;
+                }
+            }
         }
         return $this;
     }
@@ -561,7 +595,9 @@ class MapGenerator
                 }
 
                 $neighbor = $this->generatedRegions[$xy->key()] ?? $xy->key();
-                $function($neighbor);
+                if ($function($neighbor) === false) {
+                    return;
+                }
             }
         }
     }
