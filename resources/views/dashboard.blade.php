@@ -13,7 +13,7 @@
         </h2>
     </x-slot>
 
-    <div>
+    <div class="w-full overflow-scroll" style="height: calc(100vh - 9.2rem);">
         <livewire:map-wire/>
     </div>
     <livewire:unit-designer/>

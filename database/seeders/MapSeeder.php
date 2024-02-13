@@ -20,8 +20,9 @@ class MapSeeder extends Seeder
             $map->hexes()->create([
                 'x' => $region->xy->x,
                 'y' => $region->xy->y,
+                'domain' => $region->domain,
                 'surface' => $region->surface,
-                'elevation' => $region->height,
+                'elevation' => $region->elevation,
                 'feature' => $region->feature,
             ]);
         }

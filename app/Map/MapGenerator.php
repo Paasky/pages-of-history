@@ -10,8 +10,8 @@ use Illuminate\Support\Arr;
 
 class MapGenerator
 {
-    public int $worldRegionsX = 120;
-    public int $worldRegionsY = 60;
+    public int $worldRegionsX = 60;
+    public int $worldRegionsY = 30;
     public float $waterVsLandDistribution = 0.6;
     public float $initialOceansOrContinents = 7;
     public float $faultLinesMultiplier = 2;
@@ -70,13 +70,13 @@ class MapGenerator
                 // Region is top or bottom row: must be water
                 case in_array($region->xy->y, [0, $this->worldRegionsY - 1]):
                     $region->domain = Domain::Water;
-                    $region->height = -5;
+                    $region->elevation = -5;
                     break;
 
                 // Region is 2nd top or 2nd bottom row: 33% chance of land
                 case in_array($region->xy->y, [1, $this->worldRegionsY - 2]):
                     $region->domain = rand(0, 2) ? Domain::Water : Domain::Land;
-                    $region->height = $region->domain === Domain::Water
+                    $region->elevation = $region->domain === Domain::Water
                         ? (rand(0, 1) ? 0 : -5)
                         : 0;
                     break;
@@ -101,7 +101,7 @@ class MapGenerator
                         }
                     }
                     $region->domain = Domain::Land;
-                    $region->height = -2;
+                    $region->elevation = -2;
                     $continent = "Continent " . (count($this->generatedContinents) + 1);
                     $this->generatedContinents[] = $region->group = $continent;
                     $continentsLeft--;
@@ -122,7 +122,7 @@ class MapGenerator
 
                             // Lakes have a 1/3 chance to spread
                             if (!rand(0, 2)) {
-                                $neighbor->height = -1;
+                                $neighbor->elevation = -1;
                             }
 
                             $this->generatedRegions[$neighbor->key()] = $neighbor;
@@ -150,7 +150,7 @@ class MapGenerator
                         }
                     }
                     $region->domain = Domain::Water;
-                    $region->height = -5;
+                    $region->elevation = -5;
                     $ocean = "Ocean " . (count($this->generatedOceans) + 1);
                     $this->generatedOceans[] = $region->group = $ocean;
                     $oceansLeft--;
@@ -170,7 +170,7 @@ class MapGenerator
                             $neighbor->group = $region->group;
 
                             // Oceans always spread to neighbors
-                            $neighbor->height = -5;
+                            $neighbor->elevation = -5;
 
                             $this->generatedRegions[$neighbor->key()] = $neighbor;
                             unset($regionsToGenerate[$neighbor->key()]);
@@ -195,7 +195,7 @@ class MapGenerator
                                 if ($neighbor->group) {
                                     $possibleGroups[$neighbor->domain->name][] = $neighbor->group;
                                 }
-                                if ($neighbor->domain == Domain::Water && $neighbor->height < 0) {
+                                if ($neighbor->domain == Domain::Water && $neighbor->elevation < 0) {
                                     $hasOceanNeighbor = true;
                                 }
                             }
@@ -210,7 +210,7 @@ class MapGenerator
                             : Domain::Water
                     };
                     $region->group = Arr::random($possibleGroups[$region->domain->name] ?? ['']);
-                    $region->height = match (true) {
+                    $region->elevation = match (true) {
                         $region->domain === Domain::Land => 0,
                         $hasOceanNeighbor => rand(0, $landNeighbors) ? 0 : -5,
                         default => $landNeighbors ? 0 : -5
@@ -269,11 +269,11 @@ class MapGenerator
     {
         $oceanSteps = 0;
         for ($step = 1; $step <= $this->faultLinesLength; $step++) {
-            if (!$region->height) {
-                $region->height = $region->domain === Domain::Water ? 5 : 9;
+            if (!$region->elevation) {
+                $region->elevation = $region->domain === Domain::Water ? 5 : 9;
             }
-            if ($region->domain === Domain::Water && $region->height < 0 && rand(0, 1)) {
-                $region->height = 5;
+            if ($region->domain === Domain::Water && $region->elevation < 0 && rand(0, 1)) {
+                $region->elevation = 5;
                 $oceanSteps++;
             }
 
@@ -313,14 +313,14 @@ class MapGenerator
         foreach ($this->generatedRegions as $key => $region) {
             $neighborHeights = [];
             $this->forEachNeighbor($region, function (Region $neighbor) use (&$neighborHeights) {
-                $neighborHeights[] = $neighbor->height;
+                $neighborHeights[] = $neighbor->elevation;
             });
             $neighborAvg = (array_sum($neighborHeights) / count($neighborHeights));
-            $newHeights[$key] = round(($region->height + $neighborAvg) / 2);
+            $newHeights[$key] = round(($region->elevation + $neighborAvg) / 2);
         }
 
         foreach ($this->generatedRegions as $key => $region) {
-            $region->height = $newHeights[$key];
+            $region->elevation = $newHeights[$key];
             $this->generatedRegions[$key] = $region;
         }
 
@@ -348,8 +348,13 @@ class MapGenerator
             [$this->worldRegionsY, Surface::Snow],
         ];
         foreach ($this->generatedRegions as $region) {
-            if ($region->domain === Domain::Water && $region->height <= 0) {
-                $region->surface = Surface::Ocean;
+            if ($region->domain === Domain::Water) {
+                $region->surface = $region->elevation <= -3 ? Surface::Ocean : Surface::Sea;
+                $this->generatedRegions[$region->key()] = $region;
+                continue;
+            }
+            if ($region->elevation >= 5) {
+                $region->surface = Surface::Rock;
                 $this->generatedRegions[$region->key()] = $region;
                 continue;
             }
@@ -377,14 +382,14 @@ class MapGenerator
             if ($region->domain === Domain::Water) {
                 continue;
             }
-            if ($region->height >= 5) {
+            if ($region->elevation >= 5) {
                 $wetCoords = $this->validCoords(
                 // Northern hemisphere moves left, Southern moves right
                     new Coordinate($region->xy->x + ($region->xy->y < $halfY ? -1 : 1), $region->xy->y)
                 );
                 $wetRegion = $this->generatedRegions[$wetCoords->key()];
                 $newSurface = match (true) {
-                    $wetRegion->height >= 5 => '',
+                    $wetRegion->elevation >= 5 => '',
                     $wetRegion->surface === Surface::Snow => Surface::Tundra,
                     in_array($wetRegion->surface, [Surface::Tundra, Surface::Desert]) => Surface::Plains,
                     in_array($wetRegion->surface, [Surface::Grass, Surface::Plains]) => Surface::Grass,
@@ -459,10 +464,10 @@ class MapGenerator
             /** @var Region $region */
             $region = Arr::random($regionsToGenerate);
             unset($regionsToGenerate[$region->key()]);
-            if ($region->domain === Domain::Water && $region->height <= 0) {
+            if ($region->domain === Domain::Water && $region->elevation <= 0) {
                 continue;
             }
-            if ($region->height >= 5) {
+            if ($region->elevation >= 5) {
                 continue;
             }
 
@@ -479,7 +484,7 @@ class MapGenerator
                 if ($region->xy->y <= $maxY) {
                     $features = array_merge(
                         $features,
-                        $region->height <= 0
+                        $region->elevation <= 0
                             ? $flatFeatures
                             : $hillFeatures
                     );
@@ -489,7 +494,7 @@ class MapGenerator
                         if ($region->xy->y - 1 === $maxY) {
                             $features = array_merge(
                                 $features,
-                                $region->height <= 0
+                                $region->elevation <= 0
                                     ? $flatFeatures
                                     : $hillFeatures
                             );
@@ -517,7 +522,7 @@ class MapGenerator
             // 1st & last row MUST be water
             if (in_array($region->xy->y, [0, $this->worldRegionsY - 1]) && $region->domain !== Domain::Water) {
                 $region->domain = Domain::Water;
-                $region->height = -2;
+                $region->elevation = -2;
                 $region->surface = Surface::Coast;
                 $region->feature = Feature::Shoals;
                 $this->generatedRegions[$region->key()] = $region;
@@ -601,31 +606,31 @@ class MapGenerator
                     throw new \Exception("{$xy->key()} not generated");
                 }
                 echo match (true) {
-                    $region->domain === Domain::Land && $region->height < 0 => '🟢',
-                    $region->domain === Domain::Land && $region->height >= 5 => '🟫',
-                    $region->domain === Domain::Land && $region->height > 0 => '🟧',
+                    $region->domain === Domain::Land && $region->elevation < 0 => '🟢',
+                    $region->domain === Domain::Land && $region->elevation >= 5 => '🟫',
+                    $region->domain === Domain::Land && $region->elevation > 0 => '🟧',
                     $region->domain === Domain::Land => '🟩',
-                    $region->domain === Domain::Water && $region->height <= -3 => '🟪',
-                    $region->domain === Domain::Water && $region->height > 0 => '🟨',
+                    $region->domain === Domain::Water && $region->elevation <= -3 => '🟪',
+                    $region->domain === Domain::Water && $region->elevation > 0 => '🟨',
                     $region->domain === Domain::Water => '🟦',
                 };
                 $counts[$region->domain->value]++;
-                if ($region->domain === Domain::Land && $region->height < 0) {
+                if ($region->domain === Domain::Land && $region->elevation < 0) {
                     $counts['lake']++;
                 }
-                if ($region->domain === Domain::Land && $region->height >= 5) {
+                if ($region->domain === Domain::Land && $region->elevation >= 5) {
                     $counts['mountain']++;
                 }
-                if ($region->domain === Domain::Land && $region->height > 0) {
+                if ($region->domain === Domain::Land && $region->elevation > 0) {
                     $counts['hill']++;
                 }
-                if ($region->domain === Domain::Water && $region->height <= -3) {
+                if ($region->domain === Domain::Water && $region->elevation <= -3) {
                     $counts['deep']++;
                 }
-                if ($region->domain === Domain::Water && $region->height > 0) {
+                if ($region->domain === Domain::Water && $region->elevation > 0) {
                     $counts['island']++;
                 }
-                $heights[$region->height] = ($heights[$region->height] ?? 0) + 1;
+                $heights[$region->elevation] = ($heights[$region->elevation] ?? 0) + 1;
             }
             echo PHP_EOL;
         }

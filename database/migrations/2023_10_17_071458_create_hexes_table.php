@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignIdFor(Map::class)->constrained();
             $table->unsignedInteger('x');
             $table->unsignedInteger('y');
+            $table->string('domain');
             $table->string('surface');
             $table->integer('elevation');
             $table->string('feature')->nullable();

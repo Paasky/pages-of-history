@@ -28,17 +28,16 @@ enum Surface: string
     public function cssBackground(): string
     {
         return match ($this) {
-            self::Grass => "url('/tiles/grass.jpg')", // '#0d530e',
-            self::Plains => "url('/tiles/plains.jpg')", // '#5f723e',
-            self::Desert => "url('/tiles/desert.jpg')", // '#ada570',
-            self::Tundra => "url('/tiles/tundra.jpg')", // '#798570',
-            self::Snow => "url('/tiles/snow.jpg')", // '#9faba8',
-            self::Rock => "url('/tiles/rock.jpg')", // '#3f423d',
-            self::Coast => "url('/tiles/coast.jpg')", // '#629099',
-            self::River => "url('/tiles/river.jpg')", // '#629099',
-            self::Sea => "url('/tiles/sea.jpg')", // '#344457',
-            self::Ocean => "url('/tiles/ocean.jpg')", // '#142e4d',
-            default => '#999',
+            self::Grass => "url('/tiles/grass.png')",
+            self::Plains => "url('/tiles/plains.png')",
+            self::Desert => "url('/tiles/desert.png')",
+            self::Tundra => "url('/tiles/tundra.png')",
+            self::Snow => "url('/tiles/snow.png')",
+            self::Rock => "url('/tiles/rock.png')",
+            self::Coast => "url('/tiles/coast.png')",
+            self::River => "url('/tiles/river.png')",
+            self::Sea => "url('/tiles/sea.png')",
+            self::Ocean => "url('/tiles/ocean.png')",
         };
     }
 

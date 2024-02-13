@@ -1,8 +1,8 @@
 @php
-    use App\Enums\Surface;
+    use App\Enums\Domain;use App\Enums\Surface;
     use App\Enums\Feature;
     use App\Models\Hex;
-    $hexSize = 50;
+    $hexSize = 100;
     $hexHeight = $hexSize * 0.905;
     $hexWidth = $hexSize * 0.78;
 @endphp
@@ -11,8 +11,8 @@
     <style>
         .hexmap {
             background: #999;
-            width: {{ ($map->width * 1.06) * $hexWidth }}px;
-            height: {{ ($map->height * 1.08) * $hexHeight }}px;
+            width: {{ ($map->width * 1.058) * $hexWidth }}px;
+            height: {{ ($map->height * 1.07) * $hexHeight }}px;
             padding: 10px;
         }
 
@@ -36,12 +36,9 @@
         }
 
         .hex-feature {
-            width: 76%;
-            height: 76%;
-            top: 12%;
-            left: 12%;
+            width: 100%;
+            height: 100%;
             position: absolute;
-            border-radius: 33%;
             opacity: 0.5;
             background-size: cover;
         }
@@ -96,7 +93,7 @@
             .dummy {
         }
 
-        .hex-surface-{{ $surface->cssClass() }}            {
+        .hex-surface-{{ $surface->cssClass() }}             {
             background-image: {!! $surface->cssBackground() !!};
         }
 
@@ -105,10 +102,35 @@
             .dummy {
         }
 
-        .hex-feature-{{ $feature->cssClass() }}            {
+        .hex-feature-{{ $feature->cssClass() }}             {
             background-image: {!! $feature->cssBackground() !!};
         }
+
         @endforeach
+
+        .hex-feature-air {
+            background-image: {!! Domain::Air->cssBackground() !!};
+        }
+
+        .hex-feature-land {
+            opacity: 0.25;
+            background-image: {!! Domain::Land->cssBackground() !!};
+        }
+
+        .hex-feature-water {
+            opacity: 0.25;
+            background-image: {!! Domain::Water->cssBackground() !!};
+        }
+
+        .hex-elevation-hill {
+            opacity: 0.5;
+            background-image: {!! Domain::elevationCssBackground(1) !!};
+        }
+
+        .hex-elevation-mountain {
+            opacity: 0.5;
+            background-image: {!! Domain::elevationCssBackground(5) !!};
+        }
     </style>
 
     @foreach($map->hexes->sortBy(['x', 'y'])->groupBy('y') as $hexes)
@@ -129,6 +151,13 @@
                 >
                     @if($hex->feature)
                         <div class="hex-feature hex-feature-{{ $hex->feature?->cssClass() }}"></div>
+                    @else
+                        <div class="hex-feature hex-feature-{{ $hex->domain->cssClass() }}"></div>
+                    @endif
+                    @if($hex->elevation >= 5)
+                        <div class="hex-feature hex-elevation-mountain"></div>
+                    @elseif($hex->elevation >= 1)
+                        <div class="hex-feature hex-elevation-hill"></div>
                     @endif
                     @foreach($hex->units as $unit)
                         <div class="hex-unit hex-unit-{{ $unit->type->cssClass() }}"

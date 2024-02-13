@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Coordinate;
+use App\Enums\Domain;
 use App\Enums\Feature;
 use App\Enums\Surface;
 use App\Managers\MapManager;
@@ -55,8 +56,9 @@ class Hex extends Model
     use PohModel;
 
     protected $casts = [
-        'surface' => Surface::class,
+        'domain' => Domain::class,
         'feature' => Feature::class,
+        'surface' => Surface::class,
     ];
 
     protected $fillable = [

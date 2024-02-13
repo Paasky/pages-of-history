@@ -44,17 +44,17 @@ enum Feature: string
     public function cssBackground(): string
     {
         return match ($this) {
-            self::Shrubs => "url('/tiles/shrubs.png')",
-            self::LightForest => "url('/tiles/light-forest.png')",
+            self::Shrubs => "url('/tiles/shrubs.jpg')",
+            self::LightForest => "url('/tiles/light-forest.jpg')",
             self::LushForest => "url('/tiles/lush-forest.jpg')",
             self::PineForest => "url('/tiles/pine-forest.jpg')",
             self::Jungle => "url('/tiles/jungle.jpg')",
             self::Dunes => "url('/tiles/dunes.jpg')",
             self::Snowdrifts => "url('/tiles/snowdrifts.jpg')",
-            self::Shoals => "url('/tiles/shoals.png')",
-            self::Reef => "url('/tiles/reef.png')",
-            self::FloodPlain => "url('/tiles/dunes.jpg')",
-            self::Oasis => "url('/tiles/shoals.png')",
+            self::Shoals => "url('/tiles/shoals.jpg')",
+            self::Reef => "url('/tiles/reefs.jpg')",
+            self::FloodPlain => "url('/tiles/flood-plains.jpg')",
+            self::Oasis => "url('/tiles/oasis.jpg')",
         };
     }
 

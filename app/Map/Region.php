@@ -12,7 +12,7 @@ class Region
     public function __construct(
         public Coordinate $xy,
         public ?Domain    $domain = null,
-        public int        $height = 0,
+        public int $elevation = 0,
         public ?Surface   $surface = null,
         public ?Feature   $feature = null,
         public ?string    $group = null,
