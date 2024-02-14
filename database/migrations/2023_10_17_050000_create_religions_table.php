@@ -14,6 +14,10 @@ return new class extends Migration {
         Schema::create('religions', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(City::class)->constrained();
+            $table->string('name');
+            $table->jsonb('traits')->nullable();
+            $table->jsonb('virtues')->nullable();
+            $table->jsonb('vices')->nullable();
             $table->timestamps();
         });
     }

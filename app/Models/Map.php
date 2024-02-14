@@ -59,11 +59,6 @@ class Map extends Model
         return $this->hasMany(Player::class);
     }
 
-    public function units(): HasMany
-    {
-        return $this->hasMany(Unit::class);
-    }
-
     public function getSizeAttribute(): Coordinate
     {
         return new Coordinate($this->width, $this->height);

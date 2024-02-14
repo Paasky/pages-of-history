@@ -84,14 +84,9 @@ class Player extends Model
         return $this->belongsTo(Map::class);
     }
 
-    public function religion(): BelongsTo
-    {
-        return $this->belongsTo(Religion::class);
-    }
-
     public function technologies(): HasMany
     {
-        return $this->hasMany(TechnologyType::class);
+        return $this->hasMany(Technology::class);
     }
 
     public function unitDesigns(): HasMany

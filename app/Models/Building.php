@@ -2,29 +2,27 @@
 
 namespace App\Models;
 
-use App\Casts\TechnologyCast;
+use App\Buildings\BuildingType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Technology extends Model
+class Building extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'player_id',
+        'hex_id',
         'type',
-        'research',
-        'is_known',
+        'health',
     ];
 
     protected $casts = [
-        'type' => TechnologyCast::class,
-        'is_known' => 'boolean',
+        'type' => BuildingType::class,
     ];
 
-    public function player(): BelongsTo
+    public function hex(): BelongsTo
     {
-        return $this->belongsTo(Player::class);
+        return $this->belongsTo(Hex::class);
     }
 }

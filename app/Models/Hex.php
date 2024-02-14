@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Casts\ImprovementCast;
 use App\Coordinate;
 use App\Enums\Domain;
 use App\Enums\Feature;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
@@ -55,20 +57,34 @@ class Hex extends Model
     use HasFactory;
     use PohModel;
 
-    protected $casts = [
-        'domain' => Domain::class,
-        'feature' => Feature::class,
-        'surface' => Surface::class,
-    ];
-
     protected $fillable = [
         'region_id',
         'x',
         'y',
+        'domain',
         'surface',
         'elevation',
         'feature',
+        'improvement',
+        'improvement_health',
     ];
+
+    protected $casts = [
+        'domain' => Domain::class,
+        'surface' => Surface::class,
+        'feature' => Feature::class,
+        'improvement' => ImprovementCast::class,
+    ];
+
+    public function buildings(): HasMany
+    {
+        return $this->hasMany(Building::class);
+    }
+
+    public function city(): HasOne
+    {
+        return $this->hasOne(City::class);
+    }
 
     public function region(): BelongsTo
     {
@@ -90,8 +106,8 @@ class Hex extends Model
         return static::whereMapId($this->map_id)
             ->where(function (Builder $q) use ($distance) {
                 $adjacentCoords = MapManager::adjacentCoordinates($this->coordinate, $this->map->size, $distance);
-                foreach ($adjacentCoords as $coord) {
-                    $q->orWhere($coord->toXYArray());
+                foreach ($adjacentCoords as $coords) {
+                    $q->orWhere($coords->toXYArray());
                 }
             });
     }
@@ -102,10 +118,5 @@ class Hex extends Model
     public function getAdjacentHexesAttribute(): Collection
     {
         return $this->adjacentHexes()->get();
-    }
-
-    public function getMoveCostAttribute(): int
-    {
-        return $this->surface->moveCost() + $this->feature?->moveCost();
     }
 }

@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->string('platform')->index();
             $table->string('equipment')->index();
             $table->string('armor')->nullable()->index();
+            $table->string('type')->index();
             $table->timestamps();
 
 

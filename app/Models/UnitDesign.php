@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use App\UnitArmor\UnitArmorType;
-use App\UnitEquipment\UnitEquipmentType;
-use App\UnitPlatforms\UnitPlatformType;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Casts\UnitArmorCast;
+use App\Casts\UnitEquipmentCast;
+use App\Casts\UnitPlatformCast;
+use App\Enums\UnitType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class UnitDesign extends Model
 {
@@ -20,6 +21,14 @@ class UnitDesign extends Model
         'platform',
         'equipment',
         'armor',
+        'type',
+    ];
+
+    protected $casts = [
+        'platform' => UnitPlatformCast::class,
+        'equipment' => UnitEquipmentCast::class,
+        'armor' => UnitArmorCast::class,
+        'type' => UnitType::class,
     ];
 
     public function player(): BelongsTo
@@ -27,24 +36,8 @@ class UnitDesign extends Model
         return $this->belongsTo(Player::class);
     }
 
-    public function platform(): Attribute
+    public function units(): HasMany
     {
-        return Attribute::make(
-            get: fn(string $slug): UnitPlatformType => UnitPlatformType::fromSlug($slug),
-        );
-    }
-
-    public function equipment(): Attribute
-    {
-        return Attribute::make(
-            get: fn(string $slug): UnitEquipmentType => UnitEquipmentType::fromSlug($slug),
-        );
-    }
-
-    public function armor(): Attribute
-    {
-        return Attribute::make(
-            get: fn(?string $slug): ?UnitArmorType => $slug ? UnitArmorType::fromSlug($slug) : null,
-        );
+        return $this->hasMany(Unit::class);
     }
 }

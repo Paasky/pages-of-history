@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\City;
 use App\Models\Hex;
 use App\Models\Player;
 use App\Models\UnitDesign;
@@ -18,6 +19,7 @@ return new class extends Migration {
             $table->foreignIdFor(Hex::class)->constrained();
             $table->foreignIdFor(Player::class)->constrained();
             $table->foreignIdFor(UnitDesign::class)->constrained();
+            $table->foreignIdFor(City::class)->nullable()->constrained();
             $table->string('type')->index();
             $table->integer('health')->default(100);
             $table->float('moves_remaining', 3, 1)->default(0);

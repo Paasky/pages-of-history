@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Religion;
+use App\Models\Hex;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,10 +11,11 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('religion_traits', function (Blueprint $table) {
+        Schema::create('buildings', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Religion::class)->constrained();
+            $table->foreignIdFor(Hex::class);
             $table->string('type');
+            $table->integer('health')->default(100);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('religion_traits');
+        Schema::dropIfExists('buildings');
     }
 };

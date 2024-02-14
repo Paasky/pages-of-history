@@ -18,9 +18,11 @@ return new class extends Migration
             $table->unsignedInteger('x');
             $table->unsignedInteger('y');
             $table->string('domain');
-            $table->string('surface');
-            $table->integer('elevation');
-            $table->string('feature')->nullable();
+            $table->string('surface')->index();
+            $table->integer('elevation')->index();
+            $table->string('feature')->nullable()->index();
+            $table->string('improvement')->nullable()->index();
+            $table->integer('improvement_health')->nullable();
             $table->timestamps();
             $table->index(['x', 'y']);
 

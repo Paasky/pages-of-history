@@ -14,6 +14,10 @@ return new class extends Migration {
         Schema::create('cultures', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Player::class)->constrained();
+            $table->string('name');
+            $table->jsonb('traits')->nullable();
+            $table->jsonb('vices')->nullable();
+            $table->jsonb('virtues')->nullable();
             $table->timestamps();
         });
     }
