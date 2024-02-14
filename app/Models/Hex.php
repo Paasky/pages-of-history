@@ -62,7 +62,7 @@ class Hex extends Model
     ];
 
     protected $fillable = [
-        'map_id',
+        'region_id',
         'x',
         'y',
         'surface',
@@ -70,9 +70,9 @@ class Hex extends Model
         'feature',
     ];
 
-    public function map(): BelongsTo
+    public function region(): BelongsTo
     {
-        return $this->belongsTo(Map::class);
+        return $this->belongsTo(Region::class);
     }
 
     public function units(): HasMany

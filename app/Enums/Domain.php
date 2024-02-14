@@ -2,9 +2,12 @@
 
 namespace App\Enums;
 
-enum Domain: string
+use App\GameConcept;
+use Illuminate\Support\Collection;
+
+enum Domain: string implements GameConcept
 {
-    use PohEnum;
+    use GameConceptEnum;
 
     case Air = 'Air';
     case Land = 'Land';
@@ -26,6 +29,22 @@ enum Domain: string
             $elevation >= 1 => "url('/tiles/hills.jpg')",
             default => null,
         };
+    }
+
+    public function icon(): string
+    {
+        return 'fa-layer-group';
+    }
+
+    /** @return Collection<int, GameConcept> */
+    public function items(): Collection
+    {
+        return collect();
+    }
+
+    public function typeSlug(): string
+    {
+        return 'domain';
     }
 
     /**

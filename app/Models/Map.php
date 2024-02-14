@@ -49,9 +49,9 @@ class Map extends Model
         'width',
     ];
 
-    public function hexes(): HasMany
+    public function regions(): HasMany
     {
-        return $this->hasMany(Hex::class);
+        return $this->hasMany(Region::class);
     }
 
     public function players(): HasMany

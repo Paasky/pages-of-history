@@ -1,8 +1,8 @@
 <?php
 
 use App\Models\Hex;
-use App\Models\Map;
 use App\Models\Player;
+use App\Models\UnitDesign;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,11 +16,9 @@ return new class extends Migration {
         Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Hex::class)->constrained();
-            $table->foreignIdFor(Map::class)->constrained();
             $table->foreignIdFor(Player::class)->constrained();
+            $table->foreignIdFor(UnitDesign::class)->constrained();
             $table->string('type')->index();
-            $table->string('equipment')->index()->nullable();
-            $table->string('armor')->index()->nullable();
             $table->integer('health')->default(100);
             $table->float('moves_remaining', 3, 1)->default(0);
             $table->timestamps();

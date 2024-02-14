@@ -2,9 +2,13 @@
 
 namespace App\Enums;
 
-enum Surface: string
+use App\GameConcept;
+use App\Yields\YieldModifier;
+use Illuminate\Support\Collection;
+
+enum Surface: string implements GameConcept
 {
-    use PohEnum;
+    use GameConceptEnum;
 
     case Grass = 'Grass';
     case Plains = 'Plains';
@@ -41,11 +45,57 @@ enum Surface: string
         };
     }
 
-    public function moveCost(): int
+    public function icon(): string
+    {
+        return 'fa-layer-group';
+    }
+
+    /** @return Collection<int, GameConcept> */
+    public function items(): Collection
+    {
+        return collect();
+    }
+
+    public function typeSlug(): string
+    {
+        return 'surface';
+    }
+
+    public function yieldModifiers(): Collection
     {
         return match ($this) {
-            self::Rock, self::Snow => 2,
-            default => 1,
+            self::Grass => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Food, 2),
+            ]),
+            self::Plains => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Food, 1),
+                new YieldModifier(YieldType::Production, 1),
+            ]),
+            self::Desert, self::Snow => collect([
+                new YieldModifier(YieldType::Moves, -2),
+                new YieldModifier(YieldType::Health, percent: -20),
+            ]),
+            self::Tundra => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Food, 1),
+            ]),
+            self::Rock => collect([
+                new YieldModifier(YieldType::Moves, -2),
+                new YieldModifier(YieldType::Production, 2),
+            ]),
+            self::Coast, self::River => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Food, 1),
+                new YieldModifier(YieldType::Gold, 1),
+            ]),
+            self::Sea => collect([
+                new YieldModifier(YieldType::Moves, -1),
+            ]),
+            self::Ocean => collect([
+                new YieldModifier(YieldType::Moves, -0.5),
+            ]),
         };
     }
 }

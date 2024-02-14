@@ -1,8 +1,8 @@
 @php
     use App\Enums\BuildingCategory;
     use App\Buildings\BuildingType;
-    use App\Enums\ImprovementCategory;
-    use App\Improvements\ImprovementType;
+    use App\Enums\Domain;use App\Enums\Feature;use App\Enums\ImprovementCategory;
+    use App\Enums\Surface;use App\Improvements\ImprovementType;
     use App\Enums\ResourceCategory;
     use App\Resources\ResourceType;
     use App\Enums\TechnologyEra;
@@ -24,6 +24,21 @@
     </style>
     <div class="grid grid-cols-10">
         <div class="col-span-3 border-r-2 border-gray-700 mr-4">
+            @include('components.game-concepts-section', [
+                'gameConcepts' => Domain::cases(),
+                 'title' => __('Domains'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => Surface::cases(),
+                 'title' => __('Surfaces'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => Feature::cases(),
+                 'title' => __('Features'),
+            ])
+
             @include('components.game-concepts-section', [
                 'gameConcepts' => BuildingCategory::cases(),
                  'title' => __('Building Categories'),

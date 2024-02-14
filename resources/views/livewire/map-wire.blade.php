@@ -123,7 +123,7 @@
         }
 
         .hex-elevation-hill {
-            opacity: 0.5;
+            opacity: 0.25;
             background-image: {!! Domain::elevationCssBackground(1) !!};
         }
 
@@ -133,7 +133,7 @@
         }
     </style>
 
-    @foreach($map->hexes->sortBy(['x', 'y'])->groupBy('y') as $hexes)
+    @foreach($map->regions->sortBy(['x', 'y'])->groupBy('y') as $hexes)
         <div class="hex-row">
             @foreach($hexes as $hex)
                 @php /** @var Hex $hex */ @endphp
@@ -159,11 +159,6 @@
                     @elseif($hex->elevation >= 1)
                         <div class="hex-feature hex-elevation-hill"></div>
                     @endif
-                    @foreach($hex->units as $unit)
-                        <div class="hex-unit hex-unit-{{ $unit->type->cssClass() }}"
-                             style="background-color: {{ $unit->player->color1}}; border-color: {{ $unit->player->color2 }};"
-                        ></div>
-                    @endforeach
                 </div>
             @endforeach
         </div>

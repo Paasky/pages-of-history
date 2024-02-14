@@ -13,7 +13,7 @@ return new class extends Migration {
     {
         Schema::create('unit_designs', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Player::class);
+            $table->foreignIdFor(Player::class)->constrained();
             $table->string('name');
             $table->string('platform')->index();
             $table->string('equipment')->index();

@@ -17,7 +17,7 @@ class MapSeeder extends Seeder
         $generator->generate();
         $map = Map::factory(['height' => $generator->worldRegionsY, 'width' => $generator->worldRegionsX])->create();
         foreach ($generator->generatedRegions as $region) {
-            $map->hexes()->create([
+            $map->regions()->create([
                 'x' => $region->xy->x,
                 'y' => $region->xy->y,
                 'domain' => $region->domain,

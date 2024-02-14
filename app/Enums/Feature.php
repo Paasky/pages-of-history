@@ -2,12 +2,13 @@
 
 namespace App\Enums;
 
+use App\GameConcept;
 use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;
 
-enum Feature: string
+enum Feature: string implements GameConcept
 {
-    use PohEnum;
+    use GameConceptEnum;
 
     case FloodPlain = 'FloodPlain';
     case Shrubs = 'Shrubs';
@@ -58,31 +59,65 @@ enum Feature: string
         };
     }
 
-    public function moveCost(): int
+    public function icon(): string
     {
-        return match ($this) {
-            self::Dunes, self::Jungle, self::LushForest, self::PineForest,
-            self::Reef, self::Shoals, self::Snowdrifts => 1,
-            default => 0,
-        };
+        return 'fa-layer-group';
     }
 
-    /**
-     * @return Collection<int, YieldModifier>
-     */
+    /** @return Collection<int, GameConcept> */
+    public function items(): Collection
+    {
+        return collect();
+    }
+
+    public function typeSlug(): string
+    {
+        return 'feature';
+    }
+
     public function yieldModifiers(): Collection
     {
         return match ($this) {
-            self::Shrubs => "url('/tiles/shrubs.png')",
-            self::LightForest => "url('/tiles/light-forest.png')",
-            self::LushForest => "url('/tiles/lush-forest.jpg')",
-            self::PineForest => "url('/tiles/pine-forest.jpg')",
-            self::Jungle => "url('/tiles/jungle.jpg')",
-            self::Dunes => "url('/tiles/dunes.jpg')",
-            self::Snowdrifts => "url('/tiles/snowdrifts.jpg')",
-            self::Shoals => "url('/tiles/shoals.png')",
-            self::Reef => "url('/tiles/reef.png')",
+            self::LightForest, self::Shrubs => collect([
+                new YieldModifier(YieldType::Production, 1),
+                new YieldModifier(YieldType::Defense, percent: 10),
+            ]),
+            self::LushForest, self::PineForest => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Defense, percent: 20),
+                new YieldModifier(YieldType::Production, 1),
+            ]),
+            self::Jungle => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Health, percent: -20),
+                new YieldModifier(YieldType::Defense, percent: 30),
+                new YieldModifier(YieldType::Production, 1),
+                new YieldModifier(YieldType::Science, 1),
+            ]),
+            self::Dunes, self::Snowdrifts => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Defense, percent: 10),
+            ]),
+            self::Shoals => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Health, percent: -20),
+                new YieldModifier(YieldType::Food, 1),
+                new YieldModifier(YieldType::Production, 1),
+            ]),
+            self::Reef => collect([
+                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier(YieldType::Health, percent: -20),
+                new YieldModifier(YieldType::Food, 1),
+                new YieldModifier(YieldType::Gold, 1),
+            ]),
+            self::FloodPlain => collect([
+                new YieldModifier(YieldType::Food, 3),
+            ]),
+            self::Oasis => collect([
+                new YieldModifier(YieldType::Food, 1),
+                new YieldModifier(YieldType::Gold, 1),
+                new YieldModifier(YieldType::Production, 1),
+            ]),
         };
-
     }
 }

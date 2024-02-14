@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Map;
+use App\Models\Region;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('hexes', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Map::class)->constrained();
+            $table->foreignIdFor(Region::class)->constrained();
             $table->unsignedInteger('x');
             $table->unsignedInteger('y');
             $table->string('domain');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamps();
             $table->index(['x', 'y']);
 
-            $table->unique(['map_id', 'x', 'y']);
+            $table->unique(['region_id', 'x', 'y']);
         });
     }
 

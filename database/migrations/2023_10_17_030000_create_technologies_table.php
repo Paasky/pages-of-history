@@ -13,7 +13,7 @@ return new class extends Migration {
     {
         Schema::create('technologies', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Player::class);
+            $table->foreignIdFor(Player::class)->constrained();
             $table->string('type')->index();
             $table->integer('research');
             $table->boolean('is_known')->default(false);
