@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->foreignIdFor(User::class)->nullable()->constrained();
             $table->string('color1');
             $table->string('color2');
+            $table->jsonb('yield_stock')->nullable();
             $table->timestamps();
 
             $table->unique(['map_id', 'user_id']);

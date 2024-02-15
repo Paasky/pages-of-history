@@ -21,8 +21,12 @@ return new class extends Migration
             $table->string('surface')->index();
             $table->integer('elevation')->index();
             $table->string('feature')->nullable()->index();
+            $table->string('resource')->nullable()->index();
+            $table->integer('resource_amount')->nullable();
             $table->string('improvement')->nullable()->index();
             $table->integer('improvement_health')->nullable();
+            $table->jsonb('knowledge')->nullable();
+            $table->jsonb('events')->nullable();
             $table->timestamps();
             $table->index(['x', 'y']);
 

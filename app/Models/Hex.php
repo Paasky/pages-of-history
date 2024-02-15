@@ -3,11 +3,14 @@
 namespace App\Models;
 
 use App\Casts\ImprovementCast;
+use App\Casts\ResourceCast;
 use App\Coordinate;
 use App\Enums\Domain;
 use App\Enums\Feature;
 use App\Enums\Surface;
 use App\Managers\MapManager;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Database\Factories\HexFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -65,14 +68,19 @@ class Hex extends Model
         'surface',
         'elevation',
         'feature',
+        'resource',
+        'resource_amount',
         'improvement',
         'improvement_health',
+        'knowledge',
+        'events',
     ];
 
     protected $casts = [
         'domain' => Domain::class,
         'surface' => Surface::class,
         'feature' => Feature::class,
+        'resource' => ResourceCast::class,
         'improvement' => ImprovementCast::class,
     ];
 
@@ -99,6 +107,19 @@ class Hex extends Model
     public function getCoordinateAttribute(): Coordinate
     {
         return new Coordinate($this->x, $this->y);
+    }
+
+    /**
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
+     */
+    public function getYieldModifiersAttribute(): Collection
+    {
+        return $this->domain->yieldModifiers()
+            ->merge($this->surface->yieldModifiers())
+            ->merge($this->feature?->yieldModifiers() ?: [])
+            ->merge($this->resource?->yieldModifiers() ?: [])
+            ->merge($this->improvement?->yieldModifiers() ?: [])
+            ->merge($this->units->map(fn(Unit $unit) => $unit->yield_modifiers)->flatten());
     }
 
     public function adjacentHexes(int $distance = 1): Builder|static

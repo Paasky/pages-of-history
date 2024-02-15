@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class City extends Model
 {
@@ -41,5 +44,15 @@ class City extends Model
     public function homeForUnits(): HasMany
     {
         return $this->hasMany(Unit::class);
+    }
+
+    /**
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
+     */
+    public function getYieldModifiersAttribute(): Collection
+    {
+        return $this->citizens->map(
+            fn(Citizen $citizen) => $citizen->yield_modifiers
+        )->flatten();
     }
 }

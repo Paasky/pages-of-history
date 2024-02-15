@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\Armor;
 use App\Enums\UnitType;
 use App\Enums\Weapon;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Database\Factories\UnitFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\Unit
@@ -94,5 +97,13 @@ class Unit extends Model
     public function unitDesign(): BelongsTo
     {
         return $this->belongsTo(UnitDesign::class);
+    }
+
+    /**
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
+     */
+    public function getYieldModifiersAttribute(): Collection
+    {
+        return collect();
     }
 }

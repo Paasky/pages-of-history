@@ -2,46 +2,15 @@
 
 namespace App\Models;
 
-use Database\Factories\CitizenFactory;
-use Illuminate\Database\Eloquent\Builder;
+use App\Enums\YieldType;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
-/**
- * App\Models\Citizen
- *
- * @property int $id
- * @property int $culture_id
- * @property int $religion_id
- * @property string|null $workplace_type
- * @property int|null $workplace_id
- * @property string $desire
- * @property string $satisfaction
- * @property int|null $riot_turns_left
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @method static CitizenFactory factory($count = null, $state = [])
- * @method static Builder|Citizen newModelQuery()
- * @method static Builder|Citizen newQuery()
- * @method static Builder|Citizen query()
- * @method static Builder|Citizen whereCreatedAt($value)
- * @method static Builder|Citizen whereCultureId($value)
- * @method static Builder|Citizen whereDesire($value)
- * @method static Builder|Citizen whereId($value)
- * @method static Builder|Citizen whereReligionId($value)
- * @method static Builder|Citizen whereRiotTurnsLeft($value)
- * @method static Builder|Citizen whereSatisfaction($value)
- * @method static Builder|Citizen whereUpdatedAt($value)
- * @method static Builder|Citizen whereWorkplaceId($value)
- * @method static Builder|Citizen whereWorkplaceType($value)
- * @property-read Culture|null $culture
- * @property-read Religion|null $religion
- * @property-read Model|\Eloquent|Hex $workplace
- * @mixin \Eloquent
- */
 class Citizen extends Model
 {
     use HasFactory;
@@ -52,6 +21,11 @@ class Citizen extends Model
         'religion_id',
         'workplace_type',
         'workplace_id',
+        'desire_yield',
+    ];
+
+    protected $casts = [
+        'desire_yield' => YieldType::class,
     ];
 
     public function city(): BelongsTo
@@ -69,8 +43,26 @@ class Citizen extends Model
         return $this->belongsTo(Religion::class);
     }
 
-    public function workplace(): MorphTo|Hex
+    public function workplace(): MorphTo|Hex|Building|null
     {
         return $this->morphTo();
+    }
+
+    /**
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
+     */
+    public function getYieldModifiersAttribute(): Collection
+    {
+        // todo
+        // - has work: unhappy/happy
+        // - works with desire yield: unhappy/happy
+        // - city owner has same culture: unhappy/happy
+        // - city owner has same religion: unhappy/happy
+        // - each happy/unhappy +10%/-25% to all yields citizen is making (not as % yield modifiers)
+
+        return collect()
+            ->merge($this->culture?->yieldModifiers() ?: [])
+            ->merge($this->religion?->yieldModifiers() ?: [])
+            ->merge($this->workplace?->yieldModifiers() ?: []);
     }
 }

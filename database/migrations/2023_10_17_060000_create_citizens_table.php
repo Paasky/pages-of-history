@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->foreignIdFor(Culture::class);
             $table->foreignIdFor(Religion::class)->nullable();
             $table->nullableMorphs('workplace');
+            $table->string('desire_yield');
             $table->timestamps();
         });
     }
