@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Map;
+use App\Models\Religion;
 use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,8 +15,9 @@ return new class extends Migration {
     {
         Schema::create('players', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Map::class)->constrained();
             $table->foreignIdFor(User::class)->nullable()->constrained();
+            $table->foreignIdFor(Map::class)->constrained();
+            $table->foreignIdFor(Religion::class)->nullable();
             $table->string('color1');
             $table->string('color2');
             $table->jsonb('yield_stock')->nullable();

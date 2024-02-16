@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Database\Factories\ReligionFactory;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -23,6 +24,21 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Religion whereCreatedAt($value)
  * @method static Builder|Religion whereId($value)
  * @method static Builder|Religion whereUpdatedAt($value)
+ * @property int $city_id
+ * @property string $name
+ * @property mixed|null $traits
+ * @property mixed|null $virtues
+ * @property mixed|null $vices
+ * @property-read Collection<int, Citizen> $citizens
+ * @property-read int|null $citizens_count
+ * @property-read City|null $holyCity
+ * @property-read Collection<int, Player> $players
+ * @property-read int|null $players_count
+ * @method static Builder|Religion whereCityId($value)
+ * @method static Builder|Religion whereName($value)
+ * @method static Builder|Religion whereTraits($value)
+ * @method static Builder|Religion whereVices($value)
+ * @method static Builder|Religion whereVirtues($value)
  * @mixin \Eloquent
  */
 class Religion extends Model
@@ -37,5 +53,10 @@ class Religion extends Model
     public function holyCity(): BelongsTo
     {
         return $this->belongsTo(City::class);
+    }
+
+    public function players(): HasMany
+    {
+        return $this->hasMany(Player::class);
     }
 }

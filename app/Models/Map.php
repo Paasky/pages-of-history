@@ -37,6 +37,8 @@ use Illuminate\Support\Carbon;
  * @property-read Collection<int, Player> $players
  * @property-read int|null $players_count
  * @property-read string $name
+ * @property-read Collection<int, Region> $regions
+ * @property-read int|null $regions_count
  * @mixin Eloquent
  */
 class Map extends Model

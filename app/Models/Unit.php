@@ -57,6 +57,13 @@ use Illuminate\Support\Collection;
  * @method static Builder|Unit withoutTrashed()
  * @property-read int $cost
  * @property-read int $ranged_strength
+ * @property int $unit_design_id
+ * @property int|null $city_id
+ * @property-read Collection<int, YieldModifier|YieldModifiersFor> $yield_modifiers
+ * @property-read City|null $homeCity
+ * @property-read UnitDesign $unitDesign
+ * @method static Builder|Unit whereCityId($value)
+ * @method static Builder|Unit whereUnitDesignId($value)
  * @mixin \Eloquent
  */
 class Unit extends Model
