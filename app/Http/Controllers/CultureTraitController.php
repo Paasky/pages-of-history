@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CultureTrait;
 use App\Http\Requests\StoreCultureTraitRequest;
 use App\Http\Requests\UpdateCultureTraitRequest;
+use App\Models\CultureTrait;
 
 class CultureTraitController extends Controller
 {

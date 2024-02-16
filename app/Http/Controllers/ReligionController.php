@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Religion;
 use App\Http\Requests\StoreReligionRequest;
 use App\Http\Requests\UpdateReligionRequest;
+use App\Models\Religion;
 
 class ReligionController extends Controller
 {

@@ -13,21 +13,21 @@ enum Domain: string implements GameConcept
     case Land = 'Land';
     case Water = 'Water';
 
-    public function cssBackground(): string
-    {
-        return match ($this) {
-            self::Air => "url('/tiles/air.jpg')",
-            self::Land => "url('/tiles/land.jpg')",
-            self::Water => "url('/tiles/water.jpg')",
-        };
-    }
-
     public static function elevationCssBackground(int $elevation): ?string
     {
         return match (true) {
             $elevation >= 5 => "url('/tiles/mountain.jpg')",
             $elevation >= 1 => "url('/tiles/hills.jpg')",
             default => null,
+        };
+    }
+
+    public function cssBackground(): string
+    {
+        return match ($this) {
+            self::Air => "url('/tiles/air.jpg')",
+            self::Land => "url('/tiles/land.jpg')",
+            self::Water => "url('/tiles/water.jpg')",
         };
     }
 

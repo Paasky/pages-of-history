@@ -3,9 +3,9 @@
 namespace App\Managers;
 
 use App\Coordinate;
+use App\Enums\Domain;
 use App\Enums\Feature;
 use App\Enums\Surface;
-use App\Enums\Domain;
 use App\Models\Hex;
 use App\Models\Map;
 
@@ -20,28 +20,6 @@ class MapManager
     public static function for(Map $map): static
     {
         return new static($map);
-    }
-
-    public function generateHexes(): void
-    {
-        $hexData = [];
-        for ($x = 0; $x < $this->map->width; $x++) {
-            for ($y = 0; $y < $this->map->height; $y++) {
-                /** @var Surface $surface */
-                $surface = \Arr::random(Surface::cases());
-                $hexData[] = [
-                    'map_id' => $this->map->id,
-                    'x' => $x,
-                    'y' => $y,
-                    'surface' => $surface,
-                    'elevation' => $surface->domain()->is(Domain::Water)
-                        ? 0
-                        : random_int(1, static::MAX_ELEVATION),
-                    'feature' => \Arr::random(Feature::casesForSurface($surface)),
-                ];
-            }
-        }
-        Hex::insert($hexData);
     }
 
     /**
@@ -112,5 +90,27 @@ class MapManager
         unset($trackedHexes["$x-$y"]);
 
         return $trackedHexes;
+    }
+
+    public function generateHexes(): void
+    {
+        $hexData = [];
+        for ($x = 0; $x < $this->map->width; $x++) {
+            for ($y = 0; $y < $this->map->height; $y++) {
+                /** @var Surface $surface */
+                $surface = \Arr::random(Surface::cases());
+                $hexData[] = [
+                    'map_id' => $this->map->id,
+                    'x' => $x,
+                    'y' => $y,
+                    'surface' => $surface,
+                    'elevation' => $surface->domain()->is(Domain::Water)
+                        ? 0
+                        : random_int(1, static::MAX_ELEVATION),
+                    'feature' => \Arr::random(Feature::casesForSurface($surface)),
+                ];
+            }
+        }
+        Hex::insert($hexData);
     }
 }

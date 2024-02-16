@@ -141,6 +141,14 @@ class Hex extends Model
             ->merge($this->units->map(fn(Unit $unit) => $unit->yield_modifiers)->flatten());
     }
 
+    /**
+     * @return Collection<int, Hex>
+     */
+    public function getAdjacentHexesAttribute(): Collection
+    {
+        return $this->adjacentHexes()->get();
+    }
+
     public function adjacentHexes(int $distance = 1): Builder|static
     {
         return static::whereMapId($this->map_id)
@@ -150,13 +158,5 @@ class Hex extends Model
                     $q->orWhere($coords->toXYArray());
                 }
             });
-    }
-
-    /**
-     * @return Collection<int, Hex>
-     */
-    public function getAdjacentHexesAttribute(): Collection
-    {
-        return $this->adjacentHexes()->get();
     }
 }

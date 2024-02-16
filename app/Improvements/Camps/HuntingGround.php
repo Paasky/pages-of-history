@@ -5,7 +5,6 @@ namespace App\Improvements\Camps;
 use App\Enums\ImprovementCategory;
 use App\Enums\YieldType;
 use App\Improvements\ImprovementType;
-use App\Improvements\Pastures\Pasture;
 use App\Technologies\Bronze\AnimalHusbandry;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;

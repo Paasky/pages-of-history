@@ -15,10 +15,13 @@ use App\Models\Citizen;
 use App\Models\Hex;
 use App\Models\Religion;
 use App\Yields\YieldModifier;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class YieldTest extends TestCase
 {
+    use RefreshDatabase;
+
     public function testCitizenYields(): void
     {
         // Exists: -2 food

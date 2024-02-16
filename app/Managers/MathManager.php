@@ -25,6 +25,6 @@ class MathManager
             throw new \Exception(__FUNCTION__ . " diffPercent $diffPercent must be between 0 and 100.");
         }
         $scoreMinMax = abs($scoreMinMax);
-        return (int) round(($diffPercent / 100) * ($scoreMinMax * -2) + $scoreMinMax);
+        return (int)round(($diffPercent / 100) * ($scoreMinMax * -2) + $scoreMinMax);
     }
 }

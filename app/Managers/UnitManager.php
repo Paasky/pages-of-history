@@ -28,6 +28,15 @@ class UnitManager
         return new static($unit);
     }
 
+    public static function getCost(UnitType $type, Weapon $weapon = null, Armor $armor = null): int
+    {
+        $baseCost = (
+            $weapon?->cost() + $armor?->cost()
+        ) ?: static::BASE_COST;
+
+        return round($baseCost * $type->costMultiplier());
+    }
+
     public function attack(Hex $to): static
     {
         $this->canAttack($to, true);
@@ -98,6 +107,16 @@ class UnitManager
         return min(max(round($damage), 0), 100);
     }
 
+    /**
+     * @return Collection<int, Hex>
+     */
+    public function getAdjacentMovableHexes(): Collection
+    {
+        return $this->unit->hex->adjacent_hexes->filter(
+            fn(Hex $hex) => $this->canMoveToAdjacent($hex)
+        );
+    }
+
     public function canMoveToAdjacent(Hex $to, bool $orFail = false): bool
     {
         // Unit & Hex must have moves remaining
@@ -144,22 +163,14 @@ class UnitManager
         return true;
     }
 
-    /**
-     * @return Collection<int, Hex>
-     */
-    public function getAdjacentMovableHexes(): Collection
+    public function move(Hex $to): static
     {
-        return $this->unit->hex->adjacent_hexes->filter(
-            fn(Hex $hex) => $this->canMoveToAdjacent($hex)
-        );
-    }
-
-    public function getMoveCost(Hex $to): float
-    {
-        $elevationDifference = abs($to->elevation - $this->unit->hex->elevation);
-        return $to->surface->moveCost()
-            + $to->feature?->moveCost()
-            + ($elevationDifference * static::MOVE_COST_PER_ELEVATION_DIFF);
+        $this->isAdjacent($to, true);
+        $this->canMoveToAdjacent($to, true);
+        $this->unit->hex()->associate($to);
+        $movesRemaining = $this->unit->moves_remaining - $this->getMoveCost($to);
+        $this->unit->moves_remaining = max(0, $movesRemaining);
+        return $this;
     }
 
     public function isAdjacent(Hex $to, bool $orFail = false): bool
@@ -183,22 +194,11 @@ class UnitManager
         return true;
     }
 
-    public function move(Hex $to): static
+    public function getMoveCost(Hex $to): float
     {
-        $this->isAdjacent($to, true);
-        $this->canMoveToAdjacent($to, true);
-        $this->unit->hex()->associate($to);
-        $movesRemaining = $this->unit->moves_remaining - $this->getMoveCost($to);
-        $this->unit->moves_remaining = max(0, $movesRemaining);
-        return $this;
-    }
-
-    public static function getCost(UnitType $type, Weapon $weapon = null, Armor $armor = null): int
-    {
-        $baseCost = (
-            $weapon?->cost() + $armor?->cost()
-        ) ?: static::BASE_COST;
-
-        return round($baseCost * $type->costMultiplier());
+        $elevationDifference = abs($to->elevation - $this->unit->hex->elevation);
+        return $to->surface->moveCost()
+            + $to->feature?->moveCost()
+            + ($elevationDifference * static::MOVE_COST_PER_ELEVATION_DIFF);
     }
 }

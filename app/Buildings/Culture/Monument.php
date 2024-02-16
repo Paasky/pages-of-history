@@ -5,7 +5,6 @@ namespace App\Buildings\Culture;
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Technologies\Copper\Astrology;
-use App\Technologies\Copper\CopperWorking;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;

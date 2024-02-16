@@ -116,6 +116,122 @@ class UnitName
         return $names;
     }
 
+    public static function name(
+        UnitPlatformType  $platform,
+        UnitEquipmentType $equipment,
+        ?UnitArmorType    $armor,
+        string            $style = 'default'
+    ): string
+    {
+        if ($armor === NoArmor::get()) {
+            $armor = null;
+        }
+
+        if ($platform->category()->is(UnitPlatformCategory::Air, UnitPlatformCategory::Missile)) {
+            return self::airName($platform, $equipment, $armor, $style);
+        }
+        if ($platform->category() === UnitPlatformCategory::Naval) {
+            return self::navalName($platform, $equipment, $armor, $style);
+        }
+        if ($platform->category() === UnitPlatformCategory::Vehicle) {
+            return self::vehicleName($platform, $equipment, $armor, $style);
+        }
+
+
+        $names = static::names();
+
+        $nameParts = [];
+
+        // Armor name
+        switch (true) {
+            case !$armor:
+                break;
+            default:
+                $nameParts[1] = $armor->name();
+        }
+
+        // Platform name
+        switch (true) {
+            case $platform->is(Person::get()):
+                break;
+
+            case $platform->category() == UnitPlatformCategory::Space;
+                $nameParts[4] = $platform->name();
+                break;
+            default:
+                $nameParts[2] = $platform->name();
+        }
+
+        // Equipment Name
+        $nameParts[3] = $equipment->name();
+
+        ksort($nameParts);
+
+        $name = implode(
+            ' ',
+            array_map(
+                fn(string $namePart) => $names[$style][$namePart] ?? $names['default'][$namePart] ?? $namePart,
+                $nameParts
+            )
+        );
+
+        return $names[$style][$name] ?? $names['default'][$name] ?? $name;
+    }
+
+    protected static function airName(
+        UnitPlatformType  $platform,
+        UnitEquipmentType $equipment,
+        ?UnitArmorType    $armor,
+        string            $style = 'default'
+    ): string
+    {
+        $nameParts = [];
+
+        // 1) Armor, Stealth is special
+        if ($armor && $armor->category() !== UnitArmorCategory::Stealth) {
+            $nameParts[] = $armor->name();
+        }
+
+        // Helicopters & Missiles are special
+        if ($platform->is(
+            Helicopter::get(), AttackHelicopter::get(), CruiseMissile::get(), HypersonicMissile::get(), ICBM::get()
+        )) {
+            // 2) Equipment
+            $nameParts[] = $equipment->name();
+
+            // Stealth is special
+            if ($armor?->category() === UnitArmorCategory::Stealth) {
+                $nameParts[] = $armor->name();
+            }
+
+            // 3) Platform
+            $nameParts[] = $platform->name();
+        } else {
+            // 2) Platform
+            $nameParts[] = $platform->name();
+
+            // Stealth is special
+            if ($armor?->category() === UnitArmorCategory::Stealth) {
+                $nameParts[] = $armor->name();
+            }
+
+            // 3) Equipment
+            $nameParts[] = $equipment->name();
+        }
+
+        $names = static::names();
+
+        $name = implode(
+            ' ',
+            array_filter(array_map(
+                fn(string $namePart) => $names[$style][$namePart] ?? $names['default'][$namePart] ?? $namePart,
+                $nameParts
+            ))
+        );
+
+        return $names[$style][$name] ?? $names['default'][$name] ?? $name;
+    }
+
     protected static function names(): array
     {
         return [
@@ -347,122 +463,6 @@ class UnitName
                 'Composite Smooth Bore Gun Tank' => '1990 Main Battle Tank',
             ]
         ];
-    }
-
-    public static function name(
-        UnitPlatformType  $platform,
-        UnitEquipmentType $equipment,
-        ?UnitArmorType    $armor,
-        string            $style = 'default'
-    ): string
-    {
-        if ($armor === NoArmor::get()) {
-            $armor = null;
-        }
-
-        if ($platform->category()->is(UnitPlatformCategory::Air, UnitPlatformCategory::Missile)) {
-            return self::airName($platform, $equipment, $armor, $style);
-        }
-        if ($platform->category() === UnitPlatformCategory::Naval) {
-            return self::navalName($platform, $equipment, $armor, $style);
-        }
-        if ($platform->category() === UnitPlatformCategory::Vehicle) {
-            return self::vehicleName($platform, $equipment, $armor, $style);
-        }
-
-
-        $names = static::names();
-
-        $nameParts = [];
-
-        // Armor name
-        switch (true) {
-            case !$armor:
-                break;
-            default:
-                $nameParts[1] = $armor->name();
-        }
-
-        // Platform name
-        switch (true) {
-            case $platform->is(Person::get()):
-                break;
-
-            case $platform->category() == UnitPlatformCategory::Space;
-                $nameParts[4] = $platform->name();
-                break;
-            default:
-                $nameParts[2] = $platform->name();
-        }
-
-        // Equipment Name
-        $nameParts[3] = $equipment->name();
-
-        ksort($nameParts);
-
-        $name = implode(
-            ' ',
-            array_map(
-                fn(string $namePart) => $names[$style][$namePart] ?? $names['default'][$namePart] ?? $namePart,
-                $nameParts
-            )
-        );
-
-        return $names[$style][$name] ?? $names['default'][$name] ?? $name;
-    }
-
-    protected static function airName(
-        UnitPlatformType  $platform,
-        UnitEquipmentType $equipment,
-        ?UnitArmorType    $armor,
-        string            $style = 'default'
-    ): string
-    {
-        $nameParts = [];
-
-        // 1) Armor, Stealth is special
-        if ($armor && $armor->category() !== UnitArmorCategory::Stealth) {
-            $nameParts[] = $armor->name();
-        }
-
-        // Helicopters & Missiles are special
-        if ($platform->is(
-            Helicopter::get(), AttackHelicopter::get(), CruiseMissile::get(), HypersonicMissile::get(), ICBM::get()
-        )) {
-            // 2) Equipment
-            $nameParts[] = $equipment->name();
-
-            // Stealth is special
-            if ($armor?->category() === UnitArmorCategory::Stealth) {
-                $nameParts[] = $armor->name();
-            }
-
-            // 3) Platform
-            $nameParts[] = $platform->name();
-        } else {
-            // 2) Platform
-            $nameParts[] = $platform->name();
-
-            // Stealth is special
-            if ($armor?->category() === UnitArmorCategory::Stealth) {
-                $nameParts[] = $armor->name();
-            }
-
-            // 3) Equipment
-            $nameParts[] = $equipment->name();
-        }
-
-        $names = static::names();
-
-        $name = implode(
-            ' ',
-            array_filter(array_map(
-                fn(string $namePart) => $names[$style][$namePart] ?? $names['default'][$namePart] ?? $namePart,
-                $nameParts
-            ))
-        );
-
-        return $names[$style][$name] ?? $names['default'][$name] ?? $name;
     }
 
     protected static function navalName(

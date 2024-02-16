@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Player;
 use App\Http\Requests\StorePlayerRequest;
 use App\Http\Requests\UpdatePlayerRequest;
+use App\Models\Player;
 
 class PlayerController extends Controller
 {

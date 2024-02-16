@@ -26,10 +26,16 @@ abstract class UnitPlatformType extends AbstractType
     public int $range = 0;
     public int $maneuvering = 0;
 
-    /** @return Collection<int, UnitArmorType> */
-    abstract public function armors(): Collection;
-
-    abstract public function category(): UnitPlatformCategory;
+    /**
+     * @return Collection<int, UnitPlatformType>
+     */
+    public static function all(): Collection
+    {
+        return static::instances(
+            app_path('UnitPlatforms'),
+            [UnitPlatformType::class]
+        );
+    }
 
     public function canHave(UnitEquipmentType $equipment, UnitArmorType $armor = null): bool
     {
@@ -98,6 +104,14 @@ abstract class UnitPlatformType extends AbstractType
         return true;
     }
 
+    /** @return Collection<int, UnitEquipmentType> */
+    abstract public function equipment(): Collection;
+
+    abstract public function category(): UnitPlatformCategory;
+
+    /** @return Collection<int, UnitArmorType> */
+    abstract public function armors(): Collection;
+
     /** @return Collection<int, GameConcept> */
     public function requires(): Collection
     {
@@ -122,18 +136,4 @@ abstract class UnitPlatformType extends AbstractType
     {
         return collect();
     }
-
-    /**
-     * @return Collection<int, UnitPlatformType>
-     */
-    public static function all(): Collection
-    {
-        return static::instances(
-            app_path('UnitPlatforms'),
-            [UnitPlatformType::class]
-        );
-    }
-
-    /** @return Collection<int, UnitEquipmentType> */
-    abstract public function equipment(): Collection;
 }

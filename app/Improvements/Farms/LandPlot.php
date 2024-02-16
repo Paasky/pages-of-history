@@ -5,7 +5,6 @@ namespace App\Improvements\Farms;
 use App\Enums\ImprovementCategory;
 use App\Enums\YieldType;
 use App\Improvements\ImprovementType;
-use App\Technologies\Neolithic\Agriculture;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
 use Illuminate\Support\Collection;

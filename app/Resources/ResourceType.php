@@ -23,11 +23,11 @@ abstract class ResourceType extends AbstractType
 
     abstract public function category(): ResourceCategory;
 
-    abstract public function improvementCategory(): ?ImprovementCategory;
-
     /** @return Collection<int, GameConcept> */
     public function requires(): Collection
     {
         return collect([$this->technology(), $this->improvementCategory()])->filter();
     }
+
+    abstract public function improvementCategory(): ?ImprovementCategory;
 }

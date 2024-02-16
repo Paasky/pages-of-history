@@ -20,20 +20,6 @@ class YieldModifier
     {
     }
 
-    public function color(): string
-    {
-        return ($this->amount ?: $this->percent) < 0 ? 'red' : 'green';
-    }
-
-    public function effect(): string
-    {
-        return implode([
-            $this->percent && $this->percent > 0 ? '+' : '',
-            $this->amount ?: $this->percent,
-            $this->percent ? '%' : '',
-        ]);
-    }
-
     /**
      * @param Collection<int, YieldModifier|YieldModifiersFor> $modifiers
      * @param Collection|array|GameConcept|Building|Citizen|Hex|null $for Pass in collect([null]) to ignore all YieldModifiersFors
@@ -182,5 +168,19 @@ class YieldModifier
             }
         }
         return collect($expandedFors);
+    }
+
+    public function color(): string
+    {
+        return ($this->amount ?: $this->percent) < 0 ? 'red' : 'green';
+    }
+
+    public function effect(): string
+    {
+        return implode([
+            $this->percent && $this->percent > 0 ? '+' : '',
+            $this->amount ?: $this->percent,
+            $this->percent ? '%' : '',
+        ]);
     }
 }

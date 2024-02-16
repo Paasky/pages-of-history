@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Culture;
 use App\Http\Requests\StoreCultureRequest;
 use App\Http\Requests\UpdateCultureRequest;
+use App\Models\Culture;
 
 class CultureController extends Controller
 {

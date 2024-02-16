@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 abstract class TechnologyType extends AbstractType
 {
     public int $research = 0;
+
     /**
      * @return Collection<int, TechnologyType>
      */
@@ -50,10 +51,7 @@ abstract class TechnologyType extends AbstractType
         return $this->era();
     }
 
-    public function cost(): int
-    {
-        return round(pow($this->xy()->x, 1.5) * 5 + 10);
-    }
+    abstract public function era(): TechnologyEra;
 
     public function icon(): string
     {
@@ -68,8 +66,6 @@ abstract class TechnologyType extends AbstractType
         );
     }
 
-    abstract public function era(): TechnologyEra;
-
     abstract public function xy(): Coordinate;
 
     public function yieldModifiers(): Collection
@@ -78,5 +74,10 @@ abstract class TechnologyType extends AbstractType
             YieldType::Science,
             $this->cost()
         )]);
+    }
+
+    public function cost(): int
+    {
+        return round(pow($this->xy()->x, 1.5) * 5 + 10);
     }
 }

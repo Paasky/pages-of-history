@@ -94,11 +94,6 @@ class Player extends Model
         );
     }
 
-    public function map(): BelongsTo
-    {
-        return $this->belongsTo(Map::class);
-    }
-
     public function religion(): BelongsTo
     {
         return $this->belongsTo(Religion::class);
@@ -130,5 +125,10 @@ class Player extends Model
     public function getYieldModifiersAttribute(): Collection
     {
         return $this->cities->map(fn(City $city) => $city->yield_modifiers)->flatten();
+    }
+
+    public function map(): BelongsTo
+    {
+        return $this->belongsTo(Map::class);
     }
 }

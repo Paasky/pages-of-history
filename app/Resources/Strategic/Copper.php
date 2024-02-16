@@ -6,8 +6,6 @@ use App\Enums\ImprovementCategory;
 use App\Enums\ResourceCategory;
 use App\Resources\ResourceType;
 use App\Technologies\Copper\CopperWorking;
-use App\Technologies\Neolithic\StoneWorking;
-use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
 
 class Copper extends ResourceType

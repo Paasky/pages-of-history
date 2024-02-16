@@ -38,12 +38,12 @@ abstract class UnitEquipmentType extends AbstractType
             );
     }
 
+    abstract public function category(): UnitEquipmentCategory;
+
     public function icon(): string
     {
         return $this->category()->icon();
     }
-
-    abstract public function category(): UnitEquipmentCategory;
 
     /** @return Collection<int, GameConcept> */
     public function requires(): Collection

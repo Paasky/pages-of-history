@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Citizen;
 use App\Http\Requests\StoreCitizenRequest;
 use App\Http\Requests\UpdateCitizenRequest;
+use App\Models\Citizen;
 
 class CitizenController extends Controller
 {

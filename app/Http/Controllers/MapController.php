@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Map;
 use App\Http\Requests\StoreMapRequest;
 use App\Http\Requests\UpdateMapRequest;
+use App\Models\Map;
 
 class MapController extends Controller
 {

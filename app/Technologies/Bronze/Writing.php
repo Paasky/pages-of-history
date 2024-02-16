@@ -4,7 +4,6 @@ namespace App\Technologies\Bronze;
 
 use App\Coordinate;
 use App\Enums\TechnologyEra;
-use App\Technologies\Copper\Government;
 use App\Technologies\TechnologyType;
 use Illuminate\Support\Collection;
 

@@ -55,9 +55,9 @@ trait GameConceptEnum
         return false;
     }
 
-    public function name(): string
+    public function slug(): string
     {
-        return \Str::title(str_replace('-', ' ', $this->slug()));
+        return \Str::kebab($this->name);
     }
 
     /** @return Collection<int, GameConcept> */
@@ -71,9 +71,9 @@ trait GameConceptEnum
         return $this->name();
     }
 
-    public function slug(): string
+    public function name(): string
     {
-        return \Str::kebab($this->name);
+        return \Str::title(str_replace('-', ' ', $this->slug()));
     }
 
     public function technology(): ?TechnologyType

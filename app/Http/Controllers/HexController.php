@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Hex;
 use App\Http\Requests\StoreHexRequest;
 use App\Http\Requests\UpdateHexRequest;
+use App\Models\Hex;
 
 class HexController extends Controller
 {

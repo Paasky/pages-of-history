@@ -198,6 +198,7 @@ The Nano era witnessed major advances in various fields of human endeavor, such 
 The Nano era had a significant impact on the cultural and military affairs of the world. It inspired movements such as the transhumanist movement, the nanosafety movement, and the nanoweaponry movement, which sought to explore the possibilities, limitations, and implications of the nanotechnology age. The Nano era also influenced the development of art forms such as nanosculpture, nanomusic, and nanogames, which reflected the aesthetics and challenges of the time. The Nano era was a pivotal moment in the history of humanity, as it shaped the future of the world.',
         };
     }
+
     public function order(): int
     {
         return match ($this) {

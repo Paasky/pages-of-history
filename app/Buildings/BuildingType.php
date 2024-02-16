@@ -21,12 +21,12 @@ abstract class BuildingType extends AbstractType
         );
     }
 
-    abstract public function category(): BuildingCategory;
-
     public function icon(): string
     {
         return $this->category()->icon();
     }
+
+    abstract public function category(): BuildingCategory;
 
     /** @return Collection<int, GameConcept> */
     public function requires(): Collection

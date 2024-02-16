@@ -9,11 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  */
 trait PohModel
 {
-    public function getNameAttribute(): string
-    {
-        return class_basename($this) . " $this->id";
-    }
-
     public static function table(): string
     {
         return (new static())->getTable();
@@ -22,5 +17,10 @@ trait PohModel
     public static function keyName(): string
     {
         return (new static())->getKeyName();
+    }
+
+    public function getNameAttribute(): string
+    {
+        return class_basename($this) . " $this->id";
     }
 }

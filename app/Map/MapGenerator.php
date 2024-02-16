@@ -55,9 +55,606 @@ class MapGenerator
 
             // Get rid of any randomness that's not allowed
             ->postProcess()
-            ->draw()
-        ;
+            ->draw();
         return $this;
+    }
+
+    public function draw(): self
+    {
+        $counts = [
+            'lake' => 0,
+            'hill' => 0,
+            'mountain' => 0,
+
+            'deep' => 0,
+            'island' => 0,
+        ];
+        foreach (Domain::cases() as $domain) {
+            $counts[$domain->value] = 0;
+        }
+        foreach (Surface::cases() as $surface) {
+            $counts[$surface->value] = 0;
+        }
+        foreach (Feature::cases() as $feature) {
+            $counts[$feature->value] = 0;
+        }
+
+        // 1) Heightmap
+        $heights = [];
+        for ($y = -1; $y < $this->worldRegionsY; $y++) {
+            if ($y < 0) {
+                echo '  ';
+            } else {
+                echo str_pad($y, 2, ' ', STR_PAD_LEFT) . ' ';
+            }
+
+            for ($x = 0; $x < $this->worldRegionsX; $x++) {
+                if ($y < 0) {
+                    echo str_pad($x, 3, ' ', STR_PAD_LEFT);
+                    continue;
+                }
+                $xy = new Coordinate($x, $y);
+                $region = $this->generatedRegions[$xy->key()] ?? null;
+                if (!$region) {
+                    throw new \Exception("{$xy->key()} not generated");
+                }
+                echo match (true) {
+                    $region->domain === Domain::Land && $region->elevation < 0 => '🟢',
+                    $region->domain === Domain::Land && $region->elevation >= 5 => '🟫',
+                    $region->domain === Domain::Land && $region->elevation > 0 => '🟧',
+                    $region->domain === Domain::Land => '🟩',
+                    $region->domain === Domain::Water && $region->elevation <= -3 => '🟪',
+                    $region->domain === Domain::Water && $region->elevation > 0 => '🟨',
+                    $region->domain === Domain::Water => '🟦',
+                };
+                $counts[$region->domain->value]++;
+                if ($region->domain === Domain::Land && $region->elevation < 0) {
+                    $counts['lake']++;
+                }
+                if ($region->domain === Domain::Land && $region->elevation >= 5) {
+                    $counts['mountain']++;
+                }
+                if ($region->domain === Domain::Land && $region->elevation > 0) {
+                    $counts['hill']++;
+                }
+                if ($region->domain === Domain::Water && $region->elevation <= -3) {
+                    $counts['deep']++;
+                }
+                if ($region->domain === Domain::Water && $region->elevation > 0) {
+                    $counts['island']++;
+                }
+                $heights[$region->elevation] = ($heights[$region->elevation] ?? 0) + 1;
+            }
+            echo PHP_EOL;
+        }
+        ksort($heights);
+
+        $landPercent = round($counts[Domain::Land->value] / ($counts[Domain::Land->value] + $counts[Domain::Water->value]) * 100);
+        $lakePercent = round($counts['lake'] / $counts[Domain::Land->value] * 100);
+        $hillPercent = round($counts['hill'] / $counts[Domain::Land->value] * 100);
+        $mountainPercent = round($counts['mountain'] / $counts[Domain::Land->value] * 100);
+        $deepPercent = round($counts['deep'] / $counts[Domain::Water->value] * 100);
+        $islandPercent = round($counts['island'] / $counts[Domain::Water->value] * 100);
+
+        echo implode(
+                PHP_EOL,
+                [
+                    "🟩 Land:      {$counts[Domain::Land->value]} ($landPercent%)",
+                    "🟦 Water:     {$counts[Domain::Water->value]}",
+                    "🟪 Ocean:     {$counts['deep']} ($deepPercent% of water)",
+                    "🟨 Islands:   {$counts['island']} ($islandPercent% of water)",
+                    "🟢 Lake:      {$counts['lake']} ($lakePercent% of land)",
+                    "🟧 Hills:     {$counts['hill']} ($hillPercent% of land)",
+                    "🟫 Mountains: {$counts['mountain']} ($mountainPercent% of land)",
+                ]
+            ) . PHP_EOL;
+        echo implode(', ', array_merge($this->generatedContinents, $this->generatedOceans)) . PHP_EOL;
+        return $this;
+
+        // 2) Terrain & Feature Map
+        echo PHP_EOL;
+        for ($y = -1; $y < $this->worldRegionsY; $y++) {
+            if ($y < 0) {
+                echo '  ';
+            } else {
+                echo str_pad($y, 2, ' ', STR_PAD_LEFT) . ' ';
+            }
+
+            for ($x = 0; $x < $this->worldRegionsX; $x++) {
+                if ($y < 0) {
+                    echo str_pad($x, 4, ' ', STR_PAD_LEFT);
+                    continue;
+                }
+                $xy = new Coordinate($x, $y);
+                $region = $this->generatedRegions[$xy->key()];
+                echo match ($region->feature) {
+                    Feature::Snowdrifts => 'd',
+                    Feature::Shrubs => 'S',
+                    Feature::LightForest => 'l',
+                    Feature::PineForest => 'P',
+                    Feature::LushForest => 'L',
+                    Feature::Jungle => 'J',
+                    Feature::Dunes => 'D',
+                    Feature::Oasis => 'O',
+                    Feature::FloodPlain => 'f',
+                    Feature::Shoals => 's',
+                    Feature::Reef => 'R',
+                    null => ' ',
+                };
+                echo match ($region->surface) {
+                    Surface::Snow => '🟪',
+                    Surface::Tundra => '🟫',
+                    Surface::Grass => '🟩',
+                    Surface::Plains => '🟧',
+                    Surface::Desert => '🟨',
+                    Surface::Ocean => '🟦',
+                    Surface::Rock => '🟫',
+                    Surface::Coast => '🟦',
+                    Surface::River => '🟦',
+                    Surface::Sea => '🟦',
+                    null => ' ',
+                };
+                if ($region->surface) {
+                    $counts[$region->surface->value]++;
+                }
+                if ($region->feature) {
+                    $counts[$region->feature->value]++;
+                }
+            }
+            echo PHP_EOL;
+        }
+
+        echo str_pad(Feature::Snowdrifts->name, 13, ' ') . ' s:  ';
+        echo str_pad($counts[Feature::Snowdrifts->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::Shrubs->name, 13, ' ') . ' S:  ';
+        echo str_pad($counts[Feature::Shrubs->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::LightForest->name, 13, ' ') . ' l:  ';
+        echo str_pad($counts[Feature::LightForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::PineForest->name, 13, ' ') . ' P:  ';
+        echo str_pad($counts[Feature::PineForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::LushForest->name, 13, ' ') . ' L:  ';
+        echo str_pad($counts[Feature::LushForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::Jungle->name, 13, ' ') . ' J:  ';
+        echo str_pad($counts[Feature::Jungle->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::Dunes->name, 13, ' ') . ' D:  ';
+        echo str_pad($counts[Feature::Dunes->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Feature::Oasis->name, 13, ' ') . ' O:  ';
+        echo str_pad($counts[Feature::Oasis->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Snow->name, 13, ' ') . '🟪: ';
+        echo str_pad($counts[Surface::Snow->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Tundra->name, 13, ' ') . '🟫: ';
+        echo str_pad($counts[Surface::Tundra->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Grass->name, 13, ' ') . '🟩: ';
+        echo str_pad($counts[Surface::Grass->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Plains->name, 13, ' ') . '🟧: ';
+        echo str_pad($counts[Surface::Plains->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Desert->name, 13, ' ') . '🟨: ';
+        echo str_pad($counts[Surface::Desert->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        echo str_pad(Surface::Ocean->name, 13, ' ') . '🟦: ';
+        echo str_pad($counts[Surface::Ocean->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
+        return $this;
+    }
+
+    protected function postProcess(): self
+    {
+        foreach ($this->generatedRegions as $region) {
+            // Coast without any water neighbors becomes a lake
+            if ($region->surface === Surface::Coast) {
+                $waterNeighbors = 0;
+                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$waterNeighbors) {
+                    if ($neighbor->domain === Domain::Water) {
+                        $waterNeighbors++;
+                    }
+                });
+                if ($waterNeighbors < 3) {
+                    $region->domain = Domain::Land;
+                    $region->surface = Surface::Grass;
+                    $region->feature = null;
+                    $region->elevation = -2;
+                    $this->generatedRegions[$region->key()] = $region;
+                }
+            }
+
+            // Land without any land neighbors becomes sea
+            if ($region->domain === Domain::Land) {
+                $landNeighbors = 0;
+                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$landNeighbors) {
+                    if ($neighbor->domain === Domain::Land) {
+                        $landNeighbors++;
+                    }
+                });
+                if (!$landNeighbors) {
+                    $region->domain = Domain::Water;
+                    $region->surface = Surface::Sea;
+                    $region->feature = null;
+                    $region->elevation = -2;
+                    $this->generatedRegions[$region->key()] = $region;
+                }
+            }
+
+            // Water with land neighbors must be Coast
+            if ($region->domain === Domain::Water && $region->surface !== Surface::Coast) {
+                $hasLandNeighbor = false;
+                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$hasLandNeighbor) {
+                    if ($neighbor->domain === Domain::Land) {
+                        $hasLandNeighbor = true;
+                        return false;
+                    }
+                    return null;
+                });
+                if ($hasLandNeighbor) {
+                    $region->surface = Surface::Coast;
+                    $this->generatedRegions[$region->key()] = $region;
+                }
+            }
+
+            // Ocean with Coast neighbors must be Sea
+            if ($region->surface === Surface::Ocean) {
+                $hasCoastNeighbor = false;
+                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$hasCoastNeighbor) {
+                    if ($neighbor->surface === Surface::Coast) {
+                        $hasCoastNeighbor = true;
+                        return false;
+                    }
+                    return null;
+                });
+                if ($hasCoastNeighbor) {
+                    $region->surface = Surface::Sea;
+                    $this->generatedRegions[$region->key()] = $region;
+                }
+            }
+
+            // 1st & last row MUST be water
+            if (in_array($region->xy->y, [0, $this->worldRegionsY - 1]) && $region->domain !== Domain::Water) {
+                $region->domain = Domain::Water;
+                $region->elevation = 0;
+                $region->surface = Surface::Coast;
+                $region->feature = Feature::Shoals;
+                $this->generatedRegions[$region->key()] = $region;
+            }
+        }
+        return $this;
+    }
+
+    protected function forEachNeighbor(MapRegion $region, callable $function, int $distance = 1): void
+    {
+        foreach (range($region->xy->x - $distance, $region->xy->x + $distance) as $x) {
+            foreach (range($region->xy->y - $distance, $region->xy->y + $distance) as $y) {
+                if ($x === $region->xy->x && $y === $region->xy->y) {
+                    continue;
+                }
+                $xy = $this->validCoords(new Coordinate($x, $y));
+                if (!$xy) {
+                    continue;
+                }
+
+                $neighbor = $this->generatedRegions[$xy->key()] ?? $xy->key();
+                if ($function($neighbor) === false) {
+                    return;
+                }
+            }
+        }
+    }
+
+    protected function validCoords(Coordinate $coords): ?Coordinate
+    {
+        $xy = clone $coords;
+        if ($xy->y < 0 || $xy->y >= $this->worldRegionsY) {
+            return null;
+        }
+        if ($xy->x < 0) {
+            $xy->x = $this->worldRegionsX - 1;
+            return $xy;
+        }
+        if ($xy->x >= $this->worldRegionsX) {
+            $xy->x = 0;
+            return $xy;
+        }
+        return $xy;
+    }
+
+    protected function generateFeatures(): self
+    {
+        // 1) Generate Features by latitude
+        $twentieth = $this->worldRegionsY / 20;
+        $featuresConfig = [
+            // Top row is Snow
+            [0, [Feature::Snowdrifts], [Feature::Snowdrifts]],
+
+            // Next 2 rows are Tundra
+            [2, [null, Feature::LightForest, Feature::PineForest], [null, Feature::PineForest, Feature::Shrubs]],
+
+            // Grass
+            [(int)round($twentieth * 5), [null, Feature::LushForest, Feature::PineForest], [null, Feature::PineForest]],
+
+            // Plains
+            [(int)round($twentieth * 7), [null, null, Feature::LightForest], [null, Feature::Shrubs]],
+
+            // Desert
+            [(int)round($twentieth * 9), [null, Feature::Dunes, Feature::Oasis], [null, Feature::Shrubs]],
+
+            // Grass
+            [(int)round($twentieth * 15), [Feature::Jungle], [null, Feature::LushForest, Feature::Jungle]],
+
+            // Plains, leave 3 bottom rows for Tundra & Snow
+            [$this->worldRegionsY - 4, [null, null, Feature::LightForest, Feature::PineForest], [null, Feature::Shrubs]],
+
+            // Next two rows are Tundra
+            [$this->worldRegionsY - 2, [null, Feature::LightForest, Feature::PineForest], [null, Feature::PineForest, Feature::Shrubs]],
+
+            // Should be one row left as Snow
+            [$this->worldRegionsY, [null, Feature::Snowdrifts], [null]],
+        ];
+        $regionsToGenerate = $this->generatedRegions;
+        while ($regionsToGenerate) {
+            /** @var MapRegion $region */
+            $region = Arr::random($regionsToGenerate);
+            unset($regionsToGenerate[$region->key()]);
+            if ($region->domain === Domain::Water && $region->elevation <= 0) {
+                continue;
+            }
+            if ($region->elevation >= 5) {
+                continue;
+            }
+
+            $features = [];
+            $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$features, $regionsToGenerate) {
+                if (!$neighbor->feature) {
+                    return;
+                }
+                $features[] = $neighbor->feature;
+            });
+
+            foreach ($featuresConfig as $key => $featureConfig) {
+                [$maxY, $flatFeatures, $hillFeatures] = $featureConfig;
+                if ($region->xy->y <= $maxY) {
+                    $features = array_merge(
+                        $features,
+                        $region->elevation <= 0
+                            ? $flatFeatures
+                            : $hillFeatures
+                    );
+
+                    if ($prevFeatureConfig = $featuresConfig[$key - 1] ?? null) {
+                        [$maxY, $flatFeatures, $hillFeatures] = $prevFeatureConfig;
+                        if ($region->xy->y - 1 === $maxY) {
+                            $features = array_merge(
+                                $features,
+                                $region->elevation <= 0
+                                    ? $flatFeatures
+                                    : $hillFeatures
+                            );
+                        }
+                    }
+                    $features = array_filter(
+                        $features,
+                        fn(?Feature $feature) => in_array($feature, Feature::casesForSurface($region->surface))
+                    );
+                    if (!$features) {
+                        $features = Feature::casesForSurface($region->surface);
+                    }
+                    $region->feature = Arr::random($features);
+                    $this->generatedRegions[$region->key()] = $region;
+                    continue 2;
+                }
+            }
+        }
+        return $this;
+    }
+
+    protected function generateSurfaces(): self
+    {
+        // 1) Generate Climates by latitude
+        $twentieth = $this->worldRegionsY / 20;
+        $climates = [
+            // Top row is Snow
+            [0, Surface::Snow],
+            // Next 2 rows are Tundra
+            [2, Surface::Tundra],
+            [(int)round($twentieth * 6), Surface::Grass],
+            [(int)round($twentieth * 8), Surface::Plains],
+            [(int)round($twentieth * 10), Surface::Desert],
+            [(int)round($twentieth * 15), Surface::Grass],
+            // Leave 3 bottom rows for Tundra & Snow
+            [$this->worldRegionsY - 4, Surface::Plains],
+            // Next two rows are Tundra
+            [$this->worldRegionsY - 2, Surface::Tundra],
+            // Should be one row left as Snow
+            [$this->worldRegionsY, Surface::Snow],
+        ];
+        foreach ($this->generatedRegions as $region) {
+            if ($region->domain === Domain::Water) {
+                $region->surface = $region->elevation <= -3 ? Surface::Ocean : Surface::Sea;
+                $this->generatedRegions[$region->key()] = $region;
+                continue;
+            }
+            if ($region->elevation >= 5) {
+                $region->surface = Surface::Rock;
+                $this->generatedRegions[$region->key()] = $region;
+                continue;
+            }
+            foreach ($climates as $key => $climate) {
+                [$maxY, $surface] = $climate;
+                if ($region->xy->y <= $maxY) {
+                    $surfaces = [$surface];
+                    if ($prevClimate = $climates[$key - 1] ?? null) {
+                        [$maxY, $surface] = $prevClimate;
+                        if ($region->xy->y - 1 === $maxY) {
+                            $surfaces[] = $surface;
+                        }
+                    }
+                    $region->surface = Arr::random($surfaces);
+                    $this->generatedRegions[$region->key()] = $region;
+                    continue 2;
+                }
+            }
+        }
+
+        // 2) Generate surfaces by mountains
+        $halfY = (int)round($this->worldRegionsY);
+        $newSurfaces = [];
+        foreach ($this->generatedRegions as $region) {
+            if ($region->domain === Domain::Water) {
+                continue;
+            }
+            if ($region->elevation >= 5) {
+                $wetCoords = $this->validCoords(
+                // Northern hemisphere moves left, Southern moves right
+                    new Coordinate($region->xy->x + ($region->xy->y < $halfY ? -1 : 1), $region->xy->y)
+                );
+                $wetRegion = $this->generatedRegions[$wetCoords->key()];
+                $newSurface = match (true) {
+                    $wetRegion->elevation >= 5 => '',
+                    $wetRegion->surface === Surface::Snow => Surface::Tundra,
+                    in_array($wetRegion->surface, [Surface::Tundra, Surface::Desert]) => Surface::Plains,
+                    in_array($wetRegion->surface, [Surface::Grass, Surface::Plains]) => Surface::Grass,
+                    default => null,
+                };
+                if ($newSurface) {
+                    $newSurfaces[$wetCoords->key()] = $newSurface;
+                }
+
+                $gridsLeft = 4;
+                while ($gridsLeft) {
+                    $dryCoords = $this->validCoords(
+                    // Northern hemisphere moves right, Southern moves left
+                        new Coordinate($region->xy->x + ($region->xy->y < $halfY ? 1 : -1), $region->xy->y)
+                    );
+                    $region = $this->generatedRegions[$dryCoords->key()];
+                    $newSurface = match (true) {
+                        $gridsLeft === 4,
+                        in_array($region->surface, [Surface::Desert, Surface::Plains]) => Surface::Desert,
+                        in_array($region->surface, [Surface::Snow, Surface::Tundra]) => Surface::Snow,
+                        $region->surface === Surface::Grass => Surface::Plains,
+                        default => null
+                    };
+                    if ($newSurface) {
+                        $newSurfaces[$dryCoords->key()] = $newSurface;
+                    }
+                    $gridsLeft--;
+                }
+            }
+        }
+        foreach ($newSurfaces as $key => $surface) {
+            $this->generatedRegions[$key]->surface = $surface;
+        }
+
+        return $this;
+    }
+
+    protected function smoothHeights(): self
+    {
+        $newHeights = [];
+        foreach ($this->generatedRegions as $key => $region) {
+            $neighborHeights = [];
+            $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$neighborHeights) {
+                $neighborHeights[] = $neighbor->elevation;
+            });
+            $neighborAvg = (array_sum($neighborHeights) / count($neighborHeights));
+            $newHeights[$key] = round(($region->elevation + $neighborAvg) / 2);
+        }
+
+        foreach ($this->generatedRegions as $key => $region) {
+            $region->elevation = $newHeights[$key];
+            $this->generatedRegions[$key] = $region;
+        }
+
+        return $this;
+    }
+
+    protected function generateFaultLines(): self
+    {
+        $faultLinesLeft = round($this->worldRegionsY * $this->faultLinesMultiplier);
+        $notAllowedTurns = [
+            'n' => ['sw', 's', 'se'],
+            'ne' => ['w', 'sw', 's'],
+            'e' => ['nw', 'w', 'sw'],
+            'se' => ['n', 'nw', 'w'],
+            's' => ['ne', 'n', 'nw'],
+            'sw' => ['e', 'ne', 'n'],
+            'w' => ['se', 'e', 'ne'],
+            'nw' => ['s', 'se', 'e'],
+        ];
+        while ($faultLinesLeft) {
+            /** @var MapRegion $region */
+            $region = Arr::random($this->generatedRegions);
+            $minDistanceFromPole = $this->worldRegionsY * 0.1;
+            if ($region->xy->y < $minDistanceFromPole ||
+                $region->xy->y >= $this->worldRegionsY - $minDistanceFromPole
+            ) {
+                continue;
+            }
+
+            $prevDirection = '';
+            $directions = $this->faultLineDirections;
+            $minDistanceFromPole = $this->worldRegionsY * 0.2;
+            while ($directions) {
+                $direction = collect(
+                    match (true) {
+                        $region->xy->y < $minDistanceFromPole => ['w', 'sw', 's', 'se', 'e'],
+                        $region->xy->y >= $this->worldRegionsY - $minDistanceFromPole => ['w', 'nw', 'n', 'ne', 'e'],
+                        default => ['n', 'ne', 'se', 's', 'sw', 'nw'],
+                    }
+                )->filter(
+                    fn($d) => $d !== $prevDirection && !in_array($d, $notAllowedTurns[$prevDirection] ?? [])
+                )->random();
+
+                $region = $this->buildFaultLine($region, $direction);
+                $prevDirection = $direction;
+                $directions--;
+            }
+            $faultLinesLeft--;
+        }
+
+        return $this;
+    }
+
+    protected function buildFaultLine(MapRegion $region, string $direction): MapRegion
+    {
+        $oceanSteps = 0;
+        for ($step = 1; $step <= $this->faultLinesLength; $step++) {
+            if (!$region->elevation) {
+                $region->elevation = $region->domain === Domain::Water ? 5 : 9;
+            }
+            if ($region->surface === Surface::Coast) {
+                $region->domain = Domain::Land;
+                $region->surface = null;
+                $region->elevation = 5;
+                $oceanSteps++;
+            }
+            if ($region->domain === Domain::Water && $region->elevation < 0 && rand(0, 1)) {
+                $region->elevation = 5;
+                $oceanSteps++;
+            }
+
+            $this->generatedRegions[$region->key()] = $region;
+
+            if ($oceanSteps >= $this->maxOceanIslandChain) {
+                break;
+            }
+
+            // Do the steps
+            $nextXy = clone $region->xy;
+            if (stristr($direction, 'n')) {
+                $nextXy->y--;
+            }
+            if (stristr($direction, 'e')) {
+                $nextXy->x++;
+            }
+            if (stristr($direction, 's')) {
+                $nextXy->y++;
+            }
+            if (stristr($direction, 'w')) {
+                $nextXy->x--;
+            }
+            $nextXy = $this->validCoords($nextXy);
+            if (!$nextXy) {
+                break;
+            }
+
+            $region = $this->generatedRegions[$nextXy->key()];
+        }
+        return $region;
     }
 
     protected function generateRegions(): self
@@ -274,604 +871,6 @@ class MapGenerator
             unset($regionsToGenerate[$region->key()]);
         }
         ksort($this->generatedRegions);
-        return $this;
-    }
-
-    protected function generateFaultLines(): self
-    {
-        $faultLinesLeft = round($this->worldRegionsY * $this->faultLinesMultiplier);
-        $notAllowedTurns = [
-            'n' => ['sw', 's', 'se'],
-            'ne' => ['w', 'sw', 's'],
-            'e' => ['nw', 'w', 'sw'],
-            'se' => ['n', 'nw', 'w'],
-            's' => ['ne', 'n', 'nw'],
-            'sw' => ['e', 'ne', 'n'],
-            'w' => ['se', 'e', 'ne'],
-            'nw' => ['s', 'se', 'e'],
-        ];
-        while ($faultLinesLeft) {
-            /** @var MapRegion $region */
-            $region = Arr::random($this->generatedRegions);
-            $minDistanceFromPole = $this->worldRegionsY * 0.1;
-            if ($region->xy->y < $minDistanceFromPole ||
-                $region->xy->y >= $this->worldRegionsY - $minDistanceFromPole
-            ) {
-                continue;
-            }
-
-            $prevDirection = '';
-            $directions = $this->faultLineDirections;
-            $minDistanceFromPole = $this->worldRegionsY * 0.2;
-            while ($directions) {
-                $direction = collect(
-                    match (true) {
-                        $region->xy->y < $minDistanceFromPole => ['w', 'sw', 's', 'se', 'e'],
-                        $region->xy->y >= $this->worldRegionsY - $minDistanceFromPole => ['w', 'nw', 'n', 'ne', 'e'],
-                        default => ['n', 'ne', 'se', 's', 'sw', 'nw'],
-                    }
-                )->filter(
-                    fn($d) => $d !== $prevDirection && !in_array($d, $notAllowedTurns[$prevDirection] ?? [])
-                )->random();
-
-                $region = $this->buildFaultLine($region, $direction);
-                $prevDirection = $direction;
-                $directions--;
-            }
-            $faultLinesLeft--;
-        }
-
-        return $this;
-    }
-
-    protected function buildFaultLine(MapRegion $region, string $direction): MapRegion
-    {
-        $oceanSteps = 0;
-        for ($step = 1; $step <= $this->faultLinesLength; $step++) {
-            if (!$region->elevation) {
-                $region->elevation = $region->domain === Domain::Water ? 5 : 9;
-            }
-            if ($region->surface === Surface::Coast) {
-                $region->domain = Domain::Land;
-                $region->surface = null;
-                $region->elevation = 5;
-                $oceanSteps++;
-            }
-            if ($region->domain === Domain::Water && $region->elevation < 0 && rand(0, 1)) {
-                $region->elevation = 5;
-                $oceanSteps++;
-            }
-
-            $this->generatedRegions[$region->key()] = $region;
-
-            if ($oceanSteps >= $this->maxOceanIslandChain) {
-                break;
-            }
-
-            // Do the steps
-            $nextXy = clone $region->xy;
-            if (stristr($direction, 'n')) {
-                $nextXy->y--;
-            }
-            if (stristr($direction, 'e')) {
-                $nextXy->x++;
-            }
-            if (stristr($direction, 's')) {
-                $nextXy->y++;
-            }
-            if (stristr($direction, 'w')) {
-                $nextXy->x--;
-            }
-            $nextXy = $this->validCoords($nextXy);
-            if (!$nextXy) {
-                break;
-            }
-
-            $region = $this->generatedRegions[$nextXy->key()];
-        }
-        return $region;
-    }
-
-    protected function smoothHeights(): self
-    {
-        $newHeights = [];
-        foreach ($this->generatedRegions as $key => $region) {
-            $neighborHeights = [];
-            $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$neighborHeights) {
-                $neighborHeights[] = $neighbor->elevation;
-            });
-            $neighborAvg = (array_sum($neighborHeights) / count($neighborHeights));
-            $newHeights[$key] = round(($region->elevation + $neighborAvg) / 2);
-        }
-
-        foreach ($this->generatedRegions as $key => $region) {
-            $region->elevation = $newHeights[$key];
-            $this->generatedRegions[$key] = $region;
-        }
-
-        return $this;
-    }
-
-    protected function generateSurfaces(): self
-    {
-        // 1) Generate Climates by latitude
-        $twentieth = $this->worldRegionsY / 20;
-        $climates = [
-            // Top row is Snow
-            [0, Surface::Snow],
-            // Next 2 rows are Tundra
-            [2, Surface::Tundra],
-            [(int)round($twentieth * 6), Surface::Grass],
-            [(int)round($twentieth * 8), Surface::Plains],
-            [(int)round($twentieth * 10), Surface::Desert],
-            [(int)round($twentieth * 15), Surface::Grass],
-            // Leave 3 bottom rows for Tundra & Snow
-            [$this->worldRegionsY - 4, Surface::Plains],
-            // Next two rows are Tundra
-            [$this->worldRegionsY - 2, Surface::Tundra],
-            // Should be one row left as Snow
-            [$this->worldRegionsY, Surface::Snow],
-        ];
-        foreach ($this->generatedRegions as $region) {
-            if ($region->domain === Domain::Water) {
-                $region->surface = $region->elevation <= -3 ? Surface::Ocean : Surface::Sea;
-                $this->generatedRegions[$region->key()] = $region;
-                continue;
-            }
-            if ($region->elevation >= 5) {
-                $region->surface = Surface::Rock;
-                $this->generatedRegions[$region->key()] = $region;
-                continue;
-            }
-            foreach ($climates as $key => $climate) {
-                [$maxY, $surface] = $climate;
-                if ($region->xy->y <= $maxY) {
-                    $surfaces = [$surface];
-                    if ($prevClimate = $climates[$key - 1] ?? null) {
-                        [$maxY, $surface] = $prevClimate;
-                        if ($region->xy->y - 1 === $maxY) {
-                            $surfaces[] = $surface;
-                        }
-                    }
-                    $region->surface = Arr::random($surfaces);
-                    $this->generatedRegions[$region->key()] = $region;
-                    continue 2;
-                }
-            }
-        }
-
-        // 2) Generate surfaces by mountains
-        $halfY = (int)round($this->worldRegionsY);
-        $newSurfaces = [];
-        foreach ($this->generatedRegions as $region) {
-            if ($region->domain === Domain::Water) {
-                continue;
-            }
-            if ($region->elevation >= 5) {
-                $wetCoords = $this->validCoords(
-                // Northern hemisphere moves left, Southern moves right
-                    new Coordinate($region->xy->x + ($region->xy->y < $halfY ? -1 : 1), $region->xy->y)
-                );
-                $wetRegion = $this->generatedRegions[$wetCoords->key()];
-                $newSurface = match (true) {
-                    $wetRegion->elevation >= 5 => '',
-                    $wetRegion->surface === Surface::Snow => Surface::Tundra,
-                    in_array($wetRegion->surface, [Surface::Tundra, Surface::Desert]) => Surface::Plains,
-                    in_array($wetRegion->surface, [Surface::Grass, Surface::Plains]) => Surface::Grass,
-                    default => null,
-                };
-                if ($newSurface) {
-                    $newSurfaces[$wetCoords->key()] = $newSurface;
-                }
-
-                $gridsLeft = 4;
-                while ($gridsLeft) {
-                    $dryCoords = $this->validCoords(
-                    // Northern hemisphere moves right, Southern moves left
-                        new Coordinate($region->xy->x + ($region->xy->y < $halfY ? 1 : -1), $region->xy->y)
-                    );
-                    $region = $this->generatedRegions[$dryCoords->key()];
-                    $newSurface = match (true) {
-                        $gridsLeft === 4,
-                        in_array($region->surface, [Surface::Desert, Surface::Plains]) => Surface::Desert,
-                        in_array($region->surface, [Surface::Snow, Surface::Tundra]) => Surface::Snow,
-                        $region->surface === Surface::Grass => Surface::Plains,
-                        default => null
-                    };
-                    if ($newSurface) {
-                        $newSurfaces[$dryCoords->key()] = $newSurface;
-                    }
-                    $gridsLeft--;
-                }
-            }
-        }
-        foreach ($newSurfaces as $key => $surface) {
-            $this->generatedRegions[$key]->surface = $surface;
-        }
-
-        return $this;
-    }
-
-    protected function generateFeatures(): self
-    {
-        // 1) Generate Features by latitude
-        $twentieth = $this->worldRegionsY / 20;
-        $featuresConfig = [
-            // Top row is Snow
-            [0, [Feature::Snowdrifts], [Feature::Snowdrifts]],
-
-            // Next 2 rows are Tundra
-            [2, [null, Feature::LightForest, Feature::PineForest], [null, Feature::PineForest, Feature::Shrubs]],
-
-            // Grass
-            [(int)round($twentieth * 5), [null, Feature::LushForest, Feature::PineForest], [null, Feature::PineForest]],
-
-            // Plains
-            [(int)round($twentieth * 7), [null, null, Feature::LightForest], [null, Feature::Shrubs]],
-
-            // Desert
-            [(int)round($twentieth * 9), [null, Feature::Dunes, Feature::Oasis], [null, Feature::Shrubs]],
-
-            // Grass
-            [(int)round($twentieth * 15), [Feature::Jungle], [null, Feature::LushForest, Feature::Jungle]],
-
-            // Plains, leave 3 bottom rows for Tundra & Snow
-            [$this->worldRegionsY - 4, [null, null, Feature::LightForest, Feature::PineForest], [null, Feature::Shrubs]],
-
-            // Next two rows are Tundra
-            [$this->worldRegionsY - 2, [null, Feature::LightForest, Feature::PineForest], [null, Feature::PineForest, Feature::Shrubs]],
-
-            // Should be one row left as Snow
-            [$this->worldRegionsY, [null, Feature::Snowdrifts], [null]],
-        ];
-        $regionsToGenerate = $this->generatedRegions;
-        while ($regionsToGenerate) {
-            /** @var MapRegion $region */
-            $region = Arr::random($regionsToGenerate);
-            unset($regionsToGenerate[$region->key()]);
-            if ($region->domain === Domain::Water && $region->elevation <= 0) {
-                continue;
-            }
-            if ($region->elevation >= 5) {
-                continue;
-            }
-
-            $features = [];
-            $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$features, $regionsToGenerate) {
-                if (!$neighbor->feature) {
-                    return;
-                }
-                $features[] = $neighbor->feature;
-            });
-
-            foreach ($featuresConfig as $key => $featureConfig) {
-                [$maxY, $flatFeatures, $hillFeatures] = $featureConfig;
-                if ($region->xy->y <= $maxY) {
-                    $features = array_merge(
-                        $features,
-                        $region->elevation <= 0
-                            ? $flatFeatures
-                            : $hillFeatures
-                    );
-
-                    if ($prevFeatureConfig = $featuresConfig[$key - 1] ?? null) {
-                        [$maxY, $flatFeatures, $hillFeatures] = $prevFeatureConfig;
-                        if ($region->xy->y - 1 === $maxY) {
-                            $features = array_merge(
-                                $features,
-                                $region->elevation <= 0
-                                    ? $flatFeatures
-                                    : $hillFeatures
-                            );
-                        }
-                    }
-                    $features = array_filter(
-                        $features,
-                        fn(?Feature $feature) => in_array($feature, Feature::casesForSurface($region->surface))
-                    );
-                    if (!$features) {
-                        $features = Feature::casesForSurface($region->surface);
-                    }
-                    $region->feature = Arr::random($features);
-                    $this->generatedRegions[$region->key()] = $region;
-                    continue 2;
-                }
-            }
-        }
-        return $this;
-    }
-
-    protected function postProcess(): self
-    {
-        foreach ($this->generatedRegions as $region) {
-            // Coast without any water neighbors becomes a lake
-            if ($region->surface === Surface::Coast) {
-                $waterNeighbors = 0;
-                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$waterNeighbors) {
-                    if ($neighbor->domain === Domain::Water) {
-                        $waterNeighbors++;
-                    }
-                });
-                if ($waterNeighbors < 3) {
-                    $region->domain = Domain::Land;
-                    $region->surface = Surface::Grass;
-                    $region->feature = null;
-                    $region->elevation = -2;
-                    $this->generatedRegions[$region->key()] = $region;
-                }
-            }
-
-            // Land without any land neighbors becomes sea
-            if ($region->domain === Domain::Land) {
-                $landNeighbors = 0;
-                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$landNeighbors) {
-                    if ($neighbor->domain === Domain::Land) {
-                        $landNeighbors++;
-                    }
-                });
-                if (!$landNeighbors) {
-                    $region->domain = Domain::Water;
-                    $region->surface = Surface::Sea;
-                    $region->feature = null;
-                    $region->elevation = -2;
-                    $this->generatedRegions[$region->key()] = $region;
-                }
-            }
-
-            // Water with land neighbors must be Coast
-            if ($region->domain === Domain::Water && $region->surface !== Surface::Coast) {
-                $hasLandNeighbor = false;
-                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$hasLandNeighbor) {
-                    if ($neighbor->domain === Domain::Land) {
-                        $hasLandNeighbor = true;
-                        return false;
-                    }
-                    return null;
-                });
-                if ($hasLandNeighbor) {
-                    $region->surface = Surface::Coast;
-                    $this->generatedRegions[$region->key()] = $region;
-                }
-            }
-
-            // Ocean with Coast neighbors must be Sea
-            if ($region->surface === Surface::Ocean) {
-                $hasCoastNeighbor = false;
-                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$hasCoastNeighbor) {
-                    if ($neighbor->surface === Surface::Coast) {
-                        $hasCoastNeighbor = true;
-                        return false;
-                    }
-                    return null;
-                });
-                if ($hasCoastNeighbor) {
-                    $region->surface = Surface::Sea;
-                    $this->generatedRegions[$region->key()] = $region;
-                }
-            }
-
-            // 1st & last row MUST be water
-            if (in_array($region->xy->y, [0, $this->worldRegionsY - 1]) && $region->domain !== Domain::Water) {
-                $region->domain = Domain::Water;
-                $region->elevation = 0;
-                $region->surface = Surface::Coast;
-                $region->feature = Feature::Shoals;
-                $this->generatedRegions[$region->key()] = $region;
-            }
-        }
-        return $this;
-    }
-
-    protected function validCoords(Coordinate $coords): ?Coordinate
-    {
-        $xy = clone $coords;
-        if ($xy->y < 0 || $xy->y >= $this->worldRegionsY) {
-            return null;
-        }
-        if ($xy->x < 0) {
-            $xy->x = $this->worldRegionsX - 1;
-            return $xy;
-        }
-        if ($xy->x >= $this->worldRegionsX) {
-            $xy->x = 0;
-            return $xy;
-        }
-        return $xy;
-    }
-
-    protected function forEachNeighbor(MapRegion $region, callable $function, int $distance = 1): void
-    {
-        foreach (range($region->xy->x - $distance, $region->xy->x + $distance) as $x) {
-            foreach (range($region->xy->y - $distance, $region->xy->y + $distance) as $y) {
-                if ($x === $region->xy->x && $y === $region->xy->y) {
-                    continue;
-                }
-                $xy = $this->validCoords(new Coordinate($x, $y));
-                if (!$xy) {
-                    continue;
-                }
-
-                $neighbor = $this->generatedRegions[$xy->key()] ?? $xy->key();
-                if ($function($neighbor) === false) {
-                    return;
-                }
-            }
-        }
-    }
-
-    public function draw(): self
-    {
-        $counts = [
-            'lake' => 0,
-            'hill' => 0,
-            'mountain' => 0,
-
-            'deep' => 0,
-            'island' => 0,
-        ];
-        foreach (Domain::cases() as $domain) {
-            $counts[$domain->value] = 0;
-        }
-        foreach (Surface::cases() as $surface) {
-            $counts[$surface->value] = 0;
-        }
-        foreach (Feature::cases() as $feature) {
-            $counts[$feature->value] = 0;
-        }
-
-        // 1) Heightmap
-        $heights = [];
-        for ($y = -1; $y < $this->worldRegionsY; $y++) {
-            if ($y < 0) {
-                echo '  ';
-            } else {
-                echo str_pad($y, 2, ' ', STR_PAD_LEFT) . ' ';
-            }
-
-            for ($x = 0; $x < $this->worldRegionsX; $x++) {
-                if ($y < 0) {
-                    echo str_pad($x, 3, ' ', STR_PAD_LEFT);
-                    continue;
-                }
-                $xy = new Coordinate($x, $y);
-                $region = $this->generatedRegions[$xy->key()] ?? null;
-                if (!$region) {
-                    throw new \Exception("{$xy->key()} not generated");
-                }
-                echo match (true) {
-                    $region->domain === Domain::Land && $region->elevation < 0 => '🟢',
-                    $region->domain === Domain::Land && $region->elevation >= 5 => '🟫',
-                    $region->domain === Domain::Land && $region->elevation > 0 => '🟧',
-                    $region->domain === Domain::Land => '🟩',
-                    $region->domain === Domain::Water && $region->elevation <= -3 => '🟪',
-                    $region->domain === Domain::Water && $region->elevation > 0 => '🟨',
-                    $region->domain === Domain::Water => '🟦',
-                };
-                $counts[$region->domain->value]++;
-                if ($region->domain === Domain::Land && $region->elevation < 0) {
-                    $counts['lake']++;
-                }
-                if ($region->domain === Domain::Land && $region->elevation >= 5) {
-                    $counts['mountain']++;
-                }
-                if ($region->domain === Domain::Land && $region->elevation > 0) {
-                    $counts['hill']++;
-                }
-                if ($region->domain === Domain::Water && $region->elevation <= -3) {
-                    $counts['deep']++;
-                }
-                if ($region->domain === Domain::Water && $region->elevation > 0) {
-                    $counts['island']++;
-                }
-                $heights[$region->elevation] = ($heights[$region->elevation] ?? 0) + 1;
-            }
-            echo PHP_EOL;
-        }
-        ksort($heights);
-
-        $landPercent = round($counts[Domain::Land->value] / ($counts[Domain::Land->value] + $counts[Domain::Water->value]) * 100);
-        $lakePercent = round($counts['lake'] / $counts[Domain::Land->value] * 100);
-        $hillPercent = round($counts['hill'] / $counts[Domain::Land->value] * 100);
-        $mountainPercent = round($counts['mountain'] / $counts[Domain::Land->value] * 100);
-        $deepPercent = round($counts['deep'] / $counts[Domain::Water->value] * 100);
-        $islandPercent = round($counts['island'] / $counts[Domain::Water->value] * 100);
-
-        echo implode(
-                PHP_EOL,
-                [
-                    "🟩 Land:      {$counts[Domain::Land->value]} ($landPercent%)",
-                    "🟦 Water:     {$counts[Domain::Water->value]}",
-                    "🟪 Ocean:     {$counts['deep']} ($deepPercent% of water)",
-                    "🟨 Islands:   {$counts['island']} ($islandPercent% of water)",
-                    "🟢 Lake:      {$counts['lake']} ($lakePercent% of land)",
-                    "🟧 Hills:     {$counts['hill']} ($hillPercent% of land)",
-                    "🟫 Mountains: {$counts['mountain']} ($mountainPercent% of land)",
-                ]
-            ) . PHP_EOL;
-        echo implode(', ', array_merge($this->generatedContinents, $this->generatedOceans)) . PHP_EOL;
-        return $this;
-
-        // 2) Terrain & Feature Map
-        echo PHP_EOL;
-        for ($y = -1; $y < $this->worldRegionsY; $y++) {
-            if ($y < 0) {
-                echo '  ';
-            } else {
-                echo str_pad($y, 2, ' ', STR_PAD_LEFT) . ' ';
-            }
-
-            for ($x = 0; $x < $this->worldRegionsX; $x++) {
-                if ($y < 0) {
-                    echo str_pad($x, 4, ' ', STR_PAD_LEFT);
-                    continue;
-                }
-                $xy = new Coordinate($x, $y);
-                $region = $this->generatedRegions[$xy->key()];
-                echo match ($region->feature) {
-                    Feature::Snowdrifts => 'd',
-                    Feature::Shrubs => 'S',
-                    Feature::LightForest => 'l',
-                    Feature::PineForest => 'P',
-                    Feature::LushForest => 'L',
-                    Feature::Jungle => 'J',
-                    Feature::Dunes => 'D',
-                    Feature::Oasis => 'O',
-                    Feature::FloodPlain => 'f',
-                    Feature::Shoals => 's',
-                    Feature::Reef => 'R',
-                    null => ' ',
-                };
-                echo match ($region->surface) {
-                    Surface::Snow => '🟪',
-                    Surface::Tundra => '🟫',
-                    Surface::Grass => '🟩',
-                    Surface::Plains => '🟧',
-                    Surface::Desert => '🟨',
-                    Surface::Ocean => '🟦',
-                    Surface::Rock => '🟫',
-                    Surface::Coast => '🟦',
-                    Surface::River => '🟦',
-                    Surface::Sea => '🟦',
-                    null => ' ',
-                };
-                if ($region->surface) {
-                    $counts[$region->surface->value]++;
-                }
-                if ($region->feature) {
-                    $counts[$region->feature->value]++;
-                }
-            }
-            echo PHP_EOL;
-        }
-
-        echo str_pad(Feature::Snowdrifts->name, 13, ' ') . ' s:  ';
-        echo str_pad($counts[Feature::Snowdrifts->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Feature::Shrubs->name, 13, ' ') . ' S:  ';
-        echo str_pad($counts[Feature::Shrubs->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Feature::LightForest->name, 13, ' ') . ' l:  ';
-        echo str_pad($counts[Feature::LightForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Feature::PineForest->name, 13, ' ') . ' P:  ';
-        echo str_pad($counts[Feature::PineForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Feature::LushForest->name, 13, ' ') . ' L:  ';
-        echo str_pad($counts[Feature::LushForest->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Feature::Jungle->name, 13, ' ') . ' J:  ';
-        echo str_pad($counts[Feature::Jungle->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Feature::Dunes->name, 13, ' ') . ' D:  ';
-        echo str_pad($counts[Feature::Dunes->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Feature::Oasis->name, 13, ' ') . ' O:  ';
-        echo str_pad($counts[Feature::Oasis->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Surface::Snow->name, 13, ' ') . '🟪: ';
-        echo str_pad($counts[Surface::Snow->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Surface::Tundra->name, 13, ' ') . '🟫: ';
-        echo str_pad($counts[Surface::Tundra->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Surface::Grass->name, 13, ' ') . '🟩: ';
-        echo str_pad($counts[Surface::Grass->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Surface::Plains->name, 13, ' ') . '🟧: ';
-        echo str_pad($counts[Surface::Plains->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Surface::Desert->name, 13, ' ') . '🟨: ';
-        echo str_pad($counts[Surface::Desert->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
-        echo str_pad(Surface::Ocean->name, 13, ' ') . '🟦: ';
-        echo str_pad($counts[Surface::Ocean->value], 4, ' ', STR_PAD_LEFT) . PHP_EOL;
         return $this;
     }
 

@@ -5,7 +5,6 @@ namespace App\Resources\Bonus;
 use App\Enums\ImprovementCategory;
 use App\Enums\ResourceCategory;
 use App\Resources\ResourceType;
-use App\Technologies\TechnologyType;
 
 class Cattle extends ResourceType
 {

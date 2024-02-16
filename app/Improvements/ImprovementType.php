@@ -19,10 +19,10 @@ abstract class ImprovementType extends AbstractType
         );
     }
 
-    abstract public function category(): ImprovementCategory;
-
     public function icon(): string
     {
         return $this->category()->icon();
     }
+
+    abstract public function category(): ImprovementCategory;
 }

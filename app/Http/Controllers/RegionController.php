@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Region;
 use App\Http\Requests\StoreRegionRequest;
 use App\Http\Requests\UpdateRegionRequest;
+use App\Models\Region;
 
 class RegionController extends Controller
 {

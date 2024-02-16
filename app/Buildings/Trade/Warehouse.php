@@ -4,11 +4,8 @@ namespace App\Buildings\Trade;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Enums\ImprovementCategory;
-use App\Enums\YieldType;
 use App\Technologies\Enlightenment\RoyalCharter;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 

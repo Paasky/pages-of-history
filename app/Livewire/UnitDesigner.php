@@ -32,21 +32,6 @@ class UnitDesigner extends Component
     protected ?UnitEquipmentType $equipment = null;
     protected ?UnitArmorType $armor = null;
 
-    public function setPlatform(?string $slug): void
-    {
-        $this->platformSlug = $slug;
-    }
-
-    public function setEquipment(?string $slug): void
-    {
-        $this->equipmentSlug = $slug;
-    }
-
-    public function setArmor(?string $slug): void
-    {
-        $this->armorSlug = $slug;
-    }
-
     public static function isValid(
         ?UnitPlatformType  $platform,
         ?UnitEquipmentType $equipment,
@@ -87,60 +72,19 @@ class UnitDesigner extends Component
         return $platform->canHave($equipment, $armor);
     }
 
-    protected function init(): void
+    public function setPlatform(?string $slug): void
     {
-        $this->player = Player::firstOrCreate(
-            ['user_id' => auth()->id(), 'map_id' => Map::firstOrFail()->id],
-            ['color1' => '#009', 'color2' => '#eee']
-        );
-        $this->knownTechs = TechnologyType::all()
-            ->filter(fn(TechnologyType $tech) => $tech->xy()->x < 29)
-            ->keyBy(fn(TechnologyType $tech) => $tech->slug());
+        $this->platformSlug = $slug;
+    }
 
-        $this->platform = $this->platformSlug ? UnitPlatformType::fromSlug($this->platformSlug) : null;
+    public function setEquipment(?string $slug): void
+    {
+        $this->equipmentSlug = $slug;
+    }
 
-        // Check Platform is known
-        if ($this->platform && $this->platform->technology() && !isset($this->knownTechs[$this->platform->technology()->slug()])) {
-            $this->platform = null;
-            $this->platformSlug = null;
-        }
-
-        // Check Platform can have the Equipment
-        $this->equipment = $this->equipmentSlug ? UnitEquipmentType::fromSlug($this->equipmentSlug) : null;
-        if ($this->platform && $this->equipment && !$this->platform->canHave($this->equipment)) {
-            $this->equipmentSlug = null;
-            $this->equipment = null;
-        }
-
-        // Check can Platform & Equipment have armor
-        if ($this->platform && !$this->platform->armorSlots) {
-            $this->armorSlug = null;
-        }
-        if ($this->equipment && !$this->equipment->canHaveArmor()) {
-            $this->armorSlug = null;
-        }
-        $this->armor = $this->armorSlug ? UnitArmorType::fromSlug($this->armorSlug) : null;
-
-        // If the Platform can't support the Armor, unset the armor
-        if ($this->platform && $this->armor && !$this->platform->armors()->contains($this->armor)) {
-            $this->armorSlug = null;
-            $this->armor = null;
-        }
-
-        // If the Platform can't support the Equipment & Armor, unset the armor
-        if ($this->platform && $this->equipment && $this->armor && !$this->platform->canHave($this->equipment, $this->armor)) {
-            $this->armorSlug = null;
-            $this->armor = null;
-        }
-
-        // Finally set the name placeholder
-        if ($this->platform && $this->equipment) {
-            $this->namePlaceholder = UnitName::name(
-                $this->platform,
-                $this->equipment,
-                $this->armor
-            );
-        }
+    public function setArmor(?string $slug): void
+    {
+        $this->armorSlug = $slug;
     }
 
     public function render(): View
@@ -242,6 +186,62 @@ class UnitDesigner extends Component
             'armorTitle' => $armorTitle,
             'armorItems' => $armorItems,
         ]);
+    }
+
+    protected function init(): void
+    {
+        $this->player = Player::firstOrCreate(
+            ['user_id' => auth()->id(), 'map_id' => Map::firstOrFail()->id],
+            ['color1' => '#009', 'color2' => '#eee']
+        );
+        $this->knownTechs = TechnologyType::all()
+            ->filter(fn(TechnologyType $tech) => $tech->xy()->x < 29)
+            ->keyBy(fn(TechnologyType $tech) => $tech->slug());
+
+        $this->platform = $this->platformSlug ? UnitPlatformType::fromSlug($this->platformSlug) : null;
+
+        // Check Platform is known
+        if ($this->platform && $this->platform->technology() && !isset($this->knownTechs[$this->platform->technology()->slug()])) {
+            $this->platform = null;
+            $this->platformSlug = null;
+        }
+
+        // Check Platform can have the Equipment
+        $this->equipment = $this->equipmentSlug ? UnitEquipmentType::fromSlug($this->equipmentSlug) : null;
+        if ($this->platform && $this->equipment && !$this->platform->canHave($this->equipment)) {
+            $this->equipmentSlug = null;
+            $this->equipment = null;
+        }
+
+        // Check can Platform & Equipment have armor
+        if ($this->platform && !$this->platform->armorSlots) {
+            $this->armorSlug = null;
+        }
+        if ($this->equipment && !$this->equipment->canHaveArmor()) {
+            $this->armorSlug = null;
+        }
+        $this->armor = $this->armorSlug ? UnitArmorType::fromSlug($this->armorSlug) : null;
+
+        // If the Platform can't support the Armor, unset the armor
+        if ($this->platform && $this->armor && !$this->platform->armors()->contains($this->armor)) {
+            $this->armorSlug = null;
+            $this->armor = null;
+        }
+
+        // If the Platform can't support the Equipment & Armor, unset the armor
+        if ($this->platform && $this->equipment && $this->armor && !$this->platform->canHave($this->equipment, $this->armor)) {
+            $this->armorSlug = null;
+            $this->armor = null;
+        }
+
+        // Finally set the name placeholder
+        if ($this->platform && $this->equipment) {
+            $this->namePlaceholder = UnitName::name(
+                $this->platform,
+                $this->equipment,
+                $this->armor
+            );
+        }
     }
 
     protected function setUnitComponentToItems(

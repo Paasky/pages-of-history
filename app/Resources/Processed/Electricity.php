@@ -5,7 +5,6 @@ namespace App\Resources\Processed;
 use App\Enums\ImprovementCategory;
 use App\Enums\ResourceCategory;
 use App\Resources\ResourceType;
-use App\Technologies\Bronze\BronzeWorking;
 use App\Technologies\TechnologyType;
 
 class Electricity extends ResourceType

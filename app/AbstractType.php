@@ -35,6 +35,45 @@ abstract class AbstractType implements GameConcept, \Stringable
     {
     }
 
+    public static function fromSlug(string $slug): static
+    {
+        foreach (static::all() as $type) {
+            if ($type->slug() === $slug) {
+                return $type;
+            }
+        }
+        throw new \Exception("Could not find type with slug {$slug}");
+    }
+
+    public function slug(): string
+    {
+        return \Str::kebab(class_basename($this));
+    }
+
+    /**
+     * @return Collection<int, AbstractType>
+     */
+    protected static function instances(string $path, array $ignores): Collection
+    {
+        if (!isset(static::$all[$path])) {
+            $classNames = ClassesInDirectory::get($path, $ignores);
+            static::$all[$path] = collect();
+            /** @var string|AbstractType $className */
+            foreach ($classNames as $className) {
+                static::$all[$path][] = $className::get();
+            }
+        }
+        return static::$all[$path];
+    }
+
+    public static function get(): static
+    {
+        if (!isset(self::$singletons[static::class])) {
+            self::$singletons[static::class] = new static();
+        }
+        return self::$singletons[static::class];
+    }
+
     /**
      * @return Collection<int, GameConcept>
      */
@@ -63,7 +102,18 @@ abstract class AbstractType implements GameConcept, \Stringable
         return collect(static::$allowsPerType[get_class($this)] ?? []);
     }
 
-    abstract public function category(): GameConcept;
+    /** @return Collection<int, GameConcept> */
+    public function requires(): Collection
+    {
+        return $this->technology()
+            ? collect([$this->technology()])
+            : collect();
+    }
+
+    public function technology(): ?TechnologyType
+    {
+        return null;
+    }
 
     public function dataForInit(): array
     {
@@ -75,35 +125,9 @@ abstract class AbstractType implements GameConcept, \Stringable
         return 'Description TBA';
     }
 
-    public static function fromSlug(string $slug): static
-    {
-        foreach (static::all() as $type) {
-            if ($type->slug() === $slug) {
-                return $type;
-            }
-        }
-        throw new \Exception("Could not find type with slug {$slug}");
-    }
-
     public function hasDetails(): bool
     {
         return true;
-    }
-
-    /**
-     * @return Collection<int, AbstractType>
-     */
-    protected static function instances(string $path, array $ignores): Collection
-    {
-        if (!isset(static::$all[$path])) {
-            $classNames = ClassesInDirectory::get($path, $ignores);
-            static::$all[$path] = collect();
-            /** @var string|AbstractType $className */
-            foreach ($classNames as $className) {
-                static::$all[$path][] = $className::get();
-            }
-        }
-        return static::$all[$path];
     }
 
     /**
@@ -126,14 +150,6 @@ abstract class AbstractType implements GameConcept, \Stringable
     public function items(): Collection
     {
         return collect();
-    }
-
-    public static function get(): static
-    {
-        if (!isset(self::$singletons[static::class])) {
-            self::$singletons[static::class] = new static();
-        }
-        return self::$singletons[static::class];
     }
 
     public function name(): string
@@ -159,22 +175,9 @@ abstract class AbstractType implements GameConcept, \Stringable
         return implode(' ', $words);
     }
 
-    public function slug(): string
+    public function typeName(): string
     {
-        return \Str::kebab(class_basename($this));
-    }
-
-    /** @return Collection<int, GameConcept> */
-    public function requires(): Collection
-    {
-        return $this->technology()
-            ? collect([$this->technology()])
-            : collect();
-    }
-
-    public function technology(): ?TechnologyType
-    {
-        return null;
+        return \Str::title($this->typeSlug());
     }
 
     public function typeSlug(): string
@@ -182,10 +185,7 @@ abstract class AbstractType implements GameConcept, \Stringable
         return $this->category()->typeSlug();
     }
 
-    public function typeName(): string
-    {
-        return \Str::title($this->typeSlug());
-    }
+    abstract public function category(): GameConcept;
 
     /** @return Collection<int, GameConcept> */
     public function upgradesFrom(): Collection
@@ -217,6 +217,7 @@ abstract class AbstractType implements GameConcept, \Stringable
     {
         return null;
     }
+
     /** @return Collection<int, YieldModifier|YieldModifiersFor> */
     public function yieldModifiers(): Collection
     {

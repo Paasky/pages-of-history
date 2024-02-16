@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Map;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class MapPolicy
 {
