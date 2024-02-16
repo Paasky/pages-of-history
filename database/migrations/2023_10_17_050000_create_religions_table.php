@@ -15,9 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(City::class)->constrained();
             $table->string('name');
-            $table->jsonb('traits')->nullable();
-            $table->jsonb('virtues')->nullable();
-            $table->jsonb('vices')->nullable();
+            $table->jsonb('tenets')->nullable();
             $table->timestamps();
         });
     }

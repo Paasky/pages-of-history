@@ -5,47 +5,12 @@ namespace App\Models;
 use App\Enums\YieldType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
-use Database\Factories\CitizenFactory;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
-/**
- * App\Models\Citizen
- *
- * @property int $id
- * @property int $city_id
- * @property int $culture_id
- * @property int|null $religion_id
- * @property string|null $workplace_type
- * @property int|null $workplace_id
- * @property YieldType $desire_yield
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read City|null $city
- * @property-read Culture|null $culture
- * @property-read Collection<int, YieldModifier|YieldModifiersFor> $yield_modifiers
- * @property-read Religion|null $religion
- * @property-read Model|\Eloquent $workplace
- * @method static CitizenFactory factory($count = null, $state = [])
- * @method static Builder|Citizen newModelQuery()
- * @method static Builder|Citizen newQuery()
- * @method static Builder|Citizen query()
- * @method static Builder|Citizen whereCityId($value)
- * @method static Builder|Citizen whereCreatedAt($value)
- * @method static Builder|Citizen whereCultureId($value)
- * @method static Builder|Citizen whereDesireYield($value)
- * @method static Builder|Citizen whereId($value)
- * @method static Builder|Citizen whereReligionId($value)
- * @method static Builder|Citizen whereUpdatedAt($value)
- * @method static Builder|Citizen whereWorkplaceId($value)
- * @method static Builder|Citizen whereWorkplaceType($value)
- * @mixin \Eloquent
- */
 class Citizen extends Model
 {
     use HasFactory;
