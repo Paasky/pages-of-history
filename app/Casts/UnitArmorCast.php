@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class UnitArmorCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): UnitArmorType
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?UnitArmorType
     {
-        return UnitArmorType::fromSlug($value);
+        return $value ? UnitArmorType::fromSlug($value) : null;
     }
 
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        /** @var UnitArmorType $value */
-        return $value->slug();
+        /** @var UnitArmorType|null $value */
+        return $value?->slug();
     }
 }

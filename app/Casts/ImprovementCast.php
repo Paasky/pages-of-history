@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class ImprovementCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): ImprovementType
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?ImprovementType
     {
-        return ImprovementType::fromSlug($value);
+        return $value ? ImprovementType::fromSlug($value) : null;
     }
 
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        /** @var ImprovementType $value */
-        return $value->slug();
+        /** @var ImprovementType|null $value */
+        return $value?->slug();
     }
 }

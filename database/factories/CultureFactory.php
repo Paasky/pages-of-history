@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Culture;
+use App\Models\Player;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Culture>
+ * @extends Factory<Culture>
  */
 class CultureFactory extends Factory
 {
@@ -17,7 +19,11 @@ class CultureFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'player_id' => fn() => Player::factory()->create(),
+            'name' => $this->faker->country . 'ian',
+            'traits' => null,
+            'vices' => null,
+            'virtues' => null,
         ];
     }
 }

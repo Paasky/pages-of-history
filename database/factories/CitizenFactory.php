@@ -2,10 +2,14 @@
 
 namespace Database\Factories;
 
+use App\Enums\YieldType;
+use App\Models\Citizen;
+use App\Models\City;
+use App\Models\Culture;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Citizen>
+ * @extends Factory<Citizen>
  */
 class CitizenFactory extends Factory
 {
@@ -17,7 +21,14 @@ class CitizenFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'city_id' => fn() => City::factory()->create(),
+            'culture_id' => fn(array $data) => Culture::factory()->create(
+                ['player_id' => City::findOrFail($data['city_id'])->player_id]
+            )->id,
+            'religion_id' => null,
+            'workplace_type' => null,
+            'workplace_id' => null,
+            'desire_yield' => \Arr::random(YieldType::cases()),
         ];
     }
 }

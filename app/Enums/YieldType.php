@@ -2,6 +2,14 @@
 
 namespace App\Enums;
 
+use App\Models\Building;
+use App\Models\Citizen;
+use App\Models\City;
+use App\Models\Hex;
+use App\Models\Unit;
+use App\Models\UnitDesign;
+use Illuminate\Database\Eloquent\Model;
+
 enum YieldType: string
 {
     use GameConceptEnum;
@@ -12,7 +20,6 @@ enum YieldType: string
     case Cargo = 'Cargo';
     case Cost = 'Cost';
     case Culture = 'Culture';
-    case Damage = 'Damage';
     case Defense = 'Defense';
     case Faith = 'Faith';
     case Food = 'Food';
@@ -32,6 +39,61 @@ enum YieldType: string
     case Trade = 'Trade';
     case VisionRange = 'VisionRange';
 
+    /**
+     * @param ...$models Model
+     * @return bool
+     */
+    public function isFor(...$models): bool
+    {
+        if (in_array($this, [
+            self::Culture,
+            self::Faith,
+            self::Food,
+            self::Gold,
+            self::Happiness,
+            self::Health,
+            self::Luxury,
+            self::Production,
+            self::Science,
+            self::Trade,
+        ])) {
+            foreach ($models as $model) {
+                if ($model instanceof Building ||
+                    $model instanceof Citizen ||
+                    $model instanceof Hex
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        if (in_array($this, [
+            self::Bombard,
+            self::Defense,
+            self::Range,
+            self::Strength,
+            self::VisionRange,
+        ])) {
+            foreach ($models as $model) {
+                if ($model instanceof City ||
+                    ($model instanceof Hex && $model->improvement?->is(...ImprovementCategory::Forts->items()))
+                ) {
+                    return true;
+                }
+            }
+        }
+
+        foreach ($models as $model) {
+            if ($model instanceof Unit ||
+                $model instanceof UnitDesign
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function icon(): string
     {
         return match ($this) {
@@ -41,7 +103,6 @@ enum YieldType: string
             self::Cargo => 'fa-box',
             self::Cost => 'fa-hammer',
             self::Culture => 'fa-masks-theater',
-            self::Damage => 'fa-bomb',
             self::Defense => 'fa-shield-halved',
             self::Faith => 'fa-hands-praying',
             self::Food => 'fa-utensils',

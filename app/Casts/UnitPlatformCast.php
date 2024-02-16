@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class UnitPlatformCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): UnitPlatformType
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?UnitPlatformType
     {
-        return UnitPlatformType::fromSlug($value);
+        return $value ? UnitPlatformType::fromSlug($value) : null;
     }
 
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        /** @var UnitPlatformType $value */
-        return $value->slug();
+        /** @var UnitPlatformType|null $value */
+        return $value?->slug();
     }
 }

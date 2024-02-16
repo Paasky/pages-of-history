@@ -95,7 +95,7 @@ enum CultureTrait: string implements GameConcept
                 ),
                 new YieldModifiersFor(
                     new YieldModifier(YieldType::Gold, 1),
-                    ImprovementCategory::Camps
+                    ImprovementCategory::Pastures
                 ),
             ]),
             self::Seafaring => collect([

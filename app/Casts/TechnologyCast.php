@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class TechnologyCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): TechnologyType
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?TechnologyType
     {
-        return TechnologyType::fromSlug($value);
+        return $value ? TechnologyType::fromSlug($value) : null;
     }
 
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        /** @var TechnologyType $value */
-        return $value->slug();
+        /** @var TechnologyType|null $value */
+        return $value?->slug();
     }
 }

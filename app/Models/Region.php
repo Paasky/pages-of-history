@@ -7,11 +7,46 @@ use App\Casts\ResourceCast;
 use App\Enums\Domain;
 use App\Enums\Feature;
 use App\Enums\Surface;
+use App\Improvements\ImprovementType;
+use App\Resources\ResourceType;
+use Database\Factories\RegionFactory;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * App\Models\Region
+ *
+ * @property int $id
+ * @property int $map_id
+ * @property int $x
+ * @property int $y
+ * @property Domain $domain
+ * @property Surface $surface
+ * @property int $elevation
+ * @property Feature|null $feature
+ * @property ResourceType|null $resource
+ * @property ImprovementType|null $improvement
+ * @property-read Collection<int, Hex> $hexes
+ * @property-read int|null $hexes_count
+ * @property-read Map $map
+ * @method static RegionFactory factory($count = null, $state = [])
+ * @method static Builder|Region newModelQuery()
+ * @method static Builder|Region newQuery()
+ * @method static Builder|Region query()
+ * @method static Builder|Region whereDomain($value)
+ * @method static Builder|Region whereElevation($value)
+ * @method static Builder|Region whereFeature($value)
+ * @method static Builder|Region whereId($value)
+ * @method static Builder|Region whereMapId($value)
+ * @method static Builder|Region whereSurface($value)
+ * @method static Builder|Region whereX($value)
+ * @method static Builder|Region whereY($value)
+ * @mixin \Eloquent
+ */
 class Region extends Model
 {
     use HasFactory;

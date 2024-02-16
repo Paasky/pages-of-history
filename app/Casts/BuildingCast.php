@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class BuildingCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): BuildingType
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?BuildingType
     {
-        return BuildingType::fromSlug($value);
+        return $value ? BuildingType::fromSlug($value) : null;
     }
 
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        /** @var BuildingType $value */
-        return $value->slug();
+        /** @var BuildingType|null $value */
+        return $value?->slug();
     }
 }

@@ -8,14 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class ResourceCast implements CastsAttributes
 {
-    public function get(Model $model, string $key, mixed $value, array $attributes): ResourceType
+    public function get(Model $model, string $key, mixed $value, array $attributes): ?ResourceType
     {
-        return ResourceType::fromSlug($value);
+        return $value ? ResourceType::fromSlug($value) : null;
     }
 
-    public function set(Model $model, string $key, mixed $value, array $attributes): string
+    public function set(Model $model, string $key, mixed $value, array $attributes): ?string
     {
-        /** @var ResourceType $value */
-        return $value->slug();
+        /** @var ResourceType|null $value */
+        return $value?->slug();
     }
 }
