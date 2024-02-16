@@ -3,67 +3,96 @@
 namespace App\Yields;
 
 use App\Enums\YieldType;
+use App\GameConcept;
 use Illuminate\Support\Collection;
 
 class YieldModifier
 {
-    public string $effect;
-    public string $color;
-
     public function __construct(
         public YieldType $type,
         public float     $amount = 0,
         public float     $percent = 0
     )
     {
-        $this->color = ($amount ?: $percent) < 0 ? 'red' : 'green';
-        $this->effect = implode([
-            $percent && $this->percent > 0 ? '+' : '',
-            $amount ?: $percent,
+    }
+
+    public function color(): string
+    {
+        return ($this->amount ?: $this->percent) < 0 ? 'red' : 'green';
+    }
+
+    public function effect(): string
+    {
+        return implode([
+            $this->percent && $this->percent > 0 ? '+' : '',
+            $this->amount ?: $this->percent,
             $this->percent ? '%' : '',
         ]);
     }
 
     /**
      * @param Collection<int, YieldModifier|YieldModifiersFor> $modifiers
+     * @param null|Collection<int, GameConcept> $for Pass in collect([null]) to ignore all YieldModifiersFors
      * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
-    public static function mergeModifiers(Collection $modifiers): Collection
+    public static function mergeModifiers(Collection $modifiers, Collection $for = null): Collection
     {
-        /** @var YieldModifier[] $modifierByYieldType */
-        $modifierByYieldType = [];
-        $modifierFors = [];
-
+        // First separate the two types
+        $regularModifiers = [];
+        $forModifiers = [];
+        /** @var YieldModifier|YieldModifiersFor $modifier */
         foreach ($modifiers as $modifier) {
+            // Regular YieldModifiers are a simple list
             if ($modifier instanceof YieldModifier) {
-                $slug = $modifier->type->slug();
-                if (!isset($modifierByYieldType[$slug])) {
-                    $modifierByYieldType[$slug] = $modifier;
-                    continue;
-                }
-
-                $modifierByYieldType[$slug] = new YieldModifier(
-                    $modifier->type,
-                    $modifierByYieldType[$slug]->amount + $modifier->amount,
-                    $modifierByYieldType[$slug]->percent + $modifier->percent
-                );
+                $regularModifiers[] = $modifier;
                 continue;
             }
 
-            $modifierFors[] = $modifier;
+            // YieldModifiersFor are more complex
+
+            // Nothing given as "for", so let them pass as-is
+            if (!$for || $for->isEmpty()) {
+                $forModifiers[] = $modifier;
+                continue;
+            }
+
+            $isFor = false;
+            foreach ($modifier->for as $modifierFor) {
+                if ($modifierFor->is(...$for)) {
+                    $isFor = true;
+                    break;
+                }
+            }
+
+            if ($isFor) {
+                foreach ($modifier->modifiers as $subModifier) {
+                    $regularModifiers[] = $subModifier;
+                }
+            }
         }
 
-        foreach ($modifierByYieldType as $slug => $modifier) {
+        /** @var Collection<string, YieldModifier>|YieldModifier[] $modifierByYieldType */
+        $modifierByYieldType = collect();
+        foreach ($regularModifiers as $modifier) {
+            $yieldTypeSlug = $modifier->type->slug();
+            if (!isset($modifierByYieldType[$yieldTypeSlug])) {
+                $modifierByYieldType[$yieldTypeSlug] = $modifier;
+                continue;
+            }
+
+            $modifierByYieldType[$yieldTypeSlug]->amount += $modifier->amount;
+            $modifierByYieldType[$yieldTypeSlug]->percent += $modifier->percent;
+        }
+
+        foreach ($modifierByYieldType as $yieldTypeSlug => $modifier) {
             if ($modifier->amount && $modifier->percent) {
-                $modifierByYieldType[$slug] = new YieldModifier(
+                $modifierByYieldType[$yieldTypeSlug] = new YieldModifier(
                     $modifier->type,
                     round($modifier->amount * ((100 + $modifier->percent) / 100))
                 );
             }
         }
 
-        ksort($modifierByYieldType);
-
-        return collect($modifierByYieldType)->merge($modifierFors);
+        return $modifierByYieldType->sortKeys()->values()->merge($forModifiers);
     }
 }

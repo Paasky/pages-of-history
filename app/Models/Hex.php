@@ -8,7 +8,9 @@ use App\Coordinate;
 use App\Enums\Domain;
 use App\Enums\Feature;
 use App\Enums\Surface;
+use App\Improvements\ImprovementType;
 use App\Managers\MapManager;
+use App\Resources\ResourceType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Database\Factories\HexFactory;
@@ -53,6 +55,27 @@ use Illuminate\Support\Collection;
  * @property-read Collection<int, Hex> $adjacent_hexes
  * @property-read string $name
  * @property-read int $move_cost
+ * @property int $region_id
+ * @property Domain $domain
+ * @property ResourceType|null $resource
+ * @property int|null $resource_amount
+ * @property ImprovementType|null $improvement
+ * @property int|null $improvement_health
+ * @property mixed|null $knowledge
+ * @property mixed|null $events
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Building> $buildings
+ * @property-read int|null $buildings_count
+ * @property-read City|null $city
+ * @property-read Collection<int, YieldModifier|YieldModifiersFor> $yield_modifiers
+ * @property-read Region $region
+ * @method static Builder|Hex whereDomain($value)
+ * @method static Builder|Hex whereEvents($value)
+ * @method static Builder|Hex whereImprovement($value)
+ * @method static Builder|Hex whereImprovementHealth($value)
+ * @method static Builder|Hex whereKnowledge($value)
+ * @method static Builder|Hex whereRegionId($value)
+ * @method static Builder|Hex whereResource($value)
+ * @method static Builder|Hex whereResourceAmount($value)
  * @mixin \Eloquent
  */
 class Hex extends Model

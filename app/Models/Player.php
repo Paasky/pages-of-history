@@ -43,6 +43,18 @@ use Illuminate\Support\Collection;
  * @method static Builder|Player whereUpdatedAt($value)
  * @method static Builder|Player whereUserId($value)
  * @property-read string $name
+ * @property int|null $religion_id
+ * @property mixed|null $yield_stock
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, City> $cities
+ * @property-read int|null $cities_count
+ * @property-read Culture|null $culture
+ * @property-read Collection<int, YieldModifier|YieldModifiersFor> $yield_modifiers
+ * @property-read Religion|null $religion
+ * @property-read int|null $technologies_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, UnitDesign> $unitDesigns
+ * @property-read int|null $unit_designs_count
+ * @method static Builder|Player whereReligionId($value)
+ * @method static Builder|Player whereYieldStock($value)
  * @mixin \Eloquent
  */
 class Player extends Model
@@ -53,6 +65,7 @@ class Player extends Model
     protected $fillable = [
         'map_id',
         'user_id',
+        'religion_id',
         'color1',
         'color2',
     ];
@@ -84,6 +97,11 @@ class Player extends Model
     public function map(): BelongsTo
     {
         return $this->belongsTo(Map::class);
+    }
+
+    public function religion(): BelongsTo
+    {
+        return $this->belongsTo(Religion::class);
     }
 
     public function technologies(): HasMany
