@@ -56,6 +56,8 @@ class Region extends Model
 {
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'map_id',
         'x',

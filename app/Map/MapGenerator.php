@@ -18,8 +18,15 @@ class MapGenerator
     public float $faultLinesLength = 4;
     public float $faultLineDirections = 3;
     public float $maxOceanIslandChain = 2;
+    public int $maxElevation = 10;
+    public int $waterMinElevation = -5;
+    public int $seaMaxElevation = -1;
+    public int $oceanMaxElevation = -2;
+    public int $landMinElevation = -2;
+    public int $lakeMaxElevation = -1;
+    public int $hillMaxElevation = 4;
 
-    /** @var Region[] */
+    /** @var MapRegion[] */
     public array $generatedRegions = [];
     public array $generatedContinents = [];
     public array $generatedOceans = [];
@@ -55,11 +62,21 @@ class MapGenerator
 
     protected function generateRegions(): self
     {
-        /** @var Region[] $regionsToGenerate */
+        /** @var MapRegion[] $regionsToGenerate */
         $regionsToGenerate = [];
         foreach (range(0, $this->worldRegionsX - 1) as $x) {
             foreach (range(0, $this->worldRegionsY - 1) as $y) {
-                $region = new Region(new Coordinate($x, $y));
+                $region = new MapRegion(new Coordinate($x, $y));
+
+                // Top & Bottom rows are always Deep Ocean
+                if ($y === 0 || $y === $this->worldRegionsY - 1) {
+                    $region->domain = Domain::Water;
+                    $region->surface = Surface::Ocean;
+                    $region->elevation = $this->waterMinElevation;
+                    $this->generatedRegions[$region->key()] = $region;
+                    continue;
+                }
+
                 $regionsToGenerate[$region->key()] = $region;
             }
         }
@@ -69,74 +86,135 @@ class MapGenerator
         $oceansLeft = round($this->initialOceansOrContinents);
 
         while ($regionsToGenerate) {
-            /** @var Region $region */
+            /** @var MapRegion $region */
             $region = Arr::random($regionsToGenerate);
 
             switch (true) {
-                // Region is top or bottom row: must be water
-                case in_array($region->xy->y, [0, $this->worldRegionsY - 1]):
-                    $region->domain = Domain::Water;
-                    $region->elevation = -5;
-                    break;
-
                 // Region is 2nd top or 2nd bottom row: 33% chance of land
                 case in_array($region->xy->y, [1, $this->worldRegionsY - 2]):
                     $region->domain = rand(0, 2) ? Domain::Water : Domain::Land;
                     $region->elevation = $region->domain === Domain::Water
-                        ? (rand(0, 1) ? 0 : -5)
-                        : 0;
+                        // Water level is random
+                        ? Arr::random(range($this->waterMinElevation, $this->seaMaxElevation))
+                        // Land level is random, but no random mountains
+                        : Arr::random(range(0, $this->hillMaxElevation));
                     break;
 
-                // Generating initial continents
-                // Generate 1st 5 continents, then 1st 4 oceans, then the rest
-                case $continentsLeft && (count($this->generatedContinents) < 5 || count($this->generatedOceans) >= 4):
-                    // First 5 continents are in four corners of the map
-                    if (count($this->generatedContinents) < 5) {
-                        $fourthX = round($this->worldRegionsX / 4);
-                        $fourthY = round($this->worldRegionsY / 4);
-                        $newRegion = match (count($this->generatedContinents)) {
-                            0 => $regionsToGenerate[(new Coordinate(
-                                $fourthX * Arr::random([0.8, 1, 1.2]),
-                                $fourthY * Arr::random([0.8, 1, 1.2])
-                            ))->key()] ?? null,
-                            1 => $regionsToGenerate[(new Coordinate(
-                                $fourthX * Arr::random([0.8, 1, 1.2]),
-                                $fourthY * Arr::random([2.8, 3, 3.2])
-                            ))->key()] ?? null,
-                            2 => $regionsToGenerate[(new Coordinate(
-                                $fourthX * Arr::random([2.3, 2.5, 2.7]),
-                                $fourthY * Arr::random([0.8, 1, 1.2])
-                            ))->key()] ?? null,
-                            3 => $regionsToGenerate[(new Coordinate(
-                                $fourthX * Arr::random([2.3, 2.5, 2.7]),
-                                $fourthY * Arr::random([2.8, 3, 3.2])
-                            ))->key()] ?? null,
-                            4 => $regionsToGenerate[(new Coordinate(
-                                $fourthX * Arr::random([0.7, 0.9, 1.1, 2.9, 3.1, 3.3]),
-                                $fourthY * Arr::random([1.8, 2, 2.2])
-                            ))->key()] ?? null,
-                        };
-                        if ($newRegion) {
-                            $region = $newRegion;
+                // Generating initial oceans
+                case $oceansLeft:
+                    // First 5 oceans are in the middle-ish of the map
+                    if (count($this->generatedOceans) < 5) {
+                        $sixthX = $this->worldRegionsX / 6;
+                        $sixthY = $this->worldRegionsY / 6;
+
+                        $oceanX = round(Arr::random([
+                            $sixthX,
+                            $sixthX * 2,
+                            $sixthX * 3
+                        ]));
+                        $xDirection = Arr::random([1, -1]);
+
+                        // Move the oceans diagonally left or right
+                        $oceanCoords = $this->validCoords(match (count($this->generatedOceans)) {
+                            0 => new Coordinate(
+                                $oceanX,
+                                round($sixthY)
+                            ),
+                            1 => new Coordinate(
+                                $oceanX + ($sixthX * $xDirection),
+                                round($sixthY * 3)
+                            ),
+                            2 => new Coordinate(
+                                $oceanX + ($sixthX * 2 * $xDirection),
+                                round($sixthY * 5)
+                            ),
+
+                            // Place an ocean on the polar opposites to prevent island-chaining in the poles
+                            3 => new Coordinate(
+                            // Fix chance of sixth * 6 going around the planet resulting in x under/overflow
+                                $oceanX + ($sixthX * 2 * $xDirection),
+                                round($sixthY)
+                            ),
+                            4 => new Coordinate(
+                            // Fix chance of sixth * 6 going around the planet resulting in x under/overflow
+                                $oceanX,
+                                round($sixthY * 5),
+                            ),
+                        });
+
+                        // Move the oceans diagonally left or right
+                        $region = $regionsToGenerate[$oceanCoords->key()] ?? null;
+                        if (!$region) {
+                            throw new \Exception('index ' . count($this->generatedOceans) . " key {$oceanCoords->key()}");
                         }
                     }
-                    $region->domain = Domain::Land;
-                    $region->elevation = -2;
-                    $continent = "Continent " . (count($this->generatedContinents) + 1);
-                    $this->generatedContinents[] = $region->group = $continent;
-                    $continentsLeft--;
+                    $region->domain = Domain::Water;
+                    $region->surface = Surface::Ocean;
+                    $region->elevation = $this->waterMinElevation;
+                    $this->generatedOceans[] = $region->group = "Ocean " . (count($this->generatedOceans) + 1);
+                    $oceansLeft--;
 
-                    // Generate closer neighbors (all land)
+                    // Generate neighbors
                     $this->forEachNeighbor(
                         $region,
-                        function (Region|string $neighbor)
-                        use (&$regionsToGenerate, $region, &$landRegionsLeft) {
+                        function (MapRegion|string $neighbor)
+                        use (&$regionsToGenerate, $region, &$waterRegionsLeft) {
                             // Already generated
-                            if ($neighbor instanceof Region) {
+                            if ($neighbor instanceof MapRegion) {
+                                return;
+                            }
+                            $neighbor = $regionsToGenerate[$neighbor];
+
+                            // If it's further away, only 50% chance of being Ocean
+                            $distance = abs($region->xy->x - $neighbor->xy->x);
+                            if ($distance > $this->worldRegionsY / 8 && rand(0, 1)) {
                                 return;
                             }
 
+                            // Oceans always spread to neighbors
+                            $neighbor->domain = $region->domain;
+                            $neighbor->surface = $region->surface;
+                            $neighbor->elevation = $region->elevation;
+                            $neighbor->group = $region->group;
+
+                            $this->generatedRegions[$neighbor->key()] = $neighbor;
+                            unset($regionsToGenerate[$neighbor->key()]);
+                            $waterRegionsLeft--;
+                        },
+                        round($this->worldRegionsY / 6)
+                    );
+                    break;
+
+                // Generating initial continents
+                case $continentsLeft:
+                    $region->domain = Domain::Land;
+                    $region->elevation = $this->landMinElevation;
+                    $this->generatedContinents[] = $region->group = "Continent " . (count($this->generatedContinents) + 1);
+                    $continentsLeft--;
+
+                    // Generate neighbors
+                    $this->forEachNeighbor(
+                        $region,
+                        function (MapRegion|string $neighbor)
+                        use (&$regionsToGenerate, $region, &$landRegionsLeft) {
+                            // Already generated
+                            if ($neighbor instanceof MapRegion) {
+                                return;
+                            }
                             $neighbor = $regionsToGenerate[$neighbor];
+
+                            // If it's further away, 75-25% chance of being Land
+                            $distance = abs($region->xy->x - $neighbor->xy->x);
+                            if ($distance > $this->worldRegionsX / 30 && rand(0, 3)) { // 75% chance to skip
+                                return;
+                            }
+                            if ($distance > $this->worldRegionsX / 35 && rand(0, 1)) { // 50% chance to skip
+                                return;
+                            }
+                            if ($distance > $this->worldRegionsX / 40 && !rand(0, 3)) { // 25% chance to skip
+                                return;
+                            }
+
                             $neighbor->domain = Domain::Land;
                             $neighbor->group = $region->group;
 
@@ -149,127 +227,7 @@ class MapGenerator
                             unset($regionsToGenerate[$neighbor->key()]);
                             $landRegionsLeft--;
                         },
-                        round($this->worldRegionsX / 40)
-                    );
-
-                    // Generate further neighbors (75% land)
-                    $this->forEachNeighbor(
-                        $region,
-                        function (Region|string $neighbor)
-                        use (&$regionsToGenerate, $region, &$landRegionsLeft) {
-                            // Already generated
-                            if ($neighbor instanceof Region) {
-                                return;
-                            }
-
-                            $neighbor = $regionsToGenerate[$neighbor];
-                            $neighbor->domain = rand(0, 3) ? Domain::Land : Domain::Water;
-                            if ($neighbor->domain === Domain::Land) {
-                                $neighbor->group = $region->group;
-                            }
-
-                            $this->generatedRegions[$neighbor->key()] = $neighbor;
-                            unset($regionsToGenerate[$neighbor->key()]);
-                            $landRegionsLeft--;
-                        },
-                        round($this->worldRegionsX / 30)
-                    );
-
-                    // Generate furthest neighbors (50% land)
-                    $this->forEachNeighbor(
-                        $region,
-                        function (Region|string $neighbor)
-                        use (&$regionsToGenerate, $region, &$landRegionsLeft) {
-                            // Already generated
-                            if ($neighbor instanceof Region) {
-                                return;
-                            }
-
-                            $neighbor = $regionsToGenerate[$neighbor];
-                            $neighbor->domain = rand(0, 1) ? Domain::Land : Domain::Water;
-                            if ($neighbor->domain === Domain::Land) {
-                                $neighbor->group = $region->group;
-                            }
-
-                            $this->generatedRegions[$neighbor->key()] = $neighbor;
-                            unset($regionsToGenerate[$neighbor->key()]);
-                            $landRegionsLeft--;
-                        },
                         round($this->worldRegionsX / 20)
-                    );
-                    break;
-
-                // Generating initial oceans
-                case $oceansLeft:
-                    // First 3 oceans are in the middle of the map
-                    if (count($this->generatedOceans) < 4) {
-                        $halfX = round($this->worldRegionsX / 2);
-                        $fourthY = round($this->worldRegionsY / 5);
-                        $newRegion = match (count($this->generatedOceans)) {
-                            0 => $regionsToGenerate[(new Coordinate($halfX, $fourthY))->key()] ?? null,
-                            1 => $regionsToGenerate[(new Coordinate($halfX, $fourthY * 2))->key()] ?? null,
-                            2 => $regionsToGenerate[(new Coordinate($halfX, $fourthY * 3))->key()] ?? null,
-                            3 => $regionsToGenerate[(new Coordinate($halfX, $fourthY * 4))->key()] ?? null,
-                        };
-                        if ($newRegion) {
-                            $region = $newRegion;
-                        }
-                    }
-                    $region->domain = Domain::Water;
-                    $region->elevation = -5;
-                    $ocean = "Ocean " . (count($this->generatedOceans) + 1);
-                    $this->generatedOceans[] = $region->group = $ocean;
-                    $oceansLeft--;
-
-                    // Generate closer neighbors (all ocean)
-                    $this->forEachNeighbor(
-                        $region,
-                        function (Region|string $neighbor)
-                        use (&$regionsToGenerate, $region, &$waterRegionsLeft) {
-                            // Already generated
-                            if ($neighbor instanceof Region) {
-                                return;
-                            }
-
-                            $neighbor = $regionsToGenerate[$neighbor];
-                            $neighbor->domain = Domain::Water;
-                            $neighbor->group = $region->group;
-
-                            // Oceans always spread to neighbors
-                            $neighbor->elevation = -5;
-
-                            $this->generatedRegions[$neighbor->key()] = $neighbor;
-                            unset($regionsToGenerate[$neighbor->key()]);
-                            $waterRegionsLeft--;
-                        },
-                        round($this->worldRegionsX / 40)
-                    );
-
-                    // Generate further neighbors (50% ocean)
-                    $this->forEachNeighbor(
-                        $region,
-                        function (Region|string $neighbor)
-                        use (&$regionsToGenerate, $region, &$waterRegionsLeft) {
-                            // Already generated
-                            if ($neighbor instanceof Region) {
-                                return;
-                            }
-                            if (rand(0, 1)) {
-                                return;
-                            }
-
-                            $neighbor = $regionsToGenerate[$neighbor];
-                            $neighbor->domain = Domain::Water;
-                            $neighbor->group = $region->group;
-
-                            // Oceans always spread to neighbors
-                            $neighbor->elevation = -5;
-
-                            $this->generatedRegions[$neighbor->key()] = $neighbor;
-                            unset($regionsToGenerate[$neighbor->key()]);
-                            $waterRegionsLeft--;
-                        },
-                        round($this->worldRegionsX / 30)
                     );
                     break;
 
@@ -280,8 +238,8 @@ class MapGenerator
                     $possibleGroups = [];
                     $this->forEachNeighbor(
                         $region,
-                        function (Region|string $neighbor) use (&$landNeighbors, &$hasOceanNeighbor, &$possibleGroups) {
-                            if ($neighbor instanceof Region) {
+                        function (MapRegion|string $neighbor) use (&$landNeighbors, &$hasOceanNeighbor, &$possibleGroups) {
+                            if ($neighbor instanceof MapRegion) {
                                 if ($neighbor->domain === Domain::Land) {
                                     $landNeighbors++;
                                 }
@@ -333,7 +291,7 @@ class MapGenerator
             'nw' => ['s', 'se', 'e'],
         ];
         while ($faultLinesLeft) {
-            /** @var Region $region */
+            /** @var MapRegion $region */
             $region = Arr::random($this->generatedRegions);
             $minDistanceFromPole = $this->worldRegionsY * 0.1;
             if ($region->xy->y < $minDistanceFromPole ||
@@ -366,7 +324,7 @@ class MapGenerator
         return $this;
     }
 
-    protected function buildFaultLine(Region $region, string $direction): Region
+    protected function buildFaultLine(MapRegion $region, string $direction): MapRegion
     {
         $oceanSteps = 0;
         for ($step = 1; $step <= $this->faultLinesLength; $step++) {
@@ -419,7 +377,7 @@ class MapGenerator
         $newHeights = [];
         foreach ($this->generatedRegions as $key => $region) {
             $neighborHeights = [];
-            $this->forEachNeighbor($region, function (Region $neighbor) use (&$neighborHeights) {
+            $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$neighborHeights) {
                 $neighborHeights[] = $neighbor->elevation;
             });
             $neighborAvg = (array_sum($neighborHeights) / count($neighborHeights));
@@ -568,7 +526,7 @@ class MapGenerator
         ];
         $regionsToGenerate = $this->generatedRegions;
         while ($regionsToGenerate) {
-            /** @var Region $region */
+            /** @var MapRegion $region */
             $region = Arr::random($regionsToGenerate);
             unset($regionsToGenerate[$region->key()]);
             if ($region->domain === Domain::Water && $region->elevation <= 0) {
@@ -579,7 +537,7 @@ class MapGenerator
             }
 
             $features = [];
-            $this->forEachNeighbor($region, function (Region $neighbor) use (&$features, $regionsToGenerate) {
+            $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$features, $regionsToGenerate) {
                 if (!$neighbor->feature) {
                     return;
                 }
@@ -629,7 +587,7 @@ class MapGenerator
             // Coast without any water neighbors becomes a lake
             if ($region->surface === Surface::Coast) {
                 $waterNeighbors = 0;
-                $this->forEachNeighbor($region, function (Region $neighbor) use (&$waterNeighbors) {
+                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$waterNeighbors) {
                     if ($neighbor->domain === Domain::Water) {
                         $waterNeighbors++;
                     }
@@ -646,7 +604,7 @@ class MapGenerator
             // Land without any land neighbors becomes sea
             if ($region->domain === Domain::Land) {
                 $landNeighbors = 0;
-                $this->forEachNeighbor($region, function (Region $neighbor) use (&$landNeighbors) {
+                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$landNeighbors) {
                     if ($neighbor->domain === Domain::Land) {
                         $landNeighbors++;
                     }
@@ -663,7 +621,7 @@ class MapGenerator
             // Water with land neighbors must be Coast
             if ($region->domain === Domain::Water && $region->surface !== Surface::Coast) {
                 $hasLandNeighbor = false;
-                $this->forEachNeighbor($region, function (Region $neighbor) use (&$hasLandNeighbor) {
+                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$hasLandNeighbor) {
                     if ($neighbor->domain === Domain::Land) {
                         $hasLandNeighbor = true;
                         return false;
@@ -679,7 +637,7 @@ class MapGenerator
             // Ocean with Coast neighbors must be Sea
             if ($region->surface === Surface::Ocean) {
                 $hasCoastNeighbor = false;
-                $this->forEachNeighbor($region, function (Region $neighbor) use (&$hasCoastNeighbor) {
+                $this->forEachNeighbor($region, function (MapRegion $neighbor) use (&$hasCoastNeighbor) {
                     if ($neighbor->surface === Surface::Coast) {
                         $hasCoastNeighbor = true;
                         return false;
@@ -721,7 +679,7 @@ class MapGenerator
         return $xy;
     }
 
-    protected function forEachNeighbor(Region $region, callable $function, int $distance = 1): void
+    protected function forEachNeighbor(MapRegion $region, callable $function, int $distance = 1): void
     {
         foreach (range($region->xy->x - $distance, $region->xy->x + $distance) as $x) {
             foreach (range($region->xy->y - $distance, $region->xy->y + $distance) as $y) {
@@ -831,6 +789,7 @@ class MapGenerator
                 ]
             ) . PHP_EOL;
         echo implode(', ', array_merge($this->generatedContinents, $this->generatedOceans)) . PHP_EOL;
+        return $this;
 
         // 2) Terrain & Feature Map
         echo PHP_EOL;

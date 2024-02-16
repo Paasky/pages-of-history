@@ -7,7 +7,7 @@ use App\Enums\Domain;
 use App\Enums\Feature;
 use App\Enums\Surface;
 
-class Region
+class MapRegion
 {
     public function __construct(
         public Coordinate $xy,

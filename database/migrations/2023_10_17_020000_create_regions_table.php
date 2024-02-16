@@ -20,7 +20,6 @@ return new class extends Migration {
             $table->string('surface');
             $table->integer('elevation');
             $table->string('feature')->nullable();
-            $table->timestamps();
             $table->index(['x', 'y']);
 
             $table->unique(['map_id', 'x', 'y']);

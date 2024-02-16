@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Map\MapGenerator;
+use App\Map\MapRegion;
 use App\Models\Map;
 use Illuminate\Database\Seeder;
 
@@ -15,16 +16,20 @@ class MapSeeder extends Seeder
     {
         $generator = new MapGenerator();
         $generator->generate();
-        $map = Map::factory(['height' => $generator->worldRegionsY, 'width' => $generator->worldRegionsX])->create();
-        foreach ($generator->generatedRegions as $region) {
-            $map->regions()->create([
-                'x' => $region->xy->x,
-                'y' => $region->xy->y,
-                'domain' => $region->domain,
-                'surface' => $region->surface,
-                'elevation' => $region->elevation,
-                'feature' => $region->feature,
-            ]);
-        }
+        \DB::transaction(function () use ($generator) {
+            $map = Map::factory(['height' => $generator->worldRegionsY, 'width' => $generator->worldRegionsX])->create();
+            $map->regions()->insert(array_map(
+                fn(MapRegion $region) => [
+                    'map_id' => $map->id,
+                    'x' => $region->xy->x,
+                    'y' => $region->xy->y,
+                    'domain' => $region->domain->value,
+                    'surface' => $region->surface->value,
+                    'elevation' => $region->elevation,
+                    'feature' => $region->feature?->value,
+                ],
+                $generator->generatedRegions
+            ));
+        });
     }
 }
