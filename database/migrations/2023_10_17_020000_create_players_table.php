@@ -20,7 +20,7 @@ return new class extends Migration {
             $table->foreignIdFor(Religion::class)->nullable();
             $table->string('color1');
             $table->string('color2');
-            $table->jsonb('yield_stock')->nullable();
+            $table->jsonb('yield_stock')->default('[]');
             $table->timestamps();
 
             $table->unique(['map_id', 'user_id']);

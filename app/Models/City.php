@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Casts\ProductionQueueCast;
+use App\Casts\YieldStockCast;
+use App\Map\ProductionQueue;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
+use App\Yields\YieldStock;
 use Database\Factories\CityFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +25,8 @@ use Illuminate\Support\Collection;
  * @property int $player_id
  * @property string $name
  * @property int $health
- * @property mixed|null $yield_stock
+ * @property ProductionQueue $production_queue
+ * @property YieldStock $yield_stock
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Citizen> $citizens
@@ -44,6 +49,7 @@ use Illuminate\Support\Collection;
  * @method static Builder|City whereName($value)
  * @method static Builder|City wherePlayerId($value)
  * @method static Builder|City whereUpdatedAt($value)
+ * @method static Builder|City whereProductionQueue($value)
  * @method static Builder|City whereYieldStock($value)
  * @mixin \Eloquent
  */
@@ -58,6 +64,11 @@ class City extends Model
         'health',
         'production_queue',
         'yield_stock',
+    ];
+
+    protected $casts = [
+        'production_queue' => ProductionQueueCast::class,
+        'yield_stock' => YieldStockCast::class,
     ];
 
     public function citizens(): HasMany

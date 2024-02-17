@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use App\Casts\YieldStockCast;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
+use App\Yields\YieldStock;
 use Database\Factories\PlayerFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,7 +26,7 @@ use Illuminate\Support\Collection;
  * @property int|null $religion_id
  * @property string $color1
  * @property string $color2
- * @property mixed|null $yield_stock
+ * @property YieldStock $yield_stock
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, City> $cities
@@ -71,6 +73,10 @@ class Player extends Model
         'color2',
     ];
 
+    protected $casts = [
+        'yield_stock' => YieldStockCast::class,
+    ];
+
     public function cities(): HasMany
     {
         return $this->hasMany(City::class);
@@ -87,10 +93,10 @@ class Player extends Model
     public function getKnownTechnologyTypesAttribute(): Collection
     {
         return $this->technologies
-                ->where('is_known', true)
-                ->mapWithKeys(
-                    fn(Technology $tech) => [$tech->type->slug() => $tech->type]
-                );
+            ->where('is_known', true)
+            ->mapWithKeys(
+                fn(Technology $tech) => [$tech->type->slug() => $tech->type]
+            );
     }
 
     public function religion(): BelongsTo

@@ -30,6 +30,7 @@ use Illuminate\Support\Collection;
  * @property UnitEquipmentType|null $equipment
  * @property UnitArmorType|null $armor
  * @property UnitType $type
+ * @property-read Collection|YieldModifier[]|YieldModifiersFor[] $yield_modifiers
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Player $player

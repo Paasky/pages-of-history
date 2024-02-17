@@ -25,8 +25,8 @@ return new class extends Migration
             $table->integer('resource_amount')->nullable();
             $table->string('improvement')->nullable()->index();
             $table->integer('improvement_health')->nullable();
-            $table->jsonb('knowledge')->nullable();
-            $table->jsonb('events')->nullable();
+            $table->jsonb('knowledge')->default('[]');
+            $table->jsonb('events')->default('[]');
             $table->timestamps();
             $table->index(['x', 'y']);
 

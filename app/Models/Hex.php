@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Casts\HexEventsCast;
+use App\Casts\HexKnowledgeCast;
 use App\Casts\ImprovementCast;
 use App\Casts\ResourceCast;
 use App\Coordinate;
@@ -10,6 +12,8 @@ use App\Enums\Feature;
 use App\Enums\Surface;
 use App\Improvements\ImprovementType;
 use App\Managers\MapManager;
+use App\Map\HexEvent;
+use App\Map\HexKnowledge;
 use App\Resources\ResourceType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
@@ -38,8 +42,8 @@ use Illuminate\Support\Collection;
  * @property int|null $resource_amount
  * @property ImprovementType|null $improvement
  * @property int|null $improvement_health
- * @property mixed|null $knowledge
- * @property mixed|null $events
+ * @property Collection<HexKnowledge> $knowledge
+ * @property Collection<HexEvent> $events
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Building> $buildings
@@ -101,6 +105,8 @@ class Hex extends Model
         'feature' => Feature::class,
         'resource' => ResourceCast::class,
         'improvement' => ImprovementCast::class,
+        'knowledge' => HexKnowledgeCast::class,
+        'events' => HexEventsCast::class,
     ];
 
     public function buildings(): HasMany

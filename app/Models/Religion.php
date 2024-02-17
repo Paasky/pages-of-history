@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Enums\ReligionTenet;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Database\Factories\ReligionFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
@@ -19,12 +21,12 @@ use Illuminate\Support\Collection;
  * @property int $id
  * @property int $city_id
  * @property string $name
- * @property Collection|ReligionTenet[]|null $tenets
+ * @property Collection|ReligionTenet[] $tenets
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Citizen> $citizens
  * @property-read int|null $citizens_count
- * @property-read Collection $yield_modifiers
+ * @property-read Collection|YieldModifier[]|YieldModifiersFor[] $yield_modifiers
  * @property-read City|null $holyCity
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Player> $players
  * @property-read int|null $players_count

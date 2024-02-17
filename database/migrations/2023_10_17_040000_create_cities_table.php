@@ -18,8 +18,8 @@ return new class extends Migration {
             $table->foreignIdFor(Player::class)->constrained();
             $table->string('name');
             $table->integer('health')->default(100);
-            $table->jsonb('production_queue')->nullable();
-            $table->jsonb('yield_stock')->nullable();
+            $table->jsonb('production_queue')->default('[]');
+            $table->jsonb('yield_stock')->default('[]');
             $table->timestamps();
         });
     }

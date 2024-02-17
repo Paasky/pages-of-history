@@ -21,9 +21,9 @@ use Illuminate\Support\Collection;
  * @property int $id
  * @property int $player_id
  * @property string $name
- * @property Collection|CultureTrait[]|null $traits
- * @property Collection|CultureVice[]|null $vices
- * @property Collection|CultureVirtue[]|null $virtues
+ * @property Collection|CultureTrait[] $traits
+ * @property Collection|CultureVice[] $vices
+ * @property Collection|CultureVirtue[] $virtues
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Citizen> $citizens
