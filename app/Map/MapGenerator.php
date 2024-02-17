@@ -741,10 +741,7 @@ class MapGenerator
                         });
 
                         // Move the oceans diagonally left or right
-                        $region = $regionsToGenerate[$oceanCoords->key()] ?? null;
-                        if (!$region) {
-                            throw new \Exception('index ' . count($this->generatedOceans) . " key {$oceanCoords->key()}");
-                        }
+                        $region = $regionsToGenerate[$oceanCoords->key()] ?? $region;
                     }
                     $region->domain = Domain::Water;
                     $region->surface = Surface::Ocean;

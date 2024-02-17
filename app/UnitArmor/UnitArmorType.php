@@ -75,10 +75,12 @@ abstract class UnitArmorType extends AbstractType
     {
         return collect([
             new YieldModifier(
+                $this,
                 YieldType::Cost,
                 percent: 50
             ),
             new YieldModifier(
+                $this,
                 YieldType::Strength,
                 $this->technology()?->era()->baseArmorStrength() ?: TechnologyEra::BASE_ARMOR_STRENGTH
             ),

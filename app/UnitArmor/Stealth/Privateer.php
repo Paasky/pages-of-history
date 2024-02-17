@@ -41,6 +41,7 @@ class Privateer extends UnitArmorType
     {
         return collect([
             new YieldModifier(
+                $this,
                 YieldType::Cost,
                 percent: 25
             ),
