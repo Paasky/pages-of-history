@@ -21,7 +21,7 @@ class ReligionFactory extends Factory
         return [
             'city_id' => fn() => City::factory()->create(),
             'name' => $this->faker->firstName . 'ism',
-            'tenets' => null,
+            'tenets' => [],
         ];
     }
 }

@@ -15,7 +15,7 @@ class YieldStockCast implements CastsAttributes
 
     public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        /** @var YieldStock $value */
-        return $value->getStock()->toJson();
+        /** @var YieldStock|array|null $value */
+        return is_array($value) ? json_encode($value) : ($value?->getStock()->toJson() ?: '[]');
     }
 }

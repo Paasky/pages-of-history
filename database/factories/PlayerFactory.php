@@ -3,11 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Map;
+use App\Models\Player;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Player>
+ * @extends Factory<Player>
  */
 class PlayerFactory extends Factory
 {
@@ -19,8 +20,8 @@ class PlayerFactory extends Factory
     public function definition(): array
     {
         return [
-            'map_id' => Map::first() ?: Map::factory()->create()->id,
-            'user_id' => null,
+            'map_id' => fn() => Map::first() ?: Map::factory()->create()->id,
+            'user_id' => fn() => User::factory()->create()->id,
             'color1' => $this->faker->hexColor(),
             'color2' => $this->faker->unique()->hexColor(),
         ];

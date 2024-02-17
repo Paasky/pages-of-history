@@ -21,9 +21,9 @@ class CultureFactory extends Factory
         return [
             'player_id' => fn() => Player::factory()->create(),
             'name' => $this->faker->country . 'ian',
-            'traits' => null,
-            'vices' => null,
-            'virtues' => null,
+            'traits' => [],
+            'vices' => [],
+            'virtues' => [],
         ];
     }
 }

@@ -32,8 +32,8 @@ class HexFactory extends Factory
             'resource_amount' => null,
             'improvement' => null,
             'improvement_health' => null,
-            'knowledge' => null,
-            'events' => null,
+            'knowledge' => [],
+            'events' => [],
         ];
     }
 }

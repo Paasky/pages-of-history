@@ -2,9 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Enums\UnitArmorCategory;
 use App\Enums\UnitType;
-use App\Enums\UnitEquipmentCategory;
 use App\Models\Map;
 use App\Models\Player;
 use App\Models\Unit;
@@ -18,7 +16,7 @@ class UnitFactory extends Factory
     public function definition(): array
     {
         return [
-            'map_id' => Map::first() ?: Map::factory()->create()->id,
+            'map_id' => fn() => Map::first() ?: Map::factory()->create()->id,
             'hex_id' => fn(array $data) => Map::findOrFail($data['map_id'])
                 ->hexes()
                 ->whereDoesntHave('units')

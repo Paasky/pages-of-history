@@ -15,7 +15,7 @@ class ProductionQueueCast implements CastsAttributes
 
     public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        /** @var ProductionQueue $value */
-        return json_encode($value->toArray());
+        /** @var ProductionQueue|array|null $value */
+        return is_array($value) ? json_encode($value) : ($value?->toArray() ?: '[]');
     }
 }

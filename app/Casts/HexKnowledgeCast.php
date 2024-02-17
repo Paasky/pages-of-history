@@ -18,7 +18,7 @@ class HexKnowledgeCast implements CastsAttributes
 
     public function set(Model $model, string $key, mixed $value, array $attributes): string
     {
-        /** @var Collection $value */
-        return $value->toJson();
+        /** @var Collection|array|null $value */
+        return is_array($value) ? json_encode($value) : ($value?->toJson() ?: '[]');
     }
 }

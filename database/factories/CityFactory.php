@@ -26,6 +26,8 @@ class CityFactory extends Factory
             ),
             'name' => $this->faker->city,
             'health' => 100,
+            'production_queue' => [],
+            'yield_stock' => [],
         ];
     }
 }
