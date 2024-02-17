@@ -6,8 +6,6 @@ use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Technologies\Bronze\BronzeWorking;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
-use Illuminate\Support\Collection;
 
 class Statue extends BuildingType
 {
@@ -24,15 +22,5 @@ class Statue extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return Arena::get();
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

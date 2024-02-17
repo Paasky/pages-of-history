@@ -34,9 +34,9 @@ class RadarDeck extends UnitEquipmentType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::VisionRange, 1),
+            new YieldModifier($this, YieldType::VisionRange, 1),
             new YieldModifiersFor(
-                collect([new YieldModifier(YieldType::Cargo, 2)]),
+                collect([new YieldModifier($this, YieldType::Capacity, 2)]),
                 [UnitPlatformCategory::Air]
             ),
         ]);

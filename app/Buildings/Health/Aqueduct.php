@@ -6,8 +6,6 @@ use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Technologies\Iron\Construction;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
-use Illuminate\Support\Collection;
 
 class Aqueduct extends BuildingType
 {
@@ -24,15 +22,5 @@ class Aqueduct extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return BathHouse::get();
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

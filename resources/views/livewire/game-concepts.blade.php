@@ -1,8 +1,8 @@
 @php
     use App\Enums\BuildingCategory;
     use App\Buildings\BuildingType;
-    use App\Enums\Domain;use App\Enums\Feature;use App\Enums\ImprovementCategory;
-    use App\Enums\Surface;use App\Improvements\ImprovementType;
+    use App\Enums\CultureTrait;use App\Enums\CultureVice;use App\Enums\CultureVirtue;use App\Enums\Domain;use App\Enums\Feature;use App\Enums\ImprovementCategory;
+    use App\Enums\ReligionTenet;use App\Enums\Surface;use App\Enums\YieldType;use App\Improvements\ImprovementType;
     use App\Enums\ResourceCategory;
     use App\Resources\ResourceType;
     use App\Enums\TechnologyEra;
@@ -37,6 +37,26 @@
             @include('components.game-concepts-section', [
                 'gameConcepts' => Feature::cases(),
                  'title' => __('Features'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => CultureTrait::cases(),
+                 'title' => __('Culture Traits'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => CultureVice::cases(),
+                 'title' => __('Culture Vices'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => CultureVirtue::cases(),
+                 'title' => __('Culture Virtues'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => ReligionTenet::cases(),
+                 'title' => __('Religion Tenets'),
             ])
 
             @include('components.game-concepts-section', [
@@ -107,6 +127,11 @@
             @include('components.game-concepts-section', [
                 'gameConcepts' => UnitArmorType::all()->sortBy(fn (UnitArmorType $b) => $b->name()),
                  'title' => __('Unit Armors'),
+            ])
+
+            @include('components.game-concepts-section', [
+                'gameConcepts' => YieldType::cases(),
+                 'title' => __('Yield Types'),
             ])
         </div>
         <div class="col-span-7 pl-2 p-4 transition" wire:loading.class="opacity-25">

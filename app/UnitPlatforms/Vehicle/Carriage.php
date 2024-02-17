@@ -98,8 +98,8 @@ class Carriage extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Cost, percent: 25),
-            new YieldModifier(YieldType::Defense, percent: -50)
+            new YieldModifier($this, YieldType::Cost, percent: 25),
+            new YieldModifier($this, YieldType::Defense, percent: -50)
         ]);
     }
 }

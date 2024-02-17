@@ -16,20 +16,20 @@ enum CultureVice: string implements GameConcept
     case Ignorant = 'Ignorant';
     case Jealous = 'Jealous';
     case Lazy = 'Lazy';
-    case Traditional = 'Traditional';
+    case Traditionalist = 'Traditionalist';
     case Unsanitary = 'Unsanitary';
 
     public function icon(): string
     {
         return match ($this) {
-            self::Corrupt => YieldType::Gold->icon(),
-            self::Fundamentalist => YieldType::Faith->icon(),
-            self::Gluttonous => YieldType::Food->icon(),
-            self::Ignorant => YieldType::Science->icon(),
-            self::Jealous => YieldType::Happiness->icon(),
-            self::Lazy => YieldType::Production->icon(),
-            self::Traditional => YieldType::Culture->icon(),
-            self::Unsanitary => YieldType::Health->icon(),
+            self::Corrupt => 'fa-hand-holding-dollar',
+            self::Fundamentalist => 'fa-place-of-worship',
+            self::Gluttonous => 'fa-wheat-awn-circle-exclamation',
+            self::Ignorant => 'fa-wand-sparkles',
+            self::Jealous => 'fa-face-frown',
+            self::Lazy => 'fa-bed',
+            self::Traditionalist => 'fa-ban',
+            self::Unsanitary => 'fa-trash-can',
         };
     }
 
@@ -47,14 +47,14 @@ enum CultureVice: string implements GameConcept
     public function yieldModifiers(): Collection
     {
         return match ($this) {
-            self::Corrupt => collect([new YieldModifier(YieldType::Gold, percent: -20)]),
-            self::Fundamentalist => collect([new YieldModifier(YieldType::Faith, percent: -20)]),
-            self::Gluttonous => collect([new YieldModifier(YieldType::Food, percent: -20)]),
-            self::Ignorant => collect([new YieldModifier(YieldType::Science, percent: -20)]),
-            self::Jealous => collect([new YieldModifier(YieldType::Happiness, percent: -20)]),
-            self::Lazy => collect([new YieldModifier(YieldType::Production, percent: -20)]),
-            self::Traditional => collect([new YieldModifier(YieldType::Culture, percent: -20)]),
-            self::Unsanitary => collect([new YieldModifier(YieldType::Health, percent: -20)]),
+            self::Corrupt => collect([new YieldModifier($this, YieldType::Gold, percent: -20)]),
+            self::Fundamentalist => collect([new YieldModifier($this, YieldType::Faith, percent: -20)]),
+            self::Gluttonous => collect([new YieldModifier($this, YieldType::Food, percent: -20)]),
+            self::Ignorant => collect([new YieldModifier($this, YieldType::Science, percent: -20)]),
+            self::Jealous => collect([new YieldModifier($this, YieldType::Happiness, percent: -20)]),
+            self::Lazy => collect([new YieldModifier($this, YieldType::Production, percent: -20)]),
+            self::Traditionalist => collect([new YieldModifier($this, YieldType::Culture, percent: -20)]),
+            self::Unsanitary => collect([new YieldModifier($this, YieldType::Health, percent: -20)]),
         };
     }
 }

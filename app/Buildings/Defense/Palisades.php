@@ -6,8 +6,6 @@ use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
-use Illuminate\Support\Collection;
 
 class Palisades extends BuildingType
 {
@@ -24,15 +22,5 @@ class Palisades extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return Walls::get();
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

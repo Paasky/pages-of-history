@@ -91,8 +91,8 @@ class ClinkerHull extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Cost, percent: 30),
-            new YieldModifier(YieldType::Moves, 4),
+            new YieldModifier($this, YieldType::Cost, percent: 30),
+            new YieldModifier($this, YieldType::Moves, 4),
         ]);
     }
 }

@@ -6,8 +6,6 @@ use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Technologies\Industrial\Industrialization;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
-use Illuminate\Support\Collection;
 
 class Factory extends BuildingType
 {
@@ -24,15 +22,5 @@ class Factory extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return SteelWorks::get();
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

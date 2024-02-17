@@ -45,21 +45,21 @@ enum ReligionTenet: string implements GameConcept
     public function yieldModifiers(): Collection
     {
         return match ($this) {
-            self::Crusades => collect([new YieldModifier(YieldType::Attack, percent: 10)]),
-            self::DefendersOfTheFaith => collect([new YieldModifier(YieldType::Defense, percent: 10)]),
-            self::WrathOfGod => collect([new YieldModifier(YieldType::Bombard, percent: 10)]),
-            self::Militant => collect([new YieldModifier(YieldType::Strength, percent: 10)]),
-            self::Missionaries => collect([new YieldModifier(YieldType::VisionRange, 1)]),
-            self::Communal => collect([new YieldModifier(YieldType::Cost, percent: 10)]),
-            self::Orthodox => collect([new YieldModifier(YieldType::Culture, percent: 10)]),
-            self::Polytheist => collect([new YieldModifier(YieldType::Faith, percent: 10)]),
-            self::Naturalist => collect([new YieldModifier(YieldType::Food, percent: 10)]),
-            self::Tithes => collect([new YieldModifier(YieldType::Gold, percent: 10)]),
-            self::Methodist => collect([new YieldModifier(YieldType::Happiness, percent: 10)]),
-            self::BathingRituals => collect([new YieldModifier(YieldType::Health, percent: 10)]),
-            self::IdolWorship => collect([new YieldModifier(YieldType::Luxury, percent: 10)]),
-            self::Protestant => collect([new YieldModifier(YieldType::Production, percent: 10)]),
-            self::Reformist => collect([new YieldModifier(YieldType::Science, percent: 10)]),
+            self::Crusades => collect([new YieldModifier($this, YieldType::Attack, percent: 10)]),
+            self::DefendersOfTheFaith => collect([new YieldModifier($this, YieldType::Defense, percent: 10)]),
+            self::WrathOfGod => collect([new YieldModifier($this, YieldType::Bombard, percent: 10)]),
+            self::Militant => collect([new YieldModifier($this, YieldType::Strength, percent: 10)]),
+            self::Missionaries => collect([new YieldModifier($this, YieldType::VisionRange, 1)]),
+            self::Communal => collect([new YieldModifier($this, YieldType::Cost, percent: 10)]),
+            self::Orthodox => collect([new YieldModifier($this, YieldType::Culture, percent: 10)]),
+            self::Polytheist => collect([new YieldModifier($this, YieldType::Faith, percent: 10)]),
+            self::Naturalist => collect([new YieldModifier($this, YieldType::Food, percent: 10)]),
+            self::Tithes => collect([new YieldModifier($this, YieldType::Gold, percent: 10)]),
+            self::Methodist => collect([new YieldModifier($this, YieldType::Happiness, percent: 10)]),
+            self::BathingRituals => collect([new YieldModifier($this, YieldType::Health, percent: 10)]),
+            self::IdolWorship => collect([new YieldModifier($this, YieldType::Luxury, percent: 10)]),
+            self::Protestant => collect([new YieldModifier($this, YieldType::Production, percent: 10)]),
+            self::Reformist => collect([new YieldModifier($this, YieldType::Science, percent: 10)]),
         };
     }
 }

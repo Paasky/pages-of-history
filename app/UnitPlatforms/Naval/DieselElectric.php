@@ -127,8 +127,8 @@ class DieselElectric extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Cost, percent: 70),
-            new YieldModifier(YieldType::Moves, 6),
+            new YieldModifier($this, YieldType::Cost, percent: 70),
+            new YieldModifier($this, YieldType::Moves, 6),
         ]);
     }
 }

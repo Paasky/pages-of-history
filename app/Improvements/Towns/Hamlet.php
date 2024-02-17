@@ -33,11 +33,11 @@ class Hamlet extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Culture, 0.33),
-            new YieldModifier(YieldType::Gold, 0.33),
-            new YieldModifier(YieldType::Production, 0.33),
-            new YieldModifier(YieldType::Science, 0.33),
-            new YieldModifier(YieldType::Food, -0.66),
+            new YieldModifier($this, YieldType::Culture, 0.33),
+            new YieldModifier($this, YieldType::Gold, 0.33),
+            new YieldModifier($this, YieldType::Production, 0.33),
+            new YieldModifier($this, YieldType::Science, 0.33),
+            new YieldModifier($this, YieldType::Food, -0.66),
         ]);
     }
 }

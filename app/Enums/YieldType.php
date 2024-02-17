@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use App\GameConcept;
 use App\Models\Building;
 use App\Models\Citizen;
 use App\Models\City;
@@ -9,17 +10,19 @@ use App\Models\Hex;
 use App\Models\Unit;
 use App\Models\UnitDesign;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
-enum YieldType: string
+enum YieldType: string implements GameConcept
 {
     use GameConceptEnum;
 
     case Agility = 'Agility';
     case Attack = 'Attack';
     case Bombard = 'Bombard';
-    case Cargo = 'Cargo';
+    case Capacity = 'Capacity';
     case Cost = 'Cost';
     case Culture = 'Culture';
+    case Damage = 'Damage';
     case Defense = 'Defense';
     case Faith = 'Faith';
     case Food = 'Food';
@@ -100,9 +103,10 @@ enum YieldType: string
             self::Agility => 'fa-plane-circle-check',
             self::Attack => 'fa-arrows-to-circle',
             self::Bombard => 'fa-crosshairs',
-            self::Cargo => 'fa-box',
+            self::Capacity => 'fa-warehouse',
             self::Cost => 'fa-hammer',
             self::Culture => 'fa-masks-theater',
+            self::Damage => 'fa-bomb',
             self::Defense => 'fa-shield-halved',
             self::Faith => 'fa-hands-praying',
             self::Food => 'fa-utensils',
@@ -122,5 +126,16 @@ enum YieldType: string
             self::Trade => 'fa-route',
             self::VisionRange => 'fa-eye',
         };
+    }
+
+    /** @return Collection<int, GameConcept> */
+    public function items(): Collection
+    {
+        return collect();
+    }
+
+    public function typeSlug(): string
+    {
+        return 'yield';
     }
 }

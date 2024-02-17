@@ -56,6 +56,8 @@ class City extends Model
         'player_id',
         'name',
         'health',
+        'production_queue',
+        'yield_stock',
     ];
 
     public function citizens(): HasMany

@@ -9,14 +9,16 @@ use App\Enums\UnitType;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
+use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersFor;
 use Database\Factories\UnitDesignFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 /**
  * App\Models\UnitDesign
@@ -76,5 +78,20 @@ class UnitDesign extends Model
     public function units(): HasMany
     {
         return $this->hasMany(Unit::class);
+    }
+
+    /**
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
+     */
+    public function getYieldModifiersAttribute(): Collection
+    {
+        $modifiers = $this->platform->yieldModifiers()
+            ->merge($this->equipment->yieldModifiers())
+            ->merge($this->armor->yieldModifiers() ?: []);
+
+        return YieldModifier::getValidModifiersFor($modifiers, $this)
+            // Only allow modifiers with a set amount - one unit can't boost everyone else
+            ->filter(fn(YieldModifier $modifier) => (bool)$modifier->amount)
+            ->values();
     }
 }

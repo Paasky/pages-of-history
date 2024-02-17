@@ -33,11 +33,11 @@ class LocalCenter extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Culture, 2),
-            new YieldModifier(YieldType::Gold, 2),
-            new YieldModifier(YieldType::Production, 2),
-            new YieldModifier(YieldType::Science, 2),
-            new YieldModifier(YieldType::Food, -4),
+            new YieldModifier($this, YieldType::Culture, 2),
+            new YieldModifier($this, YieldType::Gold, 2),
+            new YieldModifier($this, YieldType::Production, 2),
+            new YieldModifier($this, YieldType::Science, 2),
+            new YieldModifier($this, YieldType::Food, -4),
         ]);
     }
 }

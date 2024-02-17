@@ -152,6 +152,7 @@ class MapGenerator
         return $this;
 
         // 2) Terrain & Feature Map
+        /** @noinspection PhpUnreachableStatementInspection */
         echo PHP_EOL;
         for ($y = -1; $y < $this->worldRegionsY; $y++) {
             if ($y < 0) {
@@ -778,7 +779,7 @@ class MapGenerator
                             unset($regionsToGenerate[$neighbor->key()]);
                             $waterRegionsLeft--;
                         },
-                        round($this->worldRegionsY / 6)
+                        round($this->worldRegionsY / 7)
                     );
                     break;
 

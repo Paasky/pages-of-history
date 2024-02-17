@@ -33,8 +33,8 @@ class Outpost extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Culture, 1),
-            new YieldModifier(YieldType::Defense, percent: 25),
+            new YieldModifier($this, YieldType::Culture, 1),
+            new YieldModifier($this, YieldType::Defense, percent: 25),
         ]);
     }
 }

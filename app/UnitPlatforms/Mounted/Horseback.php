@@ -108,8 +108,8 @@ class Horseback extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Cost, percent: 50),
-            new YieldModifier(YieldType::Moves, 3),
+            new YieldModifier($this, YieldType::Cost, percent: 50),
+            new YieldModifier($this, YieldType::Moves, 3),
         ]);
     }
 }

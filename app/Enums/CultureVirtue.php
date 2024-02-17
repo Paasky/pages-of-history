@@ -47,14 +47,14 @@ enum CultureVirtue: string implements GameConcept
     public function yieldModifiers(): Collection
     {
         return match ($this) {
-            self::Artistic => collect([new YieldModifier(YieldType::Culture, percent: 10)]),
-            self::Cooperative => collect([new YieldModifier(YieldType::Food, percent: 10)]),
-            self::HardWorking => collect([new YieldModifier(YieldType::Production, percent: 10)]),
-            self::Hygienic => collect([new YieldModifier(YieldType::Health, percent: 10)]),
-            self::Inquisitive => collect([new YieldModifier(YieldType::Science, percent: 10)]),
-            self::Joyful => collect([new YieldModifier(YieldType::Happiness, percent: 10)]),
-            self::Spiritual => collect([new YieldModifier(YieldType::Faith, percent: 10)]),
-            self::Trading => collect([new YieldModifier(YieldType::Gold, percent: 10)]),
+            self::Artistic => collect([new YieldModifier($this, YieldType::Culture, percent: 10)]),
+            self::Cooperative => collect([new YieldModifier($this, YieldType::Food, percent: 10)]),
+            self::HardWorking => collect([new YieldModifier($this, YieldType::Production, percent: 10)]),
+            self::Hygienic => collect([new YieldModifier($this, YieldType::Health, percent: 10)]),
+            self::Inquisitive => collect([new YieldModifier($this, YieldType::Science, percent: 10)]),
+            self::Joyful => collect([new YieldModifier($this, YieldType::Happiness, percent: 10)]),
+            self::Spiritual => collect([new YieldModifier($this, YieldType::Faith, percent: 10)]),
+            self::Trading => collect([new YieldModifier($this, YieldType::Gold, percent: 10)]),
         };
     }
 }

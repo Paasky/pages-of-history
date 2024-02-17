@@ -33,9 +33,9 @@ class NatureReserve extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Culture, 2),
-            new YieldModifier(YieldType::Food, 1),
-            new YieldModifier(YieldType::Gold, 2),
+            new YieldModifier($this, YieldType::Culture, 2),
+            new YieldModifier($this, YieldType::Food, 1),
+            new YieldModifier($this, YieldType::Gold, 2),
         ]);
     }
 }

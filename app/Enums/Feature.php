@@ -79,44 +79,44 @@ enum Feature: string implements GameConcept
     {
         return match ($this) {
             self::LightForest, self::Shrubs => collect([
-                new YieldModifier(YieldType::Production, 1),
-                new YieldModifier(YieldType::Defense, percent: 10),
+                new YieldModifier($this, YieldType::Production, 1),
+                new YieldModifier($this, YieldType::Defense, percent: 10),
             ]),
             self::LushForest, self::PineForest => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Defense, percent: 20),
-                new YieldModifier(YieldType::Production, 1),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Defense, percent: 20),
+                new YieldModifier($this, YieldType::Production, 1),
             ]),
             self::Jungle => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Health, percent: -20),
-                new YieldModifier(YieldType::Defense, percent: 30),
-                new YieldModifier(YieldType::Production, 1),
-                new YieldModifier(YieldType::Science, 1),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Health, percent: -20),
+                new YieldModifier($this, YieldType::Defense, percent: 30),
+                new YieldModifier($this, YieldType::Production, 1),
+                new YieldModifier($this, YieldType::Science, 1),
             ]),
             self::Dunes, self::Snowdrifts => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Defense, percent: 10),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Defense, percent: 10),
             ]),
             self::Shoals => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Health, percent: -20),
-                new YieldModifier(YieldType::Food, 1),
-                new YieldModifier(YieldType::Production, 1),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Health, percent: -20),
+                new YieldModifier($this, YieldType::Food, 1),
+                new YieldModifier($this, YieldType::Production, 1),
             ]),
             self::Reef => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Health, percent: -20),
-                new YieldModifier(YieldType::Food, 1),
-                new YieldModifier(YieldType::Gold, 1),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Health, percent: -20),
+                new YieldModifier($this, YieldType::Food, 1),
+                new YieldModifier($this, YieldType::Gold, 1),
             ]),
             self::FloodPlain => collect([
-                new YieldModifier(YieldType::Food, 3),
+                new YieldModifier($this, YieldType::Food, 3),
             ]),
             self::Oasis => collect([
-                new YieldModifier(YieldType::Food, 1),
-                new YieldModifier(YieldType::Gold, 1),
-                new YieldModifier(YieldType::Production, 1),
+                new YieldModifier($this, YieldType::Food, 1),
+                new YieldModifier($this, YieldType::Gold, 1),
+                new YieldModifier($this, YieldType::Production, 1),
             ]),
         };
     }

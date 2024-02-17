@@ -8,7 +8,6 @@ use App\Resources\ResourceType;
 use App\Resources\Strategic\Gas;
 use App\Technologies\Industrial\CoalGasification;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
 class StreetLighting extends BuildingType
@@ -34,15 +33,5 @@ class StreetLighting extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return TradeUnion::get();
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

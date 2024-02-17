@@ -33,7 +33,7 @@ class IrrigatedFarm extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Food, 2),
+            new YieldModifier($this, YieldType::Food, 2),
         ]);
     }
 }

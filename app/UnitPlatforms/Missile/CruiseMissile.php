@@ -77,8 +77,8 @@ class CruiseMissile extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Agility, 5),
-            new YieldModifier(YieldType::Range, 6),
+            new YieldModifier($this, YieldType::Agility, 5),
+            new YieldModifier($this, YieldType::Range, 6),
         ]);
     }
 }

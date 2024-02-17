@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Buildings\BuildingType;
+use App\Casts\BuildingCast;
 use Database\Factories\BuildingFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -45,7 +46,7 @@ class Building extends Model
     ];
 
     protected $casts = [
-        'type' => BuildingType::class,
+        'type' => BuildingCast::class,
     ];
 
     public function hex(): BelongsTo

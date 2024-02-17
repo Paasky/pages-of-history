@@ -33,8 +33,8 @@ class AutomatedFishery extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Food, 3),
-            new YieldModifier(YieldType::Gold, 3),
+            new YieldModifier($this, YieldType::Food, 3),
+            new YieldModifier($this, YieldType::Gold, 3),
         ]);
     }
 }

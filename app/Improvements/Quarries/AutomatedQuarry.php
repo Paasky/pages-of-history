@@ -33,8 +33,8 @@ class AutomatedQuarry extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Gold, 3),
-            new YieldModifier(YieldType::Production, 3),
+            new YieldModifier($this, YieldType::Gold, 3),
+            new YieldModifier($this, YieldType::Production, 3),
         ]);
     }
 }

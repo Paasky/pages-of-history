@@ -33,8 +33,8 @@ class HuntingGround extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Food, 1),
-            new YieldModifier(YieldType::Gold, 1),
+            new YieldModifier($this, YieldType::Food, 1),
+            new YieldModifier($this, YieldType::Gold, 1),
         ]);
     }
 }

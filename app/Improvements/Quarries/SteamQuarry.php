@@ -33,8 +33,8 @@ class SteamQuarry extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Gold, 2),
-            new YieldModifier(YieldType::Production, 2),
+            new YieldModifier($this, YieldType::Gold, 2),
+            new YieldModifier($this, YieldType::Production, 2),
         ]);
     }
 }

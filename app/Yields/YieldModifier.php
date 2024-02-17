@@ -8,11 +8,14 @@ use App\GameConcept;
 use App\Models\Building;
 use App\Models\Citizen;
 use App\Models\Hex;
+use App\Models\Unit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class YieldModifier
 {
     public function __construct(
+        public GameConcept|Model $givenBy,
         public YieldType $type,
         public float     $amount = 0,
         public float     $percent = 0
@@ -21,18 +24,12 @@ class YieldModifier
     }
 
     /**
+     * Combine YieldTypes (amounts and percents) into single amounts, forgetting what gave them originally
      * @param Collection<int, YieldModifier|YieldModifiersFor> $modifiers
-     * @param Collection|array|GameConcept|Building|Citizen|Hex|null $for Pass in collect([null]) to ignore all YieldModifiersFors
      * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
-    public static function mergeModifiers(
-        Collection                                        $modifiers,
-        Collection|array|GameConcept|Building|Citizen|Hex $for = null
-    ): Collection
+    public static function combineYieldTypes(Collection $modifiers, GameConcept|Model $givenBy): Collection
     {
-        // Expand $for
-        $for = static::expandFors($for);
-
         // Separate the two types of modifiers
         $regularModifiers = [];
         $forModifiers = [];
@@ -43,36 +40,12 @@ class YieldModifier
                 $regularModifiers[] = $modifier;
                 continue;
             }
-
-            // YieldModifiersFor are more complex
-
-            // Nothing given as "for", so let them pass as-is
-            if (!$for || $for->isEmpty()) {
-                $forModifiers[] = $modifier;
-                continue;
-            }
-
-            $isFor = false;
-            foreach ($modifier->for as $modifierFor) {
-                if ($modifierFor->is(...$for)) {
-                    $isFor = true;
-                    break;
-                }
-            }
-
-            if ($isFor) {
-                foreach ($modifier->modifiers as $subModifier) {
-                    $regularModifiers[] = $subModifier;
-                }
-            }
+            $forModifiers[] = $modifier;
         }
 
         /** @var Collection<string, YieldModifier>|YieldModifier[] $modifierByYieldType */
         $modifierByYieldType = [];
         foreach ($regularModifiers as $modifier) {
-            if ($for?->isNotEmpty() && !$modifier->type->isFor(...$for)) {
-                continue;
-            }
             $yieldType = $modifier->type->value;
             if (!isset($modifierByYieldType[$yieldType])) {
                 $modifierByYieldType[$yieldType] = [
@@ -102,7 +75,9 @@ class YieldModifier
             $amount = round($positive + $negative, 2);
 
             if ($amount) {
-                $modifierByYieldType[$yieldType] = new YieldModifier(YieldType::from($yieldType), $amount);
+                $modifierByYieldType[$yieldType] = new YieldModifier($givenBy, YieldType::from($yieldType), $amount);
+            } else {
+                unset($modifierByYieldType[$yieldType]);
             }
         }
 
@@ -110,22 +85,82 @@ class YieldModifier
     }
 
     /**
-     * @param Collection|array|GameConcept|Building|Citizen|Hex|null $for
+     * Given a list of YieldModifier & YieldModifiersFor objects,
+     * returns YieldModifiers that apply for the given GameConcept or Model
+     *
+     * @param Collection<int, YieldModifier|YieldModifiersFor> $modifiers
+     * @param GameConcept|Model|Collection<GameConcept|Model> $for
+     * @param bool $combine Should Modifiers be combined, forgetting what gave them originally
+     * @return Collection<int, YieldModifier>
+     * @throws \Exception
+     */
+    public static function getValidModifiersFor(Collection $modifiers, GameConcept|Model|Collection $for, bool $combine = false): Collection
+    {
+        // Expand $for
+        $fors = static::expandFors($for);
+
+        $validModifiers = collect();
+
+        foreach ($modifiers as $modifier) {
+            // Regular YieldModifiers
+            if ($modifier instanceof YieldModifier) {
+                // Include if no $fors given, or the YieldType is for one of the given $fors
+                if ($fors->isEmpty() || $modifier->type->isFor(...$fors)) {
+                    $validModifiers->push($modifier);
+                }
+                continue;
+            }
+
+            // YieldModifiersFor are more complex
+
+            // If no $fors given, the $modifier->for "was given"
+            $modifierForWasGiven = $fors->isEmpty();
+
+            if (!$modifierForWasGiven) {
+                foreach ($modifier->for as $modifierFor) {
+                    if ($modifierFor->is(...$fors)) {
+                        $modifierForWasGiven = true;
+                        break;
+                    }
+                }
+            }
+
+            if ($modifierForWasGiven) {
+                foreach ($modifier->modifiers as $subModifier) {
+                    // Include if no $fors given, or the YieldType is for one of the given $fors
+                    if ($fors->isEmpty() || $subModifier->type->isFor(...$fors)) {
+                        $validModifiers->push($subModifier);
+                    }
+                }
+            }
+        }
+
+        return $combine
+            ? static::combineYieldTypes($validModifiers, $for)
+            : $validModifiers->sort(fn(YieldModifier $a, YieldModifier $b) => $a->type->value > $b->type->value);
+    }
+
+    /**
+     * @param Collection<GameConcept|Model>|GameConcept|Model|null $for
      * @return Collection
      */
-    public static function expandFors(Collection|array|GameConcept|Building|Citizen|Hex $for = null): Collection
+    public static function expandFors(Collection|GameConcept|Model|null $for): Collection
     {
         if (!$for) {
             return collect();
         }
 
-        if (!$for instanceof Collection && !is_array($for)) {
+        if (!$for instanceof Collection) {
             $for = [$for];
         }
 
         $expandedFors = [];
         foreach ($for as $forItem) {
             $expandedFors[] = $forItem;
+
+            if ($forItem === null) {
+                continue;
+            }
 
             if ($forItem instanceof AbstractType) {
                 $expandedFors[] = $forItem->category();
@@ -157,15 +192,38 @@ class YieldModifier
             }
 
             if ($forItem instanceof Hex) {
-                $forsToExpand = collect(
-                    [$forItem->domain, $forItem->surface, $forItem->feature, $forItem->resource, $forItem->improvement]
-                )
-                    ->filter()
+                $forsToExpand = collect([
+                    $forItem->domain,
+                    $forItem->surface,
+                    $forItem->feature,
+                    $forItem->resource,
+                    $forItem->improvement,
+                ])->filter()
                     ->merge($forItem->buildings);
+
                 foreach (static::expandFors($forsToExpand) as $expandedFor) {
                     $expandedFors[] = $expandedFor;
                 }
+                continue;
             }
+
+            if ($forItem instanceof Unit) {
+                $forsToExpand = collect([
+                    $forItem->unitDesign->platform,
+                    $forItem->unitDesign->equipment,
+                    $forItem->unitDesign->armor,
+                    $forItem->hex,
+                ])->filter();
+
+                foreach (static::expandFors($forsToExpand) as $expandedFor) {
+                    $expandedFors[] = $expandedFor;
+                }
+                continue;
+            }
+
+            throw new \Exception(
+                'Invalid forItem ' . (is_object($forItem) ? get_class($forItem) : gettype($forItem))
+            );
         }
         return collect($expandedFors);
     }

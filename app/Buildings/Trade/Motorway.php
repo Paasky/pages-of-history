@@ -8,7 +8,6 @@ use App\Resources\ResourceType;
 use App\Resources\Strategic\Oil;
 use App\Technologies\Atomic\Macroeconomics;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
 class Motorway extends BuildingType
@@ -34,15 +33,5 @@ class Motorway extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return null;
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

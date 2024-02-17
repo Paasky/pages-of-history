@@ -4,8 +4,11 @@ namespace App\Buildings\Training;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
+use App\Enums\UnitPlatformCategory;
+use App\Enums\YieldType;
 use App\Technologies\Iron\HorsebackRiding;
 use App\Technologies\TechnologyType;
+use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
@@ -23,7 +26,7 @@ class Stables extends BuildingType
 
     public function upgradesTo(): ?BuildingType
     {
-        return TrainingField::get();
+        return RecruitmentOffice::get();
     }
 
     /**
@@ -32,7 +35,11 @@ class Stables extends BuildingType
     public function yieldModifiers(): Collection
     {
         return collect([
-
+            new YieldModifier($this, YieldType::Cost, $this->technology()->era()->baseCost()),
+            new YieldModifiersFor(
+                new YieldModifier($this, YieldType::Production, percent: 20),
+                UnitPlatformCategory::Mounted
+            ),
         ]);
     }
 }

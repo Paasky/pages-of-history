@@ -84,8 +84,8 @@ class ICBM extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Cost, percent: 40),
-            new YieldModifier(YieldType::Agility, 15),
+            new YieldModifier($this, YieldType::Cost, percent: 40),
+            new YieldModifier($this, YieldType::Agility, 15),
         ]);
     }
 }

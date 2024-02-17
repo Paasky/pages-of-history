@@ -33,7 +33,7 @@ class BatteringRam extends UnitEquipmentType
     {
         return collect([
             new YieldModifiersAgainst(
-                collect([new YieldModifier(YieldType::Attack, percent: 50)]),
+                collect([new YieldModifier($this, YieldType::Attack, percent: 50)]),
                 [ImprovementCategory::Cities, ImprovementCategory::Forts]
             ),
         ]);

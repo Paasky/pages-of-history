@@ -6,8 +6,6 @@ use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Technologies\Industrial\Fertilizer;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
-use Illuminate\Support\Collection;
 
 class GrainElevator extends BuildingType
 {
@@ -24,15 +22,5 @@ class GrainElevator extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return DepartmentStore::get();
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

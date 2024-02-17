@@ -5,8 +5,6 @@ namespace App\Buildings\Production;
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
-use Illuminate\Support\Collection;
 
 class AssemblyLine extends BuildingType
 {
@@ -23,15 +21,5 @@ class AssemblyLine extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return RoboticFactory::get();
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

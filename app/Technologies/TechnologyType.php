@@ -71,6 +71,7 @@ abstract class TechnologyType extends AbstractType
     public function yieldModifiers(): Collection
     {
         return collect([new YieldModifier(
+            $this,
             YieldType::Science,
             $this->cost()
         )]);

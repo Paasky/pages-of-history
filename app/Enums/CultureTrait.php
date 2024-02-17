@@ -48,72 +48,72 @@ enum CultureTrait: string implements GameConcept
         return match ($this) {
             self::Agrarian => collect([
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Food, 1),
+                    new YieldModifier($this, YieldType::Food, 1),
                     ImprovementCategory::Farms
                 )
             ]),
             self::Arctic => collect([
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Production, 1),
+                    new YieldModifier($this, YieldType::Production, 1),
                     Surface::Tundra
                 ),
                 new YieldModifiersFor(
                     [
-                        new YieldModifier(YieldType::Moves, 1),
-                        new YieldModifier(YieldType::Health, percent: 20),
+                        new YieldModifier($this, YieldType::Moves, 1),
+                        new YieldModifier($this, YieldType::Health, percent: 20),
                     ],
                     Surface::Snow
                 ),
             ]),
             self::Bedouin => collect([
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Food, 1),
+                    new YieldModifier($this, YieldType::Food, 1),
                     Feature::Shrubs
                 ),
                 new YieldModifiersFor(
                     [
-                        new YieldModifier(YieldType::Moves, 1),
-                        new YieldModifier(YieldType::Health, percent: 20),
+                        new YieldModifier($this, YieldType::Moves, 1),
+                        new YieldModifier($this, YieldType::Health, percent: 20),
                     ],
                     Surface::Desert
                 ),
             ]),
             self::Hunter => collect([
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Moves, 1),
+                    new YieldModifier($this, YieldType::Moves, 1),
                     [Feature::LushForest, Feature::PineForest]
                 ),
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Food, 1),
+                    new YieldModifier($this, YieldType::Food, 1),
                     ImprovementCategory::Camps
                 ),
             ]),
             self::Nomadic => collect([
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Food, 1),
+                    new YieldModifier($this, YieldType::Food, 1),
                     Feature::Shrubs
                 ),
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Gold, 1),
+                    new YieldModifier($this, YieldType::Gold, 1),
                     ImprovementCategory::Pastures
                 ),
             ]),
             self::Seafaring => collect([
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Production, 1),
+                    new YieldModifier($this, YieldType::Production, 1),
                     ImprovementCategory::Fisheries
                 ),
                 new YieldModifiersFor(
-                    new YieldModifier(YieldType::Food, 1),
+                    new YieldModifier($this, YieldType::Food, 1),
                     Surface::Sea
                 ),
             ]),
             self::Tropical => collect([
                 new YieldModifiersFor(
                     [
-                        new YieldModifier(YieldType::Food, 1),
-                        new YieldModifier(YieldType::Moves, 1),
-                        new YieldModifier(YieldType::Health, percent: 20),
+                        new YieldModifier($this, YieldType::Food, 1),
+                        new YieldModifier($this, YieldType::Moves, 1),
+                        new YieldModifier($this, YieldType::Health, percent: 20),
                     ],
                     Feature::Jungle
                 ),

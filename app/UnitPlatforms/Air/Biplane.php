@@ -69,9 +69,9 @@ class Biplane extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Agility, 2),
-            new YieldModifier(YieldType::Moves, 1),
-            new YieldModifier(YieldType::Range, 4),
+            new YieldModifier($this, YieldType::Agility, 2),
+            new YieldModifier($this, YieldType::Moves, 1),
+            new YieldModifier($this, YieldType::Range, 4),
         ]);
     }
 }

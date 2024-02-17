@@ -43,10 +43,10 @@ class FutureTech extends TechnologyType
         return collect([
             new YieldModifiersFor(
                 collect([
-                    new YieldModifier(YieldType::Gold, 1),
-                    new YieldModifier(YieldType::Production, 1),
-                    new YieldModifier(YieldType::Health, 1),
-                    new YieldModifier(YieldType::Happiness, 1),
+                    new YieldModifier($this, YieldType::Gold, 1),
+                    new YieldModifier($this, YieldType::Production, 1),
+                    new YieldModifier($this, YieldType::Health, 1),
+                    new YieldModifier($this, YieldType::Happiness, 1),
                 ]),
                 ImprovementCategory::Cities
             ),

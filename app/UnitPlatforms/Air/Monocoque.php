@@ -81,10 +81,10 @@ class Monocoque extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Cost, percent: 15),
-            new YieldModifier(YieldType::Agility, 3),
-            new YieldModifier(YieldType::Moves, 1),
-            new YieldModifier(YieldType::Range, 6),
+            new YieldModifier($this, YieldType::Cost, percent: 15),
+            new YieldModifier($this, YieldType::Agility, 3),
+            new YieldModifier($this, YieldType::Moves, 1),
+            new YieldModifier($this, YieldType::Range, 6),
         ]);
     }
 }

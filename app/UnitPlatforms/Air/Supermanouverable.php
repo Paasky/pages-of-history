@@ -87,10 +87,10 @@ class Supermanouverable extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Cost, percent: 60),
-            new YieldModifier(YieldType::Agility, 10),
-            new YieldModifier(YieldType::Moves, 1),
-            new YieldModifier(YieldType::Range, 8),
+            new YieldModifier($this, YieldType::Cost, percent: 60),
+            new YieldModifier($this, YieldType::Agility, 10),
+            new YieldModifier($this, YieldType::Moves, 1),
+            new YieldModifier($this, YieldType::Range, 8),
         ]);
     }
 }

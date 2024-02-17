@@ -46,10 +46,10 @@ class HALO extends UnitArmorType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::ParachuteRange, 10),
-            new YieldModifier(YieldType::Cost, percent: 33),
+            new YieldModifier($this, YieldType::ParachuteRange, 10),
+            new YieldModifier($this, YieldType::Cost, percent: 33),
             new YieldModifiersAgainst(
-                new YieldModifier(YieldType::Strength, percent: -10),
+                new YieldModifier($this, YieldType::Strength, percent: -10),
                 UnitPlatformCategory::Vehicle
             )
         ]);

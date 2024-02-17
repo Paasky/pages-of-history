@@ -69,7 +69,7 @@ class Raft extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Moves, 2)
+            new YieldModifier($this, YieldType::Moves, 2)
         ]);
     }
 }

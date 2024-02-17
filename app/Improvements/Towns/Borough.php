@@ -33,11 +33,11 @@ class Borough extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Culture, 1.33),
-            new YieldModifier(YieldType::Gold, 1.33),
-            new YieldModifier(YieldType::Production, 1.33),
-            new YieldModifier(YieldType::Science, 1.33),
-            new YieldModifier(YieldType::Food, -2.66),
+            new YieldModifier($this, YieldType::Culture, 1.33),
+            new YieldModifier($this, YieldType::Gold, 1.33),
+            new YieldModifier($this, YieldType::Production, 1.33),
+            new YieldModifier($this, YieldType::Science, 1.33),
+            new YieldModifier($this, YieldType::Food, -2.66),
         ]);
     }
 }

@@ -4,8 +4,11 @@ namespace App\Buildings\Training;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
+use App\Enums\UnitEquipmentCategory;
+use App\Enums\YieldType;
 use App\Technologies\Classical\CompositeBow;
 use App\Technologies\TechnologyType;
+use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
@@ -32,7 +35,11 @@ class ArcheryRange extends BuildingType
     public function yieldModifiers(): Collection
     {
         return collect([
-
-        ]);
+                new YieldModifier($this, YieldType::Cost, $this->technology()->era()->baseCost()),
+                new YieldModifiersFor(
+                    new YieldModifier($this, YieldType::Production, percent: 20),
+                    UnitEquipmentCategory::Ranged
+                )]
+        );
     }
 }

@@ -33,8 +33,8 @@ class DeepQuarry extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Gold, 1.5),
-            new YieldModifier(YieldType::Production, 1.5),
+            new YieldModifier($this, YieldType::Gold, 1.5),
+            new YieldModifier($this, YieldType::Production, 1.5),
         ]);
     }
 }

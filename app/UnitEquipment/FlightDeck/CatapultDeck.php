@@ -35,7 +35,7 @@ class CatapultDeck extends UnitEquipmentType
     {
         return collect([
             new YieldModifiersFor(
-                collect([new YieldModifier(YieldType::Cargo, 2)]),
+                collect([new YieldModifier($this, YieldType::Capacity, 2)]),
                 [UnitPlatformCategory::Air]
             ),
         ]);

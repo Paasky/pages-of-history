@@ -36,10 +36,10 @@ class Parachute extends UnitArmorType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::ParachuteRange, 5),
-            new YieldModifier(YieldType::Cost, percent: 25),
+            new YieldModifier($this, YieldType::ParachuteRange, 5),
+            new YieldModifier($this, YieldType::Cost, percent: 25),
             new YieldModifiersAgainst(
-                new YieldModifier(YieldType::Strength, percent: -10),
+                new YieldModifier($this, YieldType::Strength, percent: -10),
                 UnitPlatformCategory::Vehicle
             )
         ]);

@@ -33,7 +33,7 @@ class BodyArmor extends UnitArmorType
     {
         return parent::yieldModifiers()->add(
             new YieldModifiersAgainst(
-                new YieldModifier(YieldType::Strength, percent: 10),
+                new YieldModifier($this, YieldType::Strength, percent: 10),
                 UnitEquipmentCategory::Firearm
             )
         );

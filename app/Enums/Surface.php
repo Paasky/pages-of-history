@@ -65,36 +65,36 @@ enum Surface: string implements GameConcept
     {
         return match ($this) {
             self::Grass => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Food, 2),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Food, 2),
             ]),
             self::Plains => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Food, 1),
-                new YieldModifier(YieldType::Production, 1),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Food, 1),
+                new YieldModifier($this, YieldType::Production, 1),
             ]),
             self::Desert, self::Snow => collect([
-                new YieldModifier(YieldType::Moves, -2),
-                new YieldModifier(YieldType::Health, percent: -20),
+                new YieldModifier($this, YieldType::Moves, -2),
+                new YieldModifier($this, YieldType::Health, percent: -20),
             ]),
             self::Tundra => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Food, 1),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Food, 1),
             ]),
             self::Rock => collect([
-                new YieldModifier(YieldType::Moves, -2),
-                new YieldModifier(YieldType::Production, 2),
+                new YieldModifier($this, YieldType::Moves, -2),
+                new YieldModifier($this, YieldType::Production, 2),
             ]),
             self::Coast, self::River => collect([
-                new YieldModifier(YieldType::Moves, -1),
-                new YieldModifier(YieldType::Food, 1),
-                new YieldModifier(YieldType::Gold, 1),
+                new YieldModifier($this, YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Food, 1),
+                new YieldModifier($this, YieldType::Gold, 1),
             ]),
             self::Sea => collect([
-                new YieldModifier(YieldType::Moves, -1),
+                new YieldModifier($this, YieldType::Moves, -1),
             ]),
             self::Ocean => collect([
-                new YieldModifier(YieldType::Moves, -0.5),
+                new YieldModifier($this, YieldType::Moves, -0.5),
             ]),
         };
     }

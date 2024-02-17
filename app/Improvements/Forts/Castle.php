@@ -33,8 +33,8 @@ class Castle extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Culture, 2),
-            new YieldModifier(YieldType::Defense, percent: 75),
+            new YieldModifier($this, YieldType::Culture, 2),
+            new YieldModifier($this, YieldType::Defense, percent: 75),
         ]);
     }
 }

@@ -7,7 +7,6 @@ use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Database\Factories\PlayerFactory;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,7 +31,6 @@ use Illuminate\Support\Collection;
  * @property-read int|null $cities_count
  * @property-read Culture|null $culture
  * @property-read string $name
- * @property-read Collection<int, YieldModifier|YieldModifiersFor> $yield_modifiers
  * @property-read Map $map
  * @property-read Religion|null $religion
  * @property-read \Illuminate\Database\Eloquent\Collection<int, Technology> $technologies
@@ -55,6 +53,9 @@ use Illuminate\Support\Collection;
  * @method static Builder|Player whereUpdatedAt($value)
  * @method static Builder|Player whereUserId($value)
  * @method static Builder|Player whereYieldStock($value)
+ * @property-read Collection<int, YieldModifier|YieldModifiersFor> $global_yield_modifiers
+ * @property-read Collection<string, TechnologyType> $known_technology_types
+ * @property-read Collection<int, YieldModifier|YieldModifiersFor> $turn_yield_modifiers
  * @mixin \Eloquent
  */
 class Player extends Model
@@ -81,17 +82,15 @@ class Player extends Model
     }
 
     /**
-     * @return Attribute|Collection<string, TechnologyType>
+     * @return Collection<string, TechnologyType>
      */
-    public function knownTechnologyTypes(): Attribute|Collection
+    public function getKnownTechnologyTypesAttribute(): Collection
     {
-        return Attribute::make(
-            get: fn(): Collection => $this->technologies
+        return $this->technologies
                 ->where('is_known', true)
                 ->mapWithKeys(
                     fn(Technology $tech) => [$tech->type->slug() => $tech->type]
-                )
-        );
+                );
     }
 
     public function religion(): BelongsTo
@@ -122,7 +121,23 @@ class Player extends Model
     /**
      * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
-    public function getYieldModifiersAttribute(): Collection
+    public function getGlobalYieldModifiersAttribute(): Collection
+    {
+        $modifiers = collect()
+            ->merge($this->culture?->yield_modifiers ?: [])
+            ->merge($this->religion?->yield_modifiers ?: []);
+
+        foreach ($this->known_technology_types as $technology) {
+            $modifiers = $modifiers->merge($technology->yieldModifiers());
+        }
+
+        return $modifiers;
+    }
+
+    /**
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
+     */
+    public function getTurnYieldModifiersAttribute(): Collection
     {
         return $this->cities->map(fn(City $city) => $city->yield_modifiers)->flatten();
     }

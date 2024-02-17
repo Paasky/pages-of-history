@@ -33,8 +33,8 @@ class FeudalFishery extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Food, 2),
-            new YieldModifier(YieldType::Gold, 2),
+            new YieldModifier($this, YieldType::Food, 2),
+            new YieldModifier($this, YieldType::Gold, 2),
         ]);
     }
 }

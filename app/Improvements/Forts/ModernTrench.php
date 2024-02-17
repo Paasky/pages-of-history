@@ -33,7 +33,7 @@ class ModernTrench extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Defense, percent: 150),
+            new YieldModifier($this, YieldType::Defense, percent: 150),
         ]);
     }
 }

@@ -33,8 +33,8 @@ class Camp extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Food, 0.5),
-            new YieldModifier(YieldType::Gold, 0.5),
+            new YieldModifier($this, YieldType::Food, 0.5),
+            new YieldModifier($this, YieldType::Gold, 0.5),
         ]);
     }
 }

@@ -6,8 +6,6 @@ use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
 use App\Technologies\Classical\DramaAndPoetry;
 use App\Technologies\TechnologyType;
-use App\Yields\YieldModifiersFor;
-use Illuminate\Support\Collection;
 
 class Amphitheater extends BuildingType
 {
@@ -24,15 +22,5 @@ class Amphitheater extends BuildingType
     public function upgradesTo(): ?BuildingType
     {
         return PrintingPress::get();
-    }
-
-    /**
-     * @return Collection<int, YieldModifiersFor>
-     */
-    public function yieldModifiers(): Collection
-    {
-        return collect([
-
-        ]);
     }
 }

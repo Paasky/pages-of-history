@@ -33,7 +33,7 @@ class Trench extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Defense, percent: 125),
+            new YieldModifier($this, YieldType::Defense, percent: 125),
         ]);
     }
 }

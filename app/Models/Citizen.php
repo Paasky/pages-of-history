@@ -86,11 +86,15 @@ class Citizen extends Model
     /**
      * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
-    public function getYieldModifiersAttribute(): Collection
+    public function getYieldModifiersAttribute(?bool $combine = true): Collection
     {
+        if (is_null($combine)) {
+            $combine = true;
+        }
+
         $yieldModifiers = collect([
-            new YieldModifier(YieldType::Food, -2),
-            new YieldModifier(YieldType::Health, -1),
+            new YieldModifier($this, YieldType::Food, -2),
+            new YieldModifier($this, YieldType::Health, -1),
         ]);
 
         // Exists
@@ -104,7 +108,17 @@ class Citizen extends Model
         // Works with desired yield?
         if ($this->workplace) {
             $happinessYield += $this->workplace->yield_modifiers
-                ->filter(fn(YieldModifier|YieldModifiersFor $modifier) => $modifier->type === $this->desire_yield)
+                ->filter(function (YieldModifier|YieldModifiersFor $modifier) {
+                    if ($modifier instanceof YieldModifier) {
+                        return $modifier->type === $this->desire_yield;
+                    }
+                    foreach ($modifier->modifiers as $subModifier) {
+                        if ($subModifier->type === $this->desire_yield) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
                 ->isNotEmpty()
                 ? 0
                 : -0.5;
@@ -125,7 +139,7 @@ class Citizen extends Model
         }
 
         if ($happinessYield) {
-            $yieldModifiers->push(new YieldModifier(YieldType::Happiness, $happinessYield));
+            $yieldModifiers->push(new YieldModifier($this, YieldType::Happiness, $happinessYield));
         }
 
         // Gather all modifiers from the citizen's culture, religion, workplace & city owner's technologies
@@ -133,17 +147,11 @@ class Citizen extends Model
             ->merge($this->culture?->yield_modifiers ?: [])
             ->merge($this->religion?->yield_modifiers ?: [])
             ->merge($this->workplace?->yield_modifiers ?: []);
-        foreach ($this->city->player->technologies as $technology) {
-            $yieldModifiers = $yieldModifiers->merge($technology->yield_modifiers);
+
+        foreach ($this->city->player->known_technology_types as $technology) {
+            $yieldModifiers = $yieldModifiers->merge($technology->yieldModifiers());
         }
 
-        // Merge modifiers together: global modifiers + any that apply for the workplace (if there is one)
-        return YieldModifier::mergeModifiers(
-            $yieldModifiers,
-            $this
-        )->filter(
-        // Only allow modifiers with a set amount - one citizen can't boost everyone else
-            fn(YieldModifier $modifier) => (bool)$modifier->amount
-        )->values();
+        return YieldModifier::getValidModifiersFor($yieldModifiers, $this, $combine);
     }
 }

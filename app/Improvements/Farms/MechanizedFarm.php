@@ -33,7 +33,7 @@ class MechanizedFarm extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Food, 5),
+            new YieldModifier($this, YieldType::Food, 5),
         ]);
     }
 }

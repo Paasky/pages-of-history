@@ -1,4 +1,4 @@
-@php use App\Yields\YieldModifier; @endphp
+@php use App\Models\Unit;use App\Yields\YieldModifier; @endphp
 <x-modal name="unit-designer" title="{{ __('Unit Designer') }}" icon="fa-screwdriver-wrench" maxWidth="4xl">
     <div class="sm:p-2 transition" wire:loading.class="opacity-25">
         @if($platform)
@@ -35,10 +35,11 @@
                 </div>
                 <div class="grid grid-cols-4 justify-items-center items-center">
                     @php
-                        $yieldModifiers = YieldModifier::mergeModifiers(
+                        $yieldModifiers = YieldModifier::combineYieldTypes(
                             $platform->yieldModifiers()
                                 ->merge($equipment?->yieldModifiers() ?: collect())
-                                ->merge($armor?->yieldModifiers() ?: collect())
+                                ->merge($armor?->yieldModifiers() ?: collect()),
+                            new Unit()
                         );
                     @endphp
                     @foreach($yieldModifiers as $yieldModifier)

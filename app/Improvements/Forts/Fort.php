@@ -33,8 +33,8 @@ class Fort extends ImprovementType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Culture, 1.5),
-            new YieldModifier(YieldType::Defense, percent: 50),
+            new YieldModifier($this, YieldType::Culture, 1.5),
+            new YieldModifier($this, YieldType::Defense, percent: 50),
         ]);
     }
 }

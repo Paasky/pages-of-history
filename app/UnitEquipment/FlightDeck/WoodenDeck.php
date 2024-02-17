@@ -35,7 +35,7 @@ class WoodenDeck extends UnitEquipmentType
     {
         return collect([
             new YieldModifiersFor(
-                collect([new YieldModifier(YieldType::Cargo, 1)]),
+                collect([new YieldModifier($this, YieldType::Capacity, 1)]),
                 [UnitPlatformCategory::Air]
             ),
         ]);

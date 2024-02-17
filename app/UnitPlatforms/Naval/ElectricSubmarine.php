@@ -93,8 +93,8 @@ class ElectricSubmarine extends UnitPlatformType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifier(YieldType::Cost, percent: 75),
-            new YieldModifier(YieldType::Moves, 5),
+            new YieldModifier($this, YieldType::Cost, percent: 75),
+            new YieldModifier($this, YieldType::Moves, 5),
         ]);
     }
 }

@@ -99,6 +99,12 @@ class Unit extends Model
      */
     public function getYieldModifiersAttribute(): Collection
     {
-        return collect();
+        $modifiers = $this->player->global_yield_modifiers
+            ->merge($this->unitDesign->yield_modifiers);
+
+        return YieldModifier::getValidModifiersFor($modifiers, $this)
+            // Only allow modifiers with a set amount - one unit can't boost everyone else
+            ->filter(fn(YieldModifier $modifier) => (bool)$modifier->amount)
+            ->values();
     }
 }

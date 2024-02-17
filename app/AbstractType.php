@@ -223,6 +223,7 @@ abstract class AbstractType implements GameConcept, \Stringable
     {
         return collect([
             new YieldModifier(
+                $this,
                 YieldType::Cost,
                 $this->technology()?->era()->baseCost() ?: TechnologyEra::BASE_COST
             )
