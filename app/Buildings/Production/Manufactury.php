@@ -4,7 +4,7 @@ namespace App\Buildings\Production;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Technologies\Renaissance\MassProduction;
+use App\Technologies\Enlightenment\Economics;
 use App\Technologies\TechnologyType;
 
 class Manufactury extends BuildingType
@@ -16,11 +16,11 @@ class Manufactury extends BuildingType
 
     public function technology(): ?TechnologyType
     {
-        return MassProduction::get();
+        return Economics::get();
     }
 
     public function upgradesTo(): ?BuildingType
     {
-        return Workshop::get();
+        return Factory::get();
     }
 }

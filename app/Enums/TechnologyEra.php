@@ -10,10 +10,11 @@ enum TechnologyEra: string implements GameConcept
 {
     use GameConceptEnum;
 
-    public const BASE_COST = 15;
-    public const BASE_STRENGTH = 4;
     public const BASE_ARMOR_COST = 5;
     public const BASE_ARMOR_STRENGTH = 1;
+    public const BASE_COST = 15;
+    public const BASE_STRENGTH = 4;
+    public const BASE_YIELD = 1;
 
     case Neolithic = 'Neolithic';
     case Copper = 'Copper';
@@ -95,6 +96,27 @@ enum TechnologyEra: string implements GameConcept
             self::Digital => 61,
             self::Information => 70,
             self::Nano => 80,
+        };
+    }
+
+    public function baseYield(): int
+    {
+        return match ($this) {
+            self::Neolithic, self::Copper => self::BASE_YIELD,
+            self::Bronze => 2,
+            self::Iron => 3,
+            self::Classical => 4,
+            self::Medieval => 5,
+            self::HighMedieval => 6,
+            self::Renaissance => 7,
+            self::Enlightenment => 8,
+            self::Industrial => 9,
+            self::Gilded => 10,
+            self::Modern => 11,
+            self::Atomic => 12,
+            self::Digital => 13,
+            self::Information => 14,
+            self::Nano => 15,
         };
     }
 

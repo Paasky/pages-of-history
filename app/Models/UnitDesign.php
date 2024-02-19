@@ -86,13 +86,8 @@ class UnitDesign extends Model
      */
     public function getYieldModifiersAttribute(): Collection
     {
-        $modifiers = $this->platform->yieldModifiers()
+        return $this->platform->yieldModifiers()
             ->merge($this->equipment->yieldModifiers())
-            ->merge($this->armor->yieldModifiers() ?: []);
-
-        return YieldModifier::getValidModifiersFor($modifiers, $this)
-            // Only allow modifiers with a set amount - one unit can't boost everyone else
-            ->filter(fn(YieldModifier $modifier) => (bool)$modifier->amount)
-            ->values();
+            ->merge($this->armor?->yieldModifiers() ?: []);
     }
 }

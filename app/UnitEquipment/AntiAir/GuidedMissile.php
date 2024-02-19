@@ -21,6 +21,6 @@ class GuidedMissile extends UnitEquipmentType
 
     public function upgradesTo(): ?UnitEquipmentType
     {
-        return AiMissile::get();
+        return AntiAirLaser::get();
     }
 }

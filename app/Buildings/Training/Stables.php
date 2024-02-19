@@ -10,6 +10,7 @@ use App\Technologies\Iron\HorsebackRiding;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
+use App\Yields\YieldModifiersTowards;
 use Illuminate\Support\Collection;
 
 class Stables extends BuildingType
@@ -34,10 +35,13 @@ class Stables extends BuildingType
      */
     public function yieldModifiers(): Collection
     {
+
         return collect([
             new YieldModifier($this, YieldType::Cost, $this->technology()->era()->baseCost()),
-            new YieldModifiersFor(
-                new YieldModifier($this, YieldType::Production, percent: 20),
+            new YieldModifier($this, YieldType::Gold, -2),
+            new YieldModifier($this, YieldType::Production, 1),
+            new YieldModifiersTowards(
+                new YieldModifier($this, YieldType::Production, percent: 25),
                 UnitPlatformCategory::Mounted
             ),
         ]);

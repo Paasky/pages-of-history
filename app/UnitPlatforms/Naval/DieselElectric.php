@@ -15,8 +15,8 @@ use App\UnitArmor\Vehicle\CompositeArmor;
 use App\UnitArmor\Vehicle\HeavyArmor;
 use App\UnitArmor\Vehicle\PointDefense;
 use App\UnitArmor\Vehicle\SteelArmor;
-use App\UnitEquipment\AntiAir\AiMissile;
 use App\UnitEquipment\AntiAir\AntiAirGun;
+use App\UnitEquipment\AntiAir\AntiAirLaser;
 use App\UnitEquipment\AntiAir\GuidedMissile;
 use App\UnitEquipment\AntiAir\HomingMissile;
 use App\UnitEquipment\Artillery\Artillery;
@@ -84,7 +84,7 @@ class DieselElectric extends UnitPlatformType
             AntiAirGun::get(),
             HomingMissile::get(),
             GuidedMissile::get(),
-            AiMissile::get(),
+            AntiAirLaser::get(),
 
             Torpedo::get(),
             HomingTorpedo::get(),

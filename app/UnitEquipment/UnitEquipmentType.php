@@ -10,19 +10,25 @@ use App\Enums\TechnologyEra;
 use App\Enums\UnitEquipmentCategory;
 use App\Enums\UnitEquipmentClass;
 use App\Enums\UnitPlatformCategory;
+use App\Enums\UnitType;
 use App\Enums\YieldType;
 use App\GameConcept;
 use App\Resources\ResourceType;
 use App\UnitPlatforms\Person;
 use App\UnitPlatforms\UnitPlatformType;
 use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersAgainst;
 use App\Yields\YieldModifiersFor;
+use App\Yields\YieldModifiersTowards;
 use Illuminate\Support\Collection;
 
 abstract class UnitEquipmentType extends AbstractType
 {
     public int $weight = 2;
+
+    public function building(): BuildingType|BuildingCategory|null
+    {
+        return null;
+    }
 
     public function canHaveArmor(): bool
     {
@@ -45,25 +51,6 @@ abstract class UnitEquipmentType extends AbstractType
         return $this->category()->icon();
     }
 
-    /** @return Collection<int, GameConcept> */
-    public function requires(): Collection
-    {
-        return collect([$this->building(), $this->technology(), ...$this->resources(), ...$this->platforms()])->filter();
-    }
-
-    public function building(): BuildingType|BuildingCategory|null
-    {
-        return null;
-    }
-
-    /**
-     * @return Collection<int, ResourceType>
-     */
-    public function resources(): Collection
-    {
-        return collect();
-    }
-
     /** @return Collection<int, UnitPlatformType> */
     public function platforms(): Collection
     {
@@ -76,6 +63,25 @@ abstract class UnitEquipmentType extends AbstractType
             }
         }
         return $platforms;
+    }
+
+    /** @return Collection<int, GameConcept> */
+    public function requires(): Collection
+    {
+        return collect([$this->building(), $this->technology(), ...$this->resources(), ...$this->platforms()])->filter();
+    }
+
+    /**
+     * @return Collection<int, ResourceType>
+     */
+    public function resources(): Collection
+    {
+        return collect();
+    }
+
+    public function unitType(): UnitType
+    {
+        return $this->category()->unitType();
     }
 
     /**
@@ -94,13 +100,13 @@ abstract class UnitEquipmentType extends AbstractType
     {
         $modifiers = match ($this->category()) {
             UnitEquipmentCategory::Melee => collect([
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Strength, percent: 10),
                     Person::get()
                 )
             ]),
             UnitEquipmentCategory::Firearm => collect([
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Strength, percent: 20),
                     [Person::get(), UnitPlatformCategory::Mounted]
                 )
@@ -109,13 +115,13 @@ abstract class UnitEquipmentType extends AbstractType
                 new YieldModifier($this, YieldType::StrengthFront, percent: 20),
                 new YieldModifier($this, YieldType::StrengthSide, percent: -20),
                 new YieldModifier($this, YieldType::StrengthBack, percent: -50),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Strength, percent: 25),
                     UnitPlatformCategory::Mounted
                 )
             ]),
             UnitEquipmentCategory::AntiTank, UnitEquipmentCategory::AntiTankGun => collect([
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Strength, percent: 33),
                     UnitPlatformCategory::Vehicle
                 )
@@ -123,7 +129,7 @@ abstract class UnitEquipmentType extends AbstractType
             UnitEquipmentCategory::Skirmish => collect([
                 new YieldModifier($this, YieldType::Range, 1),
                 new YieldModifier($this, YieldType::Defense, percent: -25),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Attack, percent: -50),
                     [ImprovementCategory::Cities, ImprovementCategory::Forts]
                 ),
@@ -135,39 +141,39 @@ abstract class UnitEquipmentType extends AbstractType
             UnitEquipmentCategory::Ranged => collect([
                 new YieldModifier($this, YieldType::Range, 2),
                 new YieldModifier($this, YieldType::Defense, percent: -50),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Attack, percent: -50),
                     [ImprovementCategory::Cities, ImprovementCategory::Forts]
                 ),
             ]),
             UnitEquipmentCategory::Siege => collect([
                 new YieldModifier($this, YieldType::Range, 2),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Attack, percent: 25),
                     [ImprovementCategory::Cities, ImprovementCategory::Forts]
                 ),
             ]),
             UnitEquipmentCategory::Cannon => collect([
                 new YieldModifier($this, YieldType::Range, 2),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Attack, percent: 33),
                     [ImprovementCategory::Cities, ImprovementCategory::Forts]
                 ),
             ]),
             UnitEquipmentCategory::Artillery => collect([
                 new YieldModifier($this, YieldType::Range, 3),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Attack, percent: 50),
                     [ImprovementCategory::Cities, ImprovementCategory::Forts]
                 ),
             ]),
             UnitEquipmentCategory::RocketArtillery => collect([
                 new YieldModifier($this, YieldType::Range, 3),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Attack, percent: 50),
                     [ImprovementCategory::Cities, ImprovementCategory::Forts]
                 ),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Strength, percent: 25),
                     [Person::get(), UnitPlatformCategory::Mounted]
                 ),
@@ -189,13 +195,13 @@ abstract class UnitEquipmentType extends AbstractType
             UnitEquipmentCategory::AntiAir => collect([
                 new YieldModifier($this, YieldType::Range, 2),
                 new YieldModifier($this, YieldType::Defense, percent: -50),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Strength, percent: 50),
                     UnitPlatformCategory::Air
                 ),
             ]),
             UnitEquipmentCategory::AirGun => collect([
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Strength, percent: 25),
                     UnitPlatformCategory::Air
                 ),
@@ -203,20 +209,20 @@ abstract class UnitEquipmentType extends AbstractType
             UnitEquipmentCategory::AirBomb => collect([
                 new YieldModifier($this, YieldType::Range, percent: 20),
                 new YieldModifier($this, YieldType::Defense, percent: -25),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Strength, percent: 25),
                     [UnitPlatformCategory::Vehicle, UnitPlatformCategory::Naval]
                 ),
             ]),
             UnitEquipmentCategory::NavalAssault => collect([
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Attack, percent: 25),
                     UnitPlatformCategory::Naval
                 )
             ]),
             UnitEquipmentCategory::Torpedo => collect([
                 new YieldModifier($this, YieldType::Defense, percent: -25),
-                new YieldModifiersAgainst(
+                new YieldModifiersTowards(
                     new YieldModifier($this, YieldType::Attack, percent: 50),
                     UnitPlatformCategory::Naval
                 )

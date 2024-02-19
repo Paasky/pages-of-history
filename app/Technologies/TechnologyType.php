@@ -51,6 +51,11 @@ abstract class TechnologyType extends AbstractType
         return $this->era();
     }
 
+    public function cost(): int
+    {
+        return round(pow($this->xy()->x, 1.5) * 5 + 10);
+    }
+
     abstract public function era(): TechnologyEra;
 
     public function icon(): string
@@ -75,10 +80,5 @@ abstract class TechnologyType extends AbstractType
             YieldType::Science,
             $this->cost()
         )]);
-    }
-
-    public function cost(): int
-    {
-        return round(pow($this->xy()->x, 1.5) * 5 + 10);
     }
 }

@@ -1,8 +1,8 @@
 @php use App\Yields\YieldModifiersFor; @endphp
 @php use App\GameConcept; @endphp
-@php use App\Yields\YieldModifiersAgainst; @endphp
+@php use App\Yields\YieldModifiersTowards; @endphp
 @php
-    /** @var YieldModifiersFor|YieldModifiersAgainst $yieldModifiersFor */
+    /** @var YieldModifiersFor|YieldModifiersTowards $yieldModifiersFor */
     /** @var bool|null $showForName */
     /** @var bool|null $showYieldName */
 
@@ -17,10 +17,10 @@
         @include('components.yield-modifier', ['yieldModifier' => $yieldModifier, 'showName' => $showYieldName ?? true])
     @endforeach
     <br>
-    @if($yieldModifiersFor instanceof YieldModifiersAgainst)
-        vs
+        @if($yieldModifiersFor instanceof YieldModifiersTowards)
+            {{ __('towards') }}
     @else
-        for
+            {{ __('for') }}
     @endif
     @foreach($yieldModifiersFor->for as $for)
         @include('components.game-concept-tag', [

@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Player;
 use App\Models\UnitDesign;
+use App\UnitPlatforms\UnitPlatformType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,7 +20,12 @@ class UnitDesignFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'player_id' => fn() => Player::factory()->create(),
+            'name' => $this->faker->firstName,
+            'platform' => UnitPlatformType::all()->random(),
+            'equipment' => fn(array $data) => $data['platform']->equipment()->random(),
+            'armor' => null,
+            'type' => fn(array $data) => $data['equipment']->unitType(),
         ];
     }
 }

@@ -23,8 +23,8 @@ use App\UnitEquipment\AirGun\AirAiMissile;
 use App\UnitEquipment\AirGun\AirGuidedMissile;
 use App\UnitEquipment\AirGun\AirHomingMissile;
 use App\UnitEquipment\AirGun\AirMachineGun;
-use App\UnitEquipment\AntiAir\AiMissile;
 use App\UnitEquipment\AntiAir\AntiAirGun;
+use App\UnitEquipment\AntiAir\AntiAirLaser;
 use App\UnitEquipment\AntiAir\GuidedMissile;
 use App\UnitEquipment\AntiAir\HomingMissile;
 use App\UnitEquipment\AntiTank\AntiTankMissile;
@@ -245,7 +245,7 @@ class UnitName
                 AntiAirGun::get()->name() => 'AA Gun',
                 HomingMissile::get()->name() => 'Homing SAM',
                 GuidedMissile::get()->name() => 'Guided SAM',
-                AiMissile::get()->name() => 'AI SAM',
+                AntiAirLaser::get()->name() => 'AI SAM',
 
                 RocketSystem::get()->name() => 'MLRS',
                 AiRocketSystem::get()->name() => 'AI MLRS',

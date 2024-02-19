@@ -47,12 +47,7 @@ trait GameConceptEnum
      */
     public function is(...$items): bool
     {
-        foreach ($items as $item) {
-            if ($this === $item || $this->slug() === $item) {
-                return true;
-            }
-        }
-        return false;
+        return in_array($this, $items, true);
     }
 
     public function slug(): string

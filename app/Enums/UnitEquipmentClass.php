@@ -53,4 +53,14 @@ enum UnitEquipmentClass: string implements GameConcept
     {
         return 'equipment';
     }
+
+    public function unitType(): UnitType
+    {
+        return match ($this) {
+            self::Aerial, self::Bomb => UnitType::Air,
+            self::CloseCombat => UnitType::Combat,
+            self::NonCombat => UnitType::Civilian,
+            self::MassDestruction, self::Ranged, self::Support => UnitType::Support,
+        };
+    }
 }

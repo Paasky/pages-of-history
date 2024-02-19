@@ -10,6 +10,7 @@ use App\Technologies\Classical\CompositeBow;
 use App\Technologies\TechnologyType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
+use App\Yields\YieldModifiersTowards;
 use Illuminate\Support\Collection;
 
 class ArcheryRange extends BuildingType
@@ -36,8 +37,10 @@ class ArcheryRange extends BuildingType
     {
         return collect([
                 new YieldModifier($this, YieldType::Cost, $this->technology()->era()->baseCost()),
-                new YieldModifiersFor(
-                    new YieldModifier($this, YieldType::Production, percent: 20),
+                new YieldModifier($this, YieldType::Gold, -1),
+                new YieldModifier($this, YieldType::Culture, 1),
+                new YieldModifiersTowards(
+                    new YieldModifier($this, YieldType::Production, percent: 25),
                     UnitEquipmentCategory::Ranged
                 )]
         );

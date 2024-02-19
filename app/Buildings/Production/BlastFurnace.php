@@ -21,6 +21,6 @@ class BlastFurnace extends BuildingType
 
     public function upgradesTo(): ?BuildingType
     {
-        return Manufactury::get();
+        return Workshop::get();
     }
 }

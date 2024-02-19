@@ -9,8 +9,8 @@ use App\Technologies\Modern\CombinedArms;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
 use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersAgainst;
 use App\Yields\YieldModifiersFor;
+use App\Yields\YieldModifiersTowards;
 use Illuminate\Support\Collection;
 
 class Parachute extends UnitArmorType
@@ -38,7 +38,7 @@ class Parachute extends UnitArmorType
         return collect([
             new YieldModifier($this, YieldType::ParachuteRange, 5),
             new YieldModifier($this, YieldType::Cost, percent: 25),
-            new YieldModifiersAgainst(
+            new YieldModifiersTowards(
                 new YieldModifier($this, YieldType::Strength, percent: -10),
                 UnitPlatformCategory::Vehicle
             )

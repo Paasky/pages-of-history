@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\YieldType;
+use App\GameConcept;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Database\Factories\CitizenFactory;
@@ -86,10 +87,10 @@ class Citizen extends Model
     /**
      * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
-    public function getYieldModifiersAttribute(?bool $combine = true): Collection
+    public function getYieldModifiersAttribute(Model|GameConcept $towards = null, bool $combine = false): Collection
     {
         if (is_null($combine)) {
-            $combine = true;
+            $combine = false;
         }
 
         $yieldModifiers = collect([
@@ -152,6 +153,6 @@ class Citizen extends Model
             $yieldModifiers = $yieldModifiers->merge($technology->yieldModifiers());
         }
 
-        return YieldModifier::getValidModifiersFor($yieldModifiers, $this, $combine);
+        return YieldModifier::getValidModifiers($yieldModifiers, $this, $towards, $combine);
     }
 }

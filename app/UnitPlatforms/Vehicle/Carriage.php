@@ -7,8 +7,8 @@ use App\Enums\YieldType;
 use App\Technologies\Bronze\Sieging;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
-use App\UnitEquipment\AntiAir\AiMissile;
 use App\UnitEquipment\AntiAir\AntiAirGun;
+use App\UnitEquipment\AntiAir\AntiAirLaser;
 use App\UnitEquipment\AntiAir\GuidedMissile;
 use App\UnitEquipment\AntiAir\HomingMissile;
 use App\UnitEquipment\AntiTankGun\AntiTankGun;
@@ -67,7 +67,7 @@ class Carriage extends UnitPlatformType
             AntiAirGun::get(),
             HomingMissile::get(),
             GuidedMissile::get(),
-            AiMissile::get(),
+            AntiAirLaser::get(),
 
             AntiTankGun::get(),
             HighVelocityGun::get(),

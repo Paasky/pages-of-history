@@ -3,11 +3,11 @@
 namespace App\UnitEquipment\AntiAir;
 
 use App\Enums\UnitEquipmentCategory;
-use App\Technologies\Nano\ArtificialIntelligence;
+use App\Technologies\Nano\WeaponizedLasers;
 use App\Technologies\TechnologyType;
 use App\UnitEquipment\UnitEquipmentType;
 
-class AiMissile extends UnitEquipmentType
+class AntiAirLaser extends UnitEquipmentType
 {
     public function category(): UnitEquipmentCategory
     {
@@ -16,12 +16,12 @@ class AiMissile extends UnitEquipmentType
 
     public function name(): string
     {
-        return 'AI Missile';
+        return 'AA Laser';
     }
 
     public function technology(): ?TechnologyType
     {
-        return ArtificialIntelligence::get();
+        return WeaponizedLasers::get();
     }
 
     public function upgradesTo(): ?UnitEquipmentType

@@ -21,6 +21,6 @@ class ArtGallery extends BuildingType
 
     public function upgradesTo(): ?BuildingType
     {
-        return RadioTower::get();
+        return JazzClub::get();
     }
 }

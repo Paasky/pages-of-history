@@ -12,10 +12,12 @@ enum UnitType: string implements GameConcept
     case Combat = 'Combat';
     case Civilian = 'Civilian';
     case Support = 'Support';
+    case Air = 'Air';
 
     public function icon(): string
     {
         return match ($this) {
+            self::Air => YieldType::Agility->icon(),
             self::Combat => YieldType::Strength->icon(),
             self::Civilian => YieldType::Production->icon(),
             self::Support => YieldType::Range->icon(),

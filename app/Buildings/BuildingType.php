@@ -13,6 +13,7 @@ use App\GameConcept;
 use App\Resources\ResourceType;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
+use App\Yields\YieldModifiersTowards;
 use Illuminate\Support\Collection;
 
 abstract class BuildingType extends AbstractType
@@ -55,10 +56,16 @@ abstract class BuildingType extends AbstractType
     public function yieldModifiers(): Collection
     {
         $era = $this->technology()?->era() ?: TechnologyEra::Neolithic;
-        $amount = floor($era->baseArmorStrength() / 2) + 1;
+        $amount = $era->baseYield();
+        $halfAmount = max(1, round($era->baseYield() / 2));
+        $thirdAmount = max(1, round($era->baseYield() / 3));
 
-        return collect([
-            new YieldModifier($this, YieldType::Cost, $era->baseCost()),
+        $modifiers = collect([new YieldModifier($this, YieldType::Cost, $era->baseCost())]);
+        if (!in_array($this->category(), [BuildingCategory::Gold, BuildingCategory::LandTrade, BuildingCategory::SeaTrade])) {
+            $modifiers->push(new YieldModifier($this, YieldType::Gold, -$thirdAmount));
+        }
+
+        return $modifiers->merge([
             ...match ($this->category()) {
                 BuildingCategory::Defense => [new YieldModifier($this, YieldType::Defense, $era->baseStrength())],
                 BuildingCategory::Faith => [new YieldModifier($this, YieldType::Faith, $amount)],
@@ -72,50 +79,53 @@ abstract class BuildingType extends AbstractType
                 BuildingCategory::AirTrade => [
                     new YieldModifiersFor(
                         [
-                            new YieldModifier($this, YieldType::Capacity, ceil($era->baseArmorStrength() / 4)),
-                            new YieldModifier($this, YieldType::Trade, floor($era->baseArmorStrength() / 2)),
+                            new YieldModifier($this, YieldType::Capacity, $thirdAmount),
+                            new YieldModifier($this, YieldType::Trade, $halfAmount),
                         ],
                         Domain::Air
                     ),
                 ],
                 BuildingCategory::AirTraining => [
                     new YieldModifiersFor(
-                        [
-                            new YieldModifier($this, YieldType::Capacity, ceil($era->baseArmorStrength() / 4)),
-                            new YieldModifier($this, YieldType::Production, percent: floor($era->baseArmorStrength() / 2) * 10),
-                        ],
+                        new YieldModifier($this, YieldType::Capacity, $halfAmount),
+                        Domain::Air
+                    ),
+                    new YieldModifiersTowards(
+                        new YieldModifier($this, YieldType::Production, percent: 25),
                         Domain::Air
                     ),
                 ],
                 BuildingCategory::LandTrade => [
+                    new YieldModifier($this, YieldType::Gold, $halfAmount),
                     new YieldModifiersFor(
-                        new YieldModifier($this, YieldType::Trade, floor($era->baseArmorStrength() / 2)),
+                        new YieldModifier($this, YieldType::Trade, $halfAmount),
                         Domain::Land
                     ),
                 ],
                 BuildingCategory::LandTraining => [
-                    new YieldModifiersFor(
-                        new YieldModifier($this, YieldType::Production, percent: floor($era->baseArmorStrength() / 2) * 10),
+                    new YieldModifier($this, YieldType::Happiness, $halfAmount),
+                    new YieldModifiersTowards(
+                        new YieldModifier($this, YieldType::Production, percent: 25),
                         Domain::Land
                     ),
                 ],
                 BuildingCategory::SeaTrade => [
                     new YieldModifiersFor(
-                        new YieldModifier($this, YieldType::Production, ceil($era->baseArmorStrength() / 2)),
+                        new YieldModifier($this, YieldType::Gold, $thirdAmount),
                         ImprovementCategory::Fisheries
                     ),
                     new YieldModifiersFor(
-                        new YieldModifier($this, YieldType::Trade, floor($era->baseArmorStrength() / 2)),
+                        new YieldModifier($this, YieldType::Trade, $halfAmount),
                         Domain::Water
                     ),
                 ],
                 BuildingCategory::SeaTraining => [
                     new YieldModifiersFor(
-                        new YieldModifier($this, YieldType::Gold, ceil($era->baseArmorStrength() / 2)),
+                        new YieldModifier($this, YieldType::Production, $thirdAmount),
                         ImprovementCategory::Fisheries
                     ),
-                    new YieldModifiersFor(
-                        new YieldModifier($this, YieldType::Production, percent: floor($era->baseArmorStrength() / 2) * 10),
+                    new YieldModifiersTowards(
+                        new YieldModifier($this, YieldType::Production, percent: 25),
                         UnitPlatformCategory::Naval
                     ),
                 ],

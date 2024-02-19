@@ -154,4 +154,9 @@ enum UnitEquipmentCategory: string implements GameConcept
     {
         return $this->class()->typeSlug();
     }
+
+    public function unitType(): UnitType
+    {
+        return $this->class()->unitType();
+    }
 }

@@ -2,10 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Enums\UnitType;
+use App\Models\City;
+use App\Models\Hex;
 use App\Models\Map;
 use App\Models\Player;
+use App\Models\Region;
 use App\Models\Unit;
+use App\Models\UnitDesign;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,29 +19,23 @@ class UnitFactory extends Factory
     public function definition(): array
     {
         return [
-            'map_id' => fn() => Map::first() ?: Map::factory()->create()->id,
-            'hex_id' => fn(array $data) => Map::findOrFail($data['map_id'])
-                ->hexes()
-                ->whereDoesntHave('units')
-                ->inRandomOrder()
-                ->firstOrFail()->id,
-            'player_id' => fn(array $data) => Map::findOrFail($data['map_id'])
-                ->players()
-                ->inRandomOrder()
-                ->first()?->id
-                ?: Player::factory()->create(['map_id' => $data['map_id']])->id,
-            'type' => $this->faker->randomElement(UnitType::cases()),
-            'weapon' => function (array $data) {
-                /** @var UnitType $unitType */
-                $unitType = $data['type'];
-                return $this->faker->randomElement($unitType->weapons());
+            'player_id' => fn() => Player::factory()->create()->id,
+            'hex_id' => function (array $data) {
+                $player = Player::findOrFail($data['player_id']);
+                $map = $player->map ?: Map::factory()->create();
+                $region = $map->regions->first() ?: Region::factory()->create(['map_id' => $map->id]);
+                $hex = $region->hexes->first() ?: Hex::factory()->create(['region_id' => $region->id]);
+                return $hex->id;
             },
-            'armor' => function (array $data) {
-                /** @var UnitType $unitType */
-                $unitType = $data['type'];
-                return $this->faker->randomElement($unitType->armors());
-            },
+            'unit_design_id' => fn(array $data) => UnitDesign::factory()->create(['player_id' => $data['player_id']])->id,
+            'city_id' => fn(array $data) => Player::findOrFail($data['player_id'])->cities->first()?->id
+                ?: City::factory()->create([
+                    'player_id' => $data['player_id'],
+                    'hex_id' => $data['hex_id'],
+                ])->id,
+            'type' => fn(array $data) => UnitDesign::findOrFail($data['unit_design_id'])->type,
             'health' => random_int(1, 4) * 25,
+            'moves_remaining' => 2,
         ];
     }
 }

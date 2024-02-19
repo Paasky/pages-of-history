@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\Buildings\Food\Granary;
+use App\Buildings\Training\Barracks;
 use App\Buildings\Training\Stables;
 use App\Enums\CultureTrait;
 use App\Enums\CultureVice;
@@ -11,6 +12,7 @@ use App\Enums\Domain;
 use App\Enums\Feature;
 use App\Enums\ReligionTenet;
 use App\Enums\Surface;
+use App\Enums\UnitPlatformCategory;
 use App\Enums\YieldType;
 use App\Improvements\Pastures\Shepard;
 use App\Models\Building;
@@ -18,6 +20,7 @@ use App\Models\Citizen;
 use App\Models\Hex;
 use App\Models\Religion;
 use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersTowards;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -205,8 +208,32 @@ class CitizenYieldTest extends TestCase
                 new YieldModifier($citizen, YieldType::Food, -2),
                 new YieldModifier($citizen, YieldType::Happiness, -1.5),
                 new YieldModifier($citizen, YieldType::Health, -1),
+                new YieldModifiersTowards(
+                    new YieldModifier(Stables::get(), YieldType::Production, percent: 20),
+                    UnitPlatformCategory::Mounted
+                ),
             ]),
             $citizen->yield_modifiers
+        );
+
+        // Working on Mounted
+        $this->assertEquals(
+            collect([
+                new YieldModifier($citizen, YieldType::Food, -2),
+                new YieldModifier($citizen, YieldType::Happiness, -1.5),
+                new YieldModifier($citizen, YieldType::Health, -1),
+            ]),
+            $citizen->getYieldModifiersAttribute(Barracks::get())
+        );
+
+        // Not working on Mounted
+        $this->assertEquals(
+            collect([
+                new YieldModifier($citizen, YieldType::Food, -2),
+                new YieldModifier($citizen, YieldType::Happiness, -1.5),
+                new YieldModifier($citizen, YieldType::Health, -1),
+            ]),
+            $citizen->getYieldModifiersAttribute(Barracks::get())
         );
     }
 }

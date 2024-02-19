@@ -28,7 +28,7 @@ class CitizenFactory extends Factory
             'religion_id' => null,
             'workplace_type' => null,
             'workplace_id' => null,
-            'desire_yield' => \Arr::random(YieldType::cases()),
+            'desire_yield' => YieldType::casesFor(new Citizen())->random(),
         ];
     }
 }

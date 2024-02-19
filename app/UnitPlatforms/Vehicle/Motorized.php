@@ -11,8 +11,8 @@ use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
 use App\UnitArmor\Person\BodyArmor;
 use App\UnitArmor\UnitArmorType;
-use App\UnitEquipment\AntiAir\AiMissile;
 use App\UnitEquipment\AntiAir\AntiAirGun;
+use App\UnitEquipment\AntiAir\AntiAirLaser;
 use App\UnitEquipment\AntiAir\GuidedMissile;
 use App\UnitEquipment\AntiAir\HomingMissile;
 use App\UnitEquipment\Artillery\Artillery;
@@ -80,7 +80,7 @@ class Motorized extends UnitPlatformType
             AntiAirGun::get(),
             HomingMissile::get(),
             GuidedMissile::get(),
-            AiMissile::get(),
+            AntiAirLaser::get(),
         ]);
     }
 

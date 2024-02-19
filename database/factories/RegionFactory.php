@@ -21,7 +21,7 @@ class RegionFactory extends Factory
     public function definition(): array
     {
         return [
-            'map_id' => fn() => Map::factory()->create(),
+            'map_id' => fn() => Map::first() ?: Map::factory()->create(),
             'x' => 0,
             'y' => 0,
             'domain' => \Arr::random(Domain::cases()),

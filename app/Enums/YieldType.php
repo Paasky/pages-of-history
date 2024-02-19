@@ -42,6 +42,13 @@ enum YieldType: string implements GameConcept
     case Trade = 'Trade';
     case VisionRange = 'VisionRange';
 
+    public static function casesFor(GameConcept|Model $for): Collection
+    {
+        return collect(self::cases())
+            ->filter(fn(YieldType $type) => $type->isFor($for))
+            ->values();
+    }
+
     /**
      * @param ...$models Model
      * @return bool
@@ -86,11 +93,29 @@ enum YieldType: string implements GameConcept
             }
         }
 
-        foreach ($models as $model) {
-            if ($model instanceof Unit ||
-                $model instanceof UnitDesign
-            ) {
-                return true;
+        if (in_array($this, [
+            self::Agility,
+            self::Attack,
+            self::Bombard,
+            self::Capacity,
+            self::Cost,
+            self::Damage,
+            self::Defense,
+            self::Moves,
+            self::ParachuteRange,
+            self::Range,
+            self::Strength,
+            self::StrengthBack,
+            self::StrengthFront,
+            self::StrengthSide,
+            self::VisionRange,
+        ])) {
+            foreach ($models as $model) {
+                if ($model instanceof Unit ||
+                    $model instanceof UnitDesign
+                ) {
+                    return true;
+                }
             }
         }
 

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\UnitType;
+use App\GameConcept;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
 use Database\Factories\UnitFactory;
@@ -97,14 +98,15 @@ class Unit extends Model
     /**
      * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
-    public function getYieldModifiersAttribute(): Collection
+    public function getYieldModifiersAttribute(Model|GameConcept $against = null, bool $combine = true): Collection
     {
+        if (is_null($combine)) {
+            $combine = true;
+        }
+
         $modifiers = $this->player->global_yield_modifiers
             ->merge($this->unitDesign->yield_modifiers);
 
-        return YieldModifier::getValidModifiersFor($modifiers, $this)
-            // Only allow modifiers with a set amount - one unit can't boost everyone else
-            ->filter(fn(YieldModifier $modifier) => (bool)$modifier->amount)
-            ->values();
+        return YieldModifier::getValidModifiers($modifiers, $this, $against, $combine);
     }
 }

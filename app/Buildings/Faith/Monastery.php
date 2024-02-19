@@ -4,7 +4,7 @@ namespace App\Buildings\Faith;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Technologies\Medieval\Theology;
+use App\Technologies\HighMedieval\Chivalry;
 use App\Technologies\TechnologyType;
 
 class Monastery extends BuildingType
@@ -16,7 +16,7 @@ class Monastery extends BuildingType
 
     public function technology(): ?TechnologyType
     {
-        return Theology::get();
+        return Chivalry::get();
     }
 
     public function upgradesTo(): ?BuildingType

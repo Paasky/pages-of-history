@@ -21,7 +21,7 @@ class HexFactory extends Factory
     public function definition(): array
     {
         return [
-            'region_id' => fn() => Region::factory()->create(),
+            'region_id' => fn() => Region::first() ?: Region::factory()->create(),
             'x' => 0,
             'y' => 0,
             'domain' => \Arr::random(Domain::cases()),

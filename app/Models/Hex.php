@@ -143,8 +143,7 @@ class Hex extends Model
             ->merge($this->surface->yieldModifiers())
             ->merge($this->feature?->yieldModifiers() ?: [])
             ->merge($this->resource?->yieldModifiers() ?: [])
-            ->merge($this->improvement?->yieldModifiers() ?: [])
-            ->merge($this->units->map(fn(Unit $unit) => $unit->yield_modifiers)->flatten());
+            ->merge($this->improvement?->yieldModifiers() ?: []);
     }
 
     /**

@@ -9,7 +9,7 @@ use App\Technologies\Bronze\Sieging;
 use App\Technologies\TechnologyType;
 use App\UnitEquipment\UnitEquipmentType;
 use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersAgainst;
+use App\Yields\YieldModifiersTowards;
 use Illuminate\Support\Collection;
 
 class BatteringRam extends UnitEquipmentType
@@ -32,7 +32,7 @@ class BatteringRam extends UnitEquipmentType
     public function yieldModifiers(): Collection
     {
         return collect([
-            new YieldModifiersAgainst(
+            new YieldModifiersTowards(
                 collect([new YieldModifier($this, YieldType::Attack, percent: 50)]),
                 [ImprovementCategory::Cities, ImprovementCategory::Forts]
             ),
