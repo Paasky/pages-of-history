@@ -1,26 +1,26 @@
 <?php
 
-namespace App\Buildings\Happiness;
+namespace App\Buildings\Government;
 
 use App\Buildings\BuildingType;
 use App\Enums\BuildingCategory;
-use App\Technologies\Medieval\CivilService;
+use App\Technologies\Bronze\CodeOfLaw;
 use App\Technologies\TechnologyType;
 
-class TownHall extends BuildingType
+class Courthouse extends BuildingType
 {
     public function category(): BuildingCategory
     {
-        return BuildingCategory::Happiness;
+        return BuildingCategory::Government;
     }
 
     public function technology(): ?TechnologyType
     {
-        return CivilService::get();
+        return CodeOfLaw::get();
     }
 
     public function upgradesTo(): ?BuildingType
     {
-        return CoffeeHouse::get();
+        return Forum::get();
     }
 }

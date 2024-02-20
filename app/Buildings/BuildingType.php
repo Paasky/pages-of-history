@@ -71,6 +71,7 @@ abstract class BuildingType extends AbstractType
                 BuildingCategory::Faith => [new YieldModifier($this, YieldType::Faith, $amount)],
                 BuildingCategory::Food => [new YieldModifier($this, YieldType::Food, $amount + 2)],
                 BuildingCategory::Gold => [new YieldModifier($this, YieldType::Gold, $amount)],
+                BuildingCategory::Government => [new YieldModifier($this, YieldType::Happiness, $amount)],
                 BuildingCategory::Happiness => [new YieldModifier($this, YieldType::Happiness, $amount)],
                 BuildingCategory::Health => [new YieldModifier($this, YieldType::Health, $amount)],
                 BuildingCategory::Production => [new YieldModifier($this, YieldType::Production, $amount)],

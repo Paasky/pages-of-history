@@ -17,7 +17,6 @@
     @foreach($yieldModifiersFor->modifiers as $yieldModifier)
         @include('components.yield-modifier', ['yieldModifier' => $yieldModifier, 'showName' => $showYieldName ?? true])
     @endforeach
-    <br>
     @if($yieldModifiersFor instanceof YieldModifiersAgainst)
         {{ __('vs') }}
     @elseif($yieldModifiersFor instanceof YieldModifiersTowards)

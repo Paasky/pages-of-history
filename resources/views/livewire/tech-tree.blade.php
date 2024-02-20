@@ -1,6 +1,6 @@
 @php
     use App\Enums\TechnologyEra;
-    use App\Technologies\TechnologyType;
+    use App\Enums\YieldType;use App\Technologies\TechnologyType;
     use App\LiveWire\TechTree;
 
     use App\GameConcept;
@@ -113,7 +113,8 @@
                                 }
                             }
                         @endphp
-                        <div id="tech-{{ $tech->slug() }}" class="m-2 rounded-md absolute clickable {{ $background }}"
+                        <div id="tech-{{ $tech->slug() }}"
+                             class="tech-box m-2 rounded-md absolute clickable {{ $background }}"
                              wire:loading.class="animate-pulse"
                              style="
                                  width: {{ $techWidth }}rem;
@@ -134,6 +135,7 @@
                                 @endforeach
                                 @foreach($tech->yieldModifiers() as $yieldModifier)
                                     @if($yieldModifier instanceof YieldModifier)
+                                        @continue($yieldModifier->type === YieldType::Science)
                                         @include('components.yield-modifier', ['yieldModifier' => $yieldModifier])
                                     @else
                                         @include('components.yield-modifier-for', ['yieldModifiersFor' => $yieldModifier, 'showYieldName' => false])

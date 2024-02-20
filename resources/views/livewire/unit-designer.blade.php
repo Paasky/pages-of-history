@@ -13,6 +13,12 @@
                 };
             @endphp
 
+            <div class="flex gap-4">
+                @foreach($designs as $design)
+                    @include('components.unit', ['design' => $design])
+                @endforeach
+            </div>
+
             <div class="pt-0 sm:p-4 border-2 m-4 rounded-xl">
                 <div class="grid grid-cols-3 justify-items-center">
                     <div @class([

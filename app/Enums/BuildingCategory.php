@@ -16,6 +16,7 @@ enum BuildingCategory: string implements GameConcept
     case Defense = 'Defense';
     case Food = 'Food';
     case Gold = 'Gold';
+    case Government = 'Government';
     case Happiness = 'Happiness';
     case Health = 'Health';
     case LandTrade = 'LandTrade';
@@ -36,6 +37,7 @@ enum BuildingCategory: string implements GameConcept
             self::Faith => YieldType::Faith->icon(),
             self::Food => YieldType::Food->icon(),
             self::Gold => YieldType::Gold->icon(),
+            self::Government => 'fa-building-columns',
             self::Happiness => YieldType::Happiness->icon(),
             self::Health => YieldType::Health->icon(),
             self::LandTrade => 'fa-cart-shopping',
