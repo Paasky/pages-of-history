@@ -3,7 +3,9 @@
 namespace App\Map;
 
 use App\AbstractType;
+use App\GameConcept;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 class ProductionQueue implements Arrayable
@@ -28,6 +30,20 @@ class ProductionQueue implements Arrayable
                     : $item
             ]);
         }
+    }
+
+    public function add(GameConcept|Model $item, bool $asFirst = false): self
+    {
+        $asFirst
+            ? $this->queue->prepend($item)
+            : $this->queue->add($item);
+
+        return $this;
+    }
+
+    public function producingNow(): GameConcept|Model|null
+    {
+        return $this->queue->first();
     }
 
     /**

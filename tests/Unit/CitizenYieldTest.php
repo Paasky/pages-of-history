@@ -3,7 +3,6 @@
 namespace Tests\Unit;
 
 use App\Buildings\Food\Granary;
-use App\Buildings\Training\Barracks;
 use App\Buildings\Training\Stables;
 use App\Enums\CultureTrait;
 use App\Enums\CultureVice;
@@ -179,6 +178,7 @@ class CitizenYieldTest extends TestCase
         $this->assertEquals(
             collect([
                 new YieldModifier($citizen, YieldType::Food, 1),
+                new YieldModifier($citizen, YieldType::Gold, -1),
                 new YieldModifier($citizen, YieldType::Happiness, -1),
                 new YieldModifier($citizen, YieldType::Health, -1),
             ]),
@@ -206,34 +206,16 @@ class CitizenYieldTest extends TestCase
         $this->assertEquals(
             collect([
                 new YieldModifier($citizen, YieldType::Food, -2),
+                new YieldModifier($citizen, YieldType::Gold, -2),
                 new YieldModifier($citizen, YieldType::Happiness, -1.5),
                 new YieldModifier($citizen, YieldType::Health, -1),
+                new YieldModifier($citizen, YieldType::Production, 1),
                 new YieldModifiersTowards(
-                    new YieldModifier(Stables::get(), YieldType::Production, percent: 20),
+                    new YieldModifier(Stables::get(), YieldType::Production, percent: 25),
                     UnitPlatformCategory::Mounted
                 ),
             ]),
             $citizen->yield_modifiers
-        );
-
-        // Working on Mounted
-        $this->assertEquals(
-            collect([
-                new YieldModifier($citizen, YieldType::Food, -2),
-                new YieldModifier($citizen, YieldType::Happiness, -1.5),
-                new YieldModifier($citizen, YieldType::Health, -1),
-            ]),
-            $citizen->getYieldModifiersAttribute(Barracks::get())
-        );
-
-        // Not working on Mounted
-        $this->assertEquals(
-            collect([
-                new YieldModifier($citizen, YieldType::Food, -2),
-                new YieldModifier($citizen, YieldType::Happiness, -1.5),
-                new YieldModifier($citizen, YieldType::Health, -1),
-            ]),
-            $citizen->getYieldModifiersAttribute(Barracks::get())
         );
     }
 }

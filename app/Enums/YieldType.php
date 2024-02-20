@@ -70,6 +70,7 @@ enum YieldType: string implements GameConcept
             foreach ($models as $model) {
                 if ($model instanceof Building ||
                     $model instanceof Citizen ||
+                    $model instanceof City ||
                     $model instanceof Hex
                 ) {
                     return true;
@@ -86,7 +87,9 @@ enum YieldType: string implements GameConcept
         ])) {
             foreach ($models as $model) {
                 if ($model instanceof City ||
-                    ($model instanceof Hex && $model->improvement?->is(...ImprovementCategory::Forts->items()))
+                    ($model instanceof Hex && $model->improvement?->is(...ImprovementCategory::Forts->items())) ||
+                    $model instanceof Unit ||
+                    $model instanceof UnitDesign
                 ) {
                     return true;
                 }
@@ -96,19 +99,14 @@ enum YieldType: string implements GameConcept
         if (in_array($this, [
             self::Agility,
             self::Attack,
-            self::Bombard,
             self::Capacity,
             self::Cost,
             self::Damage,
-            self::Defense,
             self::Moves,
             self::ParachuteRange,
-            self::Range,
-            self::Strength,
             self::StrengthBack,
             self::StrengthFront,
             self::StrengthSide,
-            self::VisionRange,
         ])) {
             foreach ($models as $model) {
                 if ($model instanceof Unit ||

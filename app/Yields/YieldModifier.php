@@ -7,6 +7,7 @@ use App\Enums\YieldType;
 use App\GameConcept;
 use App\Models\Building;
 use App\Models\Citizen;
+use App\Models\City;
 use App\Models\Hex;
 use App\Models\Unit;
 use App\Models\UnitDesign;
@@ -197,6 +198,11 @@ class YieldModifier
                 foreach (static::withParents(collect([$object->type])) as $typeFor) {
                     $objectAndParents[] = $typeFor;
                 }
+                continue;
+            }
+
+            if ($object instanceof City) {
+                // Cities don't have any parents
                 continue;
             }
 

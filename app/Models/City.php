@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\ProductionQueueCast;
 use App\Casts\YieldStockCast;
+use App\GameConcept;
 use App\Map\ProductionQueue;
 use App\Yields\YieldModifier;
 use App\Yields\YieldModifiersFor;
@@ -99,10 +100,19 @@ class City extends Model
     /**
      * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
-    public function getYieldModifiersAttribute(): Collection
+    public function getYieldModifiersAttribute(Model|GameConcept $against = null, bool $combine = true): Collection
     {
-        return $this->citizens->map(
-            fn(Citizen $citizen) => $citizen->yield_modifiers
-        )->flatten();
+        if (is_null($combine)) {
+            $combine = true;
+        }
+
+        return YieldModifier::getValidModifiers(
+            $this->citizens->map(
+                fn(Citizen $citizen) => $citizen->yield_modifiers
+            )->flatten(),
+            $this,
+            $against ?: $this->production_queue->getQueue()->first() ?: collect([null]),
+            $combine
+        );
     }
 }

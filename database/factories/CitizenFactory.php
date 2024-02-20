@@ -22,9 +22,13 @@ class CitizenFactory extends Factory
     {
         return [
             'city_id' => fn() => City::factory()->create(),
-            'culture_id' => fn(array $data) => Culture::factory()->create(
-                ['player_id' => City::findOrFail($data['city_id'])->player_id]
-            )->id,
+            'culture_id' => function (array $data) {
+                $player = City::findOrFail($data['city_id'])->player;
+                return $player->culture()->first()
+                    ?: Culture::factory()->create(
+                        ['player_id' => $player->id]
+                    )->id;
+            },
             'religion_id' => null,
             'workplace_type' => null,
             'workplace_id' => null,

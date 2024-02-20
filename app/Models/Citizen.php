@@ -87,10 +87,10 @@ class Citizen extends Model
     /**
      * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
-    public function getYieldModifiersAttribute(Model|GameConcept $towards = null, bool $combine = false): Collection
+    public function getYieldModifiersAttribute(Model|GameConcept $towards = null, bool $combine = true): Collection
     {
         if (is_null($combine)) {
-            $combine = false;
+            $combine = true;
         }
 
         $yieldModifiers = collect([
@@ -111,10 +111,13 @@ class Citizen extends Model
             $happinessYield += $this->workplace->yield_modifiers
                 ->filter(function (YieldModifier|YieldModifiersFor $modifier) {
                     if ($modifier instanceof YieldModifier) {
-                        return $modifier->type === $this->desire_yield;
+                        return $modifier->type === $this->desire_yield &&
+                            ($modifier->amount > 0 || $modifier->percent) > 0;
                     }
                     foreach ($modifier->modifiers as $subModifier) {
-                        if ($subModifier->type === $this->desire_yield) {
+                        if ($subModifier->type === $this->desire_yield &&
+                            ($subModifier->amount > 0 || $subModifier->percent) > 0
+                        ) {
                             return true;
                         }
                     }
