@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Enums\UnitEquipmentCategory;
 use App\Models\Map;
 use App\Models\Player;
+use App\Models\UnitDesign;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\NoArmor;
 use App\UnitArmor\UnitArmorType;
@@ -26,7 +27,12 @@ class UnitDesigner extends Component
     public ?string $namePlaceholder = null;
 
     protected Player $player;
+
+    /** @var Collection<TechnologyType> */
     protected Collection $knownTechs;
+
+    /** @var Collection<UnitDesign> */
+    protected Collection $designs;
 
     protected ?UnitPlatformType $platform = null;
     protected ?UnitEquipmentType $equipment = null;
@@ -105,9 +111,6 @@ class UnitDesigner extends Component
                 );
             }
         }
-        if ($platformItems->count() === 1 && $platformItems->first()['items']->count() === 1) {
-            $this->platform = $platformItems->first()['items']->first();
-        }
 
         $platformTitle = $this->platform
             ? 'Platform'
@@ -176,6 +179,7 @@ class UnitDesigner extends Component
         }
 
         return view('livewire.unit-designer', [
+            'designs' => $this->designs,
             'platform' => $this->platform,
             'platformTitle' => $platformTitle,
             'platformItems' => $platformItems,
@@ -194,11 +198,30 @@ class UnitDesigner extends Component
             ['user_id' => auth()->id(), 'map_id' => Map::firstOrFail()->id],
             ['color1' => '#009', 'color2' => '#eee']
         );
-        $this->knownTechs = TechnologyType::all()
-            ->filter(fn(TechnologyType $tech) => $tech->xy()->x < 29)
-            ->keyBy(fn(TechnologyType $tech) => $tech->slug());
+
+        $this->knownTechs = $this->player->known_technology_types;
+
+        $this->designs = $this->player->unitDesigns;
 
         $this->platform = $this->platformSlug ? UnitPlatformType::fromSlug($this->platformSlug) : null;
+
+        // Load Platform data
+        $platformItems = collect();
+        if (!$this->platform) {
+            foreach (UnitPlatformType::all() as $platformItem) {
+                if ($this->equipment && !$platformItem->canHave($this->equipment)) {
+                    continue;
+                }
+                $this->setUnitComponentToItems(
+                    $platformItems,
+                    $platformItem,
+                    $this->knownTechs
+                );
+            }
+        }
+        if ($platformItems->count() === 1 && $platformItems->first()['items']->count() === 1) {
+            $this->platform = $platformItems->first()['items']->first();
+        }
 
         // Check Platform is known
         if ($this->platform && $this->platform->technology() && !isset($this->knownTechs[$this->platform->technology()->slug()])) {
@@ -298,6 +321,7 @@ class UnitDesigner extends Component
             'platform' => $this->platform,
             'equipment' => $this->equipment,
             'armor' => $this->armor,
+            'type' => $this->equipment->unitType(),
             'name' => $this->name ?: $this->namePlaceholder,
         ]);
     }

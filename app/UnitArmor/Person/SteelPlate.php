@@ -9,7 +9,7 @@ use App\Technologies\HighMedieval\Steel;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
 use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersTowards;
+use App\Yields\YieldModifiersAgainst;
 use Illuminate\Support\Collection;
 
 class SteelPlate extends UnitArmorType
@@ -32,7 +32,7 @@ class SteelPlate extends UnitArmorType
     public function yieldModifiers(): Collection
     {
         return parent::yieldModifiers()->add(
-            new YieldModifiersTowards(
+            new YieldModifiersAgainst(
                 new YieldModifier($this, YieldType::Strength, percent: 10),
                 UnitEquipmentCategory::Melee
             )

@@ -8,7 +8,7 @@ use App\Enums\YieldType;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
 use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersTowards;
+use App\Yields\YieldModifiersAgainst;
 use Illuminate\Support\Collection;
 
 class Chainmail extends UnitArmorType
@@ -31,7 +31,7 @@ class Chainmail extends UnitArmorType
     public function yieldModifiers(): Collection
     {
         return parent::yieldModifiers()->add(
-            new YieldModifiersTowards(
+            new YieldModifiersAgainst(
                 new YieldModifier($this, YieldType::Strength, percent: 10),
                 UnitEquipmentCategory::Melee
             )

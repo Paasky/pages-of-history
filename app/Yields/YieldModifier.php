@@ -27,15 +27,15 @@ class YieldModifier
 
     /**
      * Combine YieldTypes (amounts and percents) into single amounts, forgetting what gave them originally
-     * @param Collection<int, YieldModifier|YieldModifiersFor|YieldModifiersTowards> $modifiers
-     * @return Collection<int, YieldModifier|YieldModifiersFor|YieldModifiersTowards>
+     * @param Collection<int, YieldModifier|YieldModifiersFor> $modifiers
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
      */
     public static function combineYieldTypes(Collection $modifiers, GameConcept|Model $givenBy): Collection
     {
         // Separate the two types of modifiers
         $regularModifiers = [];
         $forModifiers = [];
-        /** @var YieldModifier|YieldModifiersFor|YieldModifiersTowards $modifier */
+        /** @var YieldModifier|YieldModifiersFor $modifier */
         foreach ($modifiers as $modifier) {
             // Regular YieldModifiers are a simple list
             if ($modifier instanceof YieldModifier) {
@@ -90,11 +90,11 @@ class YieldModifier
      * Given a list of YieldModifier & YieldModifiersFor objects,
      * returns YieldModifiers that apply for the given GameConcept or Model
      *
-     * @param Collection<int, YieldModifier|YieldModifiersFor|YieldModifiersTowards> $modifiers Modifiers to validate
+     * @param Collection<int, YieldModifier|YieldModifiersFor> $modifiers Modifiers to validate
      * @param GameConcept|Model|Collection<GameConcept|Model> $for Must be valid for this object. [null] = none pass, [] = all pass
      * @param GameConcept|Model|Collection<GameConcept|Model>|null $against Must be valid against this object. [null] = none pass, [] = all pass
      * @param bool $combine Should Modifiers be combined, forgetting what gave them originally
-     * @return Collection<int, YieldModifier|YieldModifiersFor|YieldModifiersTowards>
+     * @return Collection<int, YieldModifier|YieldModifiersFor>
      * @throws \Exception
      */
     public static function getValidModifiers(
@@ -124,9 +124,9 @@ class YieldModifier
             // YieldModifiersFor/Against are more complex
 
             // If no objects were given to check against, the modifier is always valid
-            $checkForObjects = $modifier instanceof YieldModifiersTowards
-                ? $againstObjects
-                : $forObjects;
+            $checkForObjects = get_class($modifier) === YieldModifiersFor::class
+                ? $forObjects
+                : $againstObjects;
             $modifierIsValid = $checkForObjects->isEmpty();
 
             if (!$modifierIsValid) {

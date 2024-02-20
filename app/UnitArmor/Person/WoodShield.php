@@ -9,7 +9,7 @@ use App\Technologies\Neolithic\WoodWorking;
 use App\Technologies\TechnologyType;
 use App\UnitArmor\UnitArmorType;
 use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersTowards;
+use App\Yields\YieldModifiersAgainst;
 use Illuminate\Support\Collection;
 
 class WoodShield extends UnitArmorType
@@ -32,7 +32,7 @@ class WoodShield extends UnitArmorType
     public function yieldModifiers(): Collection
     {
         return parent::yieldModifiers()->add(
-            new YieldModifiersTowards(
+            new YieldModifiersAgainst(
                 new YieldModifier($this, YieldType::Strength, percent: 10),
                 UnitEquipmentCategory::Melee
             )

@@ -11,7 +11,7 @@ use App\UnitEquipment\Melee\BronzeSword;
 use App\UnitPlatforms\Mounted\Horseback;
 use App\UnitPlatforms\Person;
 use App\Yields\YieldModifier;
-use App\Yields\YieldModifiersTowards;
+use App\Yields\YieldModifiersAgainst;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -39,11 +39,11 @@ class UnitYieldTest extends TestCase
                 new YieldModifier($unit, YieldType::Cost, 50),
                 new YieldModifier($unit, YieldType::Moves, 3),
                 new YieldModifier($unit, YieldType::Strength, 8),
-                new YieldModifiersTowards(
+                new YieldModifiersAgainst(
                     new YieldModifier(BronzeSword::get(), YieldType::Strength, percent: 10),
                     Person::get()
                 ),
-                new YieldModifiersTowards(
+                new YieldModifiersAgainst(
                     new YieldModifier(WoodShield::get(), YieldType::Strength, percent: 10),
                     UnitEquipmentCategory::Melee
                 ),
