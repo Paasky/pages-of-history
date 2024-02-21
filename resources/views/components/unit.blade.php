@@ -18,5 +18,5 @@
             <a style="right:0; bottom:20%" class="absolute text-sm fa-solid fa-fw {{ $design->equipment->icon() }}"></a>
         @endif
     </div>
-    <div class="overflow-hidden whitespace-nowrap leading-7 ml-0.5 mr-1 text-xs">{{ $design->name }}</div>
+    <div class="overflow-hidden whitespace-nowrap leading-8 ml-0.5 mr-1 text-xs">{{ $design->name }}</div>
 </div>

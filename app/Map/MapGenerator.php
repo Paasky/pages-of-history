@@ -6,12 +6,13 @@ use App\Coordinate;
 use App\Enums\Domain;
 use App\Enums\Feature;
 use App\Enums\Surface;
+use App\Models\Hex;
 use Illuminate\Support\Arr;
 
 class MapGenerator
 {
-    public int $worldRegionsX = 90;
-    public int $worldRegionsY = 30;
+    public int $worldRegionsX = 72;
+    public int $worldRegionsY = 24;
     public float $waterVsLandDistribution = 0.7;
     public float $initialOceansOrContinents = 7;
     public float $faultLinesMultiplier = 1.5;
@@ -25,6 +26,7 @@ class MapGenerator
     public int $landMinElevation = -2;
     public int $lakeMaxElevation = -1;
     public int $hillMaxElevation = 4;
+    public int $regionSize = 3;
 
     /** @var MapRegion[] */
     public array $generatedRegions = [];
@@ -55,6 +57,7 @@ class MapGenerator
 
             // Get rid of any randomness that's not allowed
             ->postProcess()
+            ->generateHexes()
             ->draw();
         return $this;
     }
@@ -656,6 +659,83 @@ class MapGenerator
             $region = $this->generatedRegions[$nextXy->key()];
         }
         return $region;
+    }
+
+    public function generateHexes(): self
+    {
+        foreach ($this->generatedRegions as $region) {
+            foreach (range(1, $this->regionSize) as $row) {
+                $neighborRowCoords = match (true) {
+                    $row === 1
+                    => $this->validCoords(new Coordinate($region->xy->x, $region->xy->y - 1)),
+                    $row === $this->regionSize
+                    => $this->validCoords(new Coordinate($region->xy->x, $region->xy->y + 1)),
+                    default => null,
+                };
+                $neighborRow = $neighborRowCoords ? $this->generatedRegions[$neighborRowCoords->key()] : null;
+
+                foreach (range(1, $this->regionSize) as $col) {
+                    $neighborColCoords = match (true) {
+                        $col === 1
+                        => $this->validCoords(new Coordinate($region->xy->x - 1, $region->xy->y)),
+                        $col === $this->regionSize
+                        => $this->validCoords(new Coordinate($region->xy->x + 1, $region->xy->y)),
+                        default => $region,
+                    };
+                    $neighborCol = $neighborColCoords ? $this->generatedRegions[$neighborColCoords->key()] : null;
+
+                    $domains = [$region->domain];
+                    if ($neighborRow) {
+                        $domains[] = $neighborRow->domain;
+                    }
+                    if ($neighborCol) {
+                        $domains[] = $neighborCol->domain;
+                    }
+                    /** @var Domain $domain */
+                    $domain = Arr::random($domains);
+
+                    $surfaces = [];
+                    $elevations = [];
+                    $features = [];
+                    if ($region->domain === $domain) {
+                        $surfaces[] = $region->surface;
+                        $elevations[] = $region->elevation;
+                        $features[] = $region->feature;
+                    }
+                    if ($neighborRow?->domain === $domain) {
+                        $surfaces[] = $neighborRow->surface;
+                        $elevations[] = $neighborRow->elevation;
+                        $features[] = $neighborRow->feature;
+                    }
+                    if ($neighborCol?->domain === $domain) {
+                        $surfaces[] = $neighborCol->surface;
+                        $elevations[] = $neighborCol->elevation;
+                        $features[] = $neighborCol->feature;
+                    }
+
+                    /** @var Surface $surface */
+                    $surface = Arr::random($surfaces);
+                    /** @var int $elevation */
+                    $elevation = round(array_sum($elevations) / count($elevations));
+                    /** @var Feature $feature */
+                    $feature = Arr::random($features);
+
+                    $region->hexes[] = new Hex([
+                        'x' => $region->xy->x * $this->regionSize + $col - 1,
+                        'y' => $region->xy->y * $this->regionSize + $row - 1,
+                        'domain' => $domain,
+                        'surface' => $surface,
+                        'elevation' => $elevation,
+                        'feature' => $feature,
+//                        'resource',
+//                        'resource_amount',
+                    ]);
+                    $this->generatedRegions[$region->key()] = $region;
+                }
+            }
+        }
+
+        return $this;
     }
 
     protected function generateRegions(): self

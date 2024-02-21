@@ -2,17 +2,49 @@
     use App\Enums\Domain;use App\Enums\Surface;
     use App\Enums\Feature;
     use App\Models\Hex;
-    $hexSize = 100;
+    $hexSize = match ($zoomLevel) {
+        1 => 25,
+        default => 100,
+    };
     $hexHeight = $hexSize * 0.905;
     $hexWidth = $hexSize * 0.78;
+
+    $hexes = collect();
+
+    foreach ($map->regions as $region) {
+        if ($zoomLevel < 3) {
+            $hexes->push($region);
+        } else {
+            if ($region->x >= $x - 4 &&
+                $region->x <= $x + 4 &&
+                $region->y >= $y - 2 &&
+                $region->y <= $y + 2
+            ) {
+                foreach ($region->hexes as $hex) {
+                    $hexes->push($hex);
+                }
+             }
+        }
+    }
+
+    $mapWidth = match($zoomLevel) {
+        1 => $map->width * 1.17,
+        2 => $map->width * 1.004,
+        3  => 9 * 3 * 1.02,
+     };
+    $mapHeight = match($zoomLevel) {
+        1 => $map->height * 1.235,
+        2 => $map->height * 1.007,
+        3 => 5 * 3 * 1.02,
+     };
 @endphp
 
-<div id="hexmap-{{ $map->id }}" class="hexmap">
+<div id="hexmap-{{ $map->id }}" class="hexmap relative" wire:loading.class="animate-pulse">
     <style>
         .hexmap {
-            background: #999;
-            width: {{ ($map->width * 1.058) * $hexWidth }}px;
-            height: {{ ($map->height * 1.07) * $hexHeight }}px;
+            background: #333;
+            width: {{ $mapWidth * $hexWidth }}px;
+            height: {{ $mapHeight * $hexHeight }}px;
             padding: 10px;
         }
 
@@ -133,7 +165,7 @@
         }
     </style>
 
-    @foreach($map->regions->sortBy(['x', 'y'])->groupBy('y') as $hexes)
+    @foreach($hexes->sortBy(['x', 'y'])->groupBy('y') as $hexes)
         <div class="hex-row">
             @foreach($hexes as $hex)
                 @php /** @var Hex $hex */ @endphp
@@ -143,11 +175,12 @@
                         "hex-surface-{$hex->surface->cssClass()}",
                         'odd' => $hex->x % 2 === 1,
                     ])
-                     tooltip="{{ implode(', ', array_filter([
+                     title="{{ implode(', ', array_filter([
                         $hex->surface->name,
                         $hex->feature?->name,
                         ($hex->elevation * 100) . 'm',
                     ])) }}"
+                     wire:click="setCoords({{ round($hex->x / ($zoomLevel < 3 ? 1 : 3)) }}, {{ round($hex->y / ($zoomLevel < 3 ? 1 : 3)) }})"
                 >
                     @if($hex->feature)
                         <div class="hex-feature hex-feature-{{ $hex->feature?->cssClass() }}"></div>
@@ -163,4 +196,59 @@
             @endforeach
         </div>
     @endforeach
+
+
+    @if($zoomLevel === 3)
+        <div class="absolute top-1/2 p-3 left-0 bg-gray-600 cursor-pointer text-2xl"
+             wire:click="setCoords({{ $x - 2 }}, {{ $y }})">
+            <i class="fa fa-chevron-left"></i>
+        </div>
+        <div class="absolute top-1/2 p-3 right-0 bg-gray-600 cursor-pointer text-2xl"
+             wire:click="setCoords({{ $x + 2 }}, {{ $y }})">
+            <i class="fa fa-chevron-right"></i>
+        </div>
+        @if($x > 0)
+            <div class="absolute top-0 p-3 right-0 bg-gray-600 cursor-pointer text-2xl"
+                 wire:click="setCoords({{ $x + 1 }}, {{ $y - 1 }})">
+                <i class="fa fa-chevron-up rotate-45"></i>
+            </div>
+            <div class="absolute top-0 p-3 left-1/2 bg-gray-600 cursor-pointer text-2xl"
+                 wire:click="setCoords({{ $x }}, {{ $y - 1 }})">
+                <i class="fa fa-chevron-up"></i>
+            </div>
+            <div class="absolute top-0 p-3 left-0 bg-gray-600 cursor-pointer text-2xl"
+                 wire:click="setCoords({{ $x - 1 }}, {{ $y - 1 }})">
+                <i class="fa fa-chevron-left rotate-45"></i>
+            </div>
+        @endif
+        @if($x < $map->height * 3)
+            <div class="absolute bottom-0 p-3 left-0 bg-gray-600 cursor-pointer text-2xl"
+                 wire:click="setCoords({{ $x - 1 }}, {{ $y + 1 }})">
+                <i class="fa fa-chevron-down rotate-45"></i>
+            </div>
+            <div class="absolute bottom-0 p-3 left-1/2 bg-gray-600 cursor-pointer text-2xl"
+                 wire:click="setCoords({{ $x }}, {{ $y + 1 }})">
+                <i class="fa fa-chevron-down"></i>
+            </div>
+            <div class="absolute bottom-0 p-3 right-0 bg-gray-600 cursor-pointer text-2xl"
+                 wire:click="setCoords({{ $x + 1 }}, {{ $y + 1 }})">
+                <i class="fa fa-chevron-right rotate-45"></i>
+            </div>
+        @endif
+    @endif
+
+    <div class="fixed top-1/3 left-0 bg-gray-800 rounded-r-lg overflow-hidden cursor-pointer">
+        <div class="p-2 @if($zoomLevel === 1) bg-gray-500 @endif border-b" wire:click="setZoom(1)">
+            <i class="fa fa-globe fa-fw"></i>
+            <span class="hidden">World</span>
+        </div>
+        <div class="p-2 @if($zoomLevel === 2) bg-gray-500 @endif border-b" wire:click="setZoom(2)">
+            <i class="fa fa-map fa-fw"></i>
+            <span class="hidden">Region</span>
+        </div>
+        <div class="p-2 @if($zoomLevel === 3) bg-gray-500 @endif" wire:click="setZoom(3)">
+            <i class="fa fa-table-cells fa-fw"></i>
+            <span class="hidden">Local</span>
+        </div>
+    </div>
 </div>
