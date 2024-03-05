@@ -19,7 +19,9 @@ use Illuminate\Support\Collection;
  * @property int $player_id
  * @property TechnologyType|null $type
  * @property int $research
+ * @property int $research_remaining
  * @property bool $is_known
+ * @property bool $is_researching
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read Player $player
@@ -46,11 +48,13 @@ class Technology extends Model
         'type',
         'research',
         'is_known',
+        'is_researching',
     ];
 
     protected $casts = [
         'type' => TechnologyCast::class,
         'is_known' => 'boolean',
+        'is_researching' => 'boolean',
     ];
 
     public function player(): BelongsTo
@@ -61,5 +65,10 @@ class Technology extends Model
     public function getYieldModifiersAttribute(): Collection
     {
         return $this->type->yieldModifiers();
+    }
+
+    public function getResearchRemainingAttribute(): int
+    {
+        return $this->type->cost() - $this->research;
     }
 }

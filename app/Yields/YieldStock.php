@@ -14,31 +14,40 @@ class YieldStock
         $this->stock = collect($stock);
     }
 
-    public function put(YieldType $type, float $amount): self
-    {
-        $this->stock[$type->value] = round(($this->stock[$type->value] ?? 0) + $amount, 2);
-        return $this;
-    }
-
-    public function takeAll(YieldType $type): float
-    {
-        $amount = $this->amount($type);
-        unset($this->stock[$type->value]);
-        return $amount;
-    }
-
     public function amount(YieldType $type): float
     {
         return $this->stock[$type->value] ?? 0;
     }
 
-    public function takeUpTo(YieldType $type, float $amount): self
+    /**
+     * @return Collection<string, float>
+     */
+    public function getStock(): Collection
     {
-        return $this->take($type, min($this->amount($type), $amount));
+        return $this->stock;
+    }
+
+    public function has(YieldType $type, float $amount): bool
+    {
+        return $this->amount($type) >= $amount;
+    }
+
+    public function put(YieldType $type, float $amount): self
+    {
+        if ($amount < 0) {
+            return $this->take($type, abs($amount));
+        }
+
+        $this->stock[$type->value] = round(($this->stock[$type->value] ?? 0) + $amount, 2);
+        return $this;
     }
 
     public function take(YieldType $type, float $amount): self
     {
+        if ($amount < 0) {
+            return $this->put($type, abs($amount));
+        }
+
         if (!$this->has($type, $amount)) {
             throw new \Exception("Stock does not have $amount of $type->value");
         }
@@ -50,16 +59,19 @@ class YieldStock
         return $this;
     }
 
-    public function has(YieldType $type, float $amount): bool
+    public function takeAll(YieldType $type): float
     {
-        return $this->amount($type) >= $amount;
+        $amount = $this->amount($type);
+        unset($this->stock[$type->value]);
+        return $amount;
     }
 
-    /**
-     * @return Collection<string, float>
-     */
-    public function getStock(): Collection
+    public function takeUpTo(YieldType $type, float $amount): self
     {
-        return $this->stock;
+        if ($amount < 0) {
+            return $this->put($type, abs($amount));
+        }
+
+        return $this->take($type, min($this->amount($type), $amount));
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Building;
 use App\Models\Citizen;
 use App\Models\City;
 use App\Models\Hex;
+use App\Models\Player;
 use App\Models\Unit;
 use App\Models\UnitDesign;
 use Illuminate\Database\Eloquent\Model;
@@ -203,6 +204,11 @@ class YieldModifier
 
             if ($object instanceof City) {
                 // Cities don't have any parents
+                continue;
+            }
+
+            if ($object instanceof Player) {
+                // Players don't have any parents
                 continue;
             }
 

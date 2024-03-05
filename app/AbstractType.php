@@ -12,6 +12,7 @@ use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
 use App\Yields\YieldModifier;
+use App\Yields\YieldModifiersAgainst;
 use App\Yields\YieldModifiersFor;
 use Illuminate\Support\Collection;
 
@@ -43,6 +44,20 @@ abstract class AbstractType implements GameConcept, \Stringable
             }
         }
         throw new \Exception("Could not find type with slug {$slug}");
+    }
+
+    public function cost(): ?int
+    {
+        /** @var YieldModifier $modifier */
+        $modifier = YieldModifier::combineYieldTypes(
+            $this->yieldModifiers()->where(fn(YieldModifier|YieldModifiersFor $modifier) =>
+                $modifier instanceof YieldModifier &&
+                $modifier->type === YieldType::Cost
+            ),
+            $this
+        )[0] ?? null;
+
+        return round((int) $modifier?->amount);
     }
 
     public function slug(): string

@@ -7,6 +7,7 @@ use App\Models\Building;
 use App\Models\Citizen;
 use App\Models\City;
 use App\Models\Hex;
+use App\Models\Player;
 use App\Models\Unit;
 use App\Models\UnitDesign;
 use Illuminate\Database\Eloquent\Model;
@@ -71,7 +72,8 @@ enum YieldType: string implements GameConcept
                 if ($model instanceof Building ||
                     $model instanceof Citizen ||
                     $model instanceof City ||
-                    $model instanceof Hex
+                    $model instanceof Hex ||
+                    $model instanceof Player
                 ) {
                     return true;
                 }

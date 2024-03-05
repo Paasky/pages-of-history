@@ -145,7 +145,10 @@ class Player extends Model
      */
     public function getTurnYieldModifiersAttribute(): Collection
     {
-        return $this->cities->map(fn(City $city) => $city->yield_modifiers)->flatten();
+        return YieldModifier::combineYieldTypes(
+            $this->cities->map(fn(City $city) => $city->yield_modifiers)->flatten(),
+            $this
+        );
     }
 
     public function map(): BelongsTo

@@ -14,6 +14,8 @@ interface GameConcept
 
     public function category(): ?GameConcept;
 
+    public function cost(): ?int;
+
     /**
      * #[ArrayShape(["class" => "string", "id" => "null", "string", "int"])
      * @return array

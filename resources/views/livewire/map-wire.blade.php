@@ -28,7 +28,7 @@
     }
 
     $mapWidth = match($zoomLevel) {
-        1 => $map->width * 1.17,
+        1 => $map->width * 1.18,
         2 => $map->width * 1.004,
         3  => 9 * 3 * 1.02,
      };

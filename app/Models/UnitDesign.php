@@ -6,6 +6,7 @@ use App\Casts\UnitArmorCast;
 use App\Casts\UnitEquipmentCast;
 use App\Casts\UnitPlatformCast;
 use App\Enums\UnitType;
+use App\Enums\YieldType;
 use App\UnitArmor\UnitArmorType;
 use App\UnitEquipment\UnitEquipmentType;
 use App\UnitPlatforms\UnitPlatformType;
@@ -30,6 +31,8 @@ use Illuminate\Support\Collection;
  * @property UnitEquipmentType|null $equipment
  * @property UnitArmorType|null $armor
  * @property UnitType $type
+ * @property int $cost
+ * @property int $moves
  * @property-read Collection|YieldModifier[]|YieldModifiersFor[] $yield_modifiers
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
@@ -79,6 +82,32 @@ class UnitDesign extends Model
     public function units(): HasMany
     {
         return $this->hasMany(Unit::class);
+    }
+
+    public function getCostAttribute(): int
+    {
+        /** @var YieldModifier $modifier */
+        $modifier = YieldModifier::combineYieldTypes(
+            $this->yield_modifiers->where(
+                fn(YieldModifier $modifier) => $modifier->type === YieldType::Cost
+            ),
+            $this
+        )[0] ?? null;
+
+        return round((int) $modifier?->amount);
+    }
+
+    public function getMovesAttribute(): int
+    {
+        /** @var YieldModifier $modifier */
+        $modifier = YieldModifier::combineYieldTypes(
+            $this->yield_modifiers->where(
+                fn(YieldModifier $modifier) => $modifier->type === YieldType::Moves
+            ),
+            $this
+        )[0] ?? null;
+
+        return round((int) $modifier?->amount);
     }
 
     /**

@@ -17,6 +17,7 @@ return new class extends Migration {
             $table->string('type')->index();
             $table->integer('research');
             $table->boolean('is_known')->default(false);
+            $table->boolean('is_researching')->default(false);
             $table->timestamps();
 
             $table->unique(['player_id', 'type']);

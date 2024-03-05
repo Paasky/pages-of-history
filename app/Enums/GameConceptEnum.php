@@ -21,6 +21,11 @@ trait GameConceptEnum
         return collect();
     }
 
+    public function cost(): ?int
+    {
+        return null;
+    }
+
     public function dataForInit(): array
     {
         return ['class' => str_replace('\\', '\\\\', get_class($this)), 'id' => $this->value];
